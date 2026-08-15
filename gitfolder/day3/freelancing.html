@@ -1,0 +1,1627 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Freelancing & AI — Complete Guide | KEC Workshop Day 3</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700;800&family=Fira+Code:wght@400;500&display=swap"
+        rel="stylesheet">
+    <style>
+        *,
+        *::before,
+        *::after {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        :root {
+            --bg: #07091a;
+            --card: #161f35;
+            --card2: #1c253e;
+            --accent: #10b981;
+            --accent2: #34d399;
+            --accent3: #6ee7b7;
+            --gold: #f59e0b;
+            --violet: #6366f1;
+            --red: #ef4444;
+            --blue: #22d3ee;
+            --text: #e2e8f0;
+            --muted: #64748b;
+            --muted2: #94a3b8;
+            --border: rgba(16, 185, 129, 0.2);
+            --glow: 0 0 36px rgba(16, 185, 129, 0.22);
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            font-family: 'Outfit', sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            font-size: 15px;
+            overflow-x: hidden;
+        }
+
+        #rbar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            height: 3px;
+            z-index: 999;
+            width: 0%;
+            background: linear-gradient(90deg, var(--accent), var(--accent2), var(--gold));
+        }
+
+        .blobs {
+            position: fixed;
+            inset: 0;
+            pointer-events: none;
+            z-index: 0;
+            overflow: hidden;
+        }
+
+        .blob {
+            position: absolute;
+            border-radius: 50%;
+            filter: blur(100px);
+            opacity: .12;
+            animation: bf 14s ease-in-out infinite alternate;
+        }
+
+        .b1 {
+            width: 420px;
+            height: 420px;
+            background: var(--accent);
+            top: -100px;
+            left: -80px;
+        }
+
+        .b2 {
+            width: 300px;
+            height: 300px;
+            background: var(--gold);
+            bottom: -80px;
+            right: -50px;
+            animation-delay: 5s;
+        }
+
+        .b3 {
+            width: 240px;
+            height: 240px;
+            background: var(--blue);
+            top: 40%;
+            left: 60%;
+            animation-delay: 2.5s;
+        }
+
+        @keyframes bf {
+            from {
+                transform: scale(1);
+            }
+
+            to {
+                transform: scale(1.1) translate(20px, 14px);
+            }
+        }
+
+        /* NAV */
+        nav {
+            position: sticky;
+            top: 0;
+            z-index: 200;
+            background: rgba(7, 9, 26, .92);
+            backdrop-filter: blur(16px);
+            border-bottom: 1px solid var(--border);
+            padding: .6rem .9rem;
+            display: flex;
+            align-items: center;
+            gap: .35rem;
+            overflow-x: auto;
+        }
+
+        .nav-logo {
+            font-weight: 800;
+            font-size: .92rem;
+            background: linear-gradient(90deg, var(--accent), var(--gold));
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+            white-space: nowrap;
+            margin-right: .5rem;
+        }
+
+        .nb {
+            font-size: .7rem;
+            font-weight: 600;
+            padding: .28rem .75rem;
+            border: 1px solid var(--border);
+            border-radius: 999px;
+            background: transparent;
+            color: var(--muted2);
+            cursor: pointer;
+            white-space: nowrap;
+            transition: all .2s;
+        }
+
+        .nb:hover,
+        .nb.active {
+            background: var(--accent);
+            border-color: var(--accent);
+            color: #fff;
+        }
+
+        /* LAYOUT */
+        section {
+            position: relative;
+            z-index: 10;
+            padding: 3.5rem 1.8rem;
+            max-width: 900px;
+            margin: 0 auto;
+        }
+
+        .eyebrow {
+            font-family: 'Fira Code', monospace;
+            font-size: .68rem;
+            color: var(--accent3);
+            letter-spacing: .14em;
+            text-transform: uppercase;
+            margin-bottom: .5rem;
+        }
+
+        .sec-title {
+            font-size: clamp(1.5rem, 3.5vw, 2.1rem);
+            font-weight: 800;
+            line-height: 1.2;
+            background: linear-gradient(135deg, #fff 25%, var(--accent2) 100%);
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: .75rem;
+        }
+
+        .sec-lead {
+            font-size: .88rem;
+            color: var(--muted2);
+            line-height: 1.8;
+            max-width: 660px;
+            margin-bottom: 1.8rem;
+        }
+
+        .rv {
+            opacity: 0;
+            transform: translateY(26px);
+            transition: opacity .6s ease, transform .6s ease;
+        }
+
+        .rv.vis {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* HERO */
+        #hero {
+            min-height: 85vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            gap: 1.2rem;
+            padding: 4rem 1.8rem;
+            max-width: 900px;
+            margin: 0 auto;
+        }
+
+        .hero-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: .45rem;
+            font-family: 'Fira Code', monospace;
+            font-size: .7rem;
+            padding: .3rem .9rem;
+            border-radius: 999px;
+            border: 1px solid rgba(16, 185, 129, .4);
+            color: var(--accent2);
+            background: rgba(16, 185, 129, .08);
+            animation: fu .6s ease both;
+            width: fit-content;
+        }
+
+        .hero-h1 {
+            font-size: clamp(2rem, 6vw, 3.4rem);
+            font-weight: 800;
+            line-height: 1.08;
+            background: linear-gradient(135deg, #fff 15%, var(--accent) 55%, var(--gold) 100%);
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+            animation: fu .6s .1s ease both;
+        }
+
+        .hero-sub {
+            font-size: .95rem;
+            color: var(--muted2);
+            max-width: 520px;
+            line-height: 1.8;
+            animation: fu .6s .2s ease both;
+        }
+
+        .hero-stats {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 1rem;
+            animation: fu .6s .3s ease both;
+        }
+
+        .hstat {
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: .65rem 1.1rem;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .hstat-n {
+            font-size: 1.35rem;
+            font-weight: 800;
+            color: var(--accent2);
+        }
+
+        .hstat-l {
+            font-size: .65rem;
+            color: var(--muted);
+            margin-top: .1rem;
+        }
+
+        @keyframes fu {
+            from {
+                opacity: 0;
+                transform: translateY(22px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* CARDS */
+        .cards-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(190px, 1fr));
+            gap: 1rem;
+        }
+
+        .card {
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            padding: 1.2rem;
+            transition: transform .3s, box-shadow .3s, border-color .3s;
+            cursor: default;
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: var(--glow);
+            border-color: var(--accent);
+        }
+
+        .card .ci {
+            font-size: 1.7rem;
+            margin-bottom: .5rem;
+        }
+
+        .card h3 {
+            font-size: .88rem;
+            font-weight: 700;
+            margin-bottom: .3rem;
+        }
+
+        .card p {
+            font-size: .77rem;
+            color: var(--muted2);
+            line-height: 1.65;
+        }
+
+        /* STEPS / TIMELINE */
+        .steps {
+            display: flex;
+            flex-direction: column;
+            gap: 0;
+        }
+
+        .step {
+            display: flex;
+            align-items: flex-start;
+            gap: 1rem;
+            position: relative;
+        }
+
+        .step:not(:last-child)::after {
+            content: '';
+            position: absolute;
+            left: 20px;
+            top: 42px;
+            width: 2px;
+            height: calc(100% - 10px);
+            background: linear-gradient(180deg, var(--accent), transparent);
+        }
+
+        .step-num {
+            min-width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            border: 2px solid var(--accent);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 800;
+            font-size: .82rem;
+            color: var(--accent);
+            background: rgba(16, 185, 129, .1);
+            flex-shrink: 0;
+            margin-top: 8px;
+            transition: all .3s;
+            position: relative;
+            z-index: 2;
+        }
+
+        .step:hover .step-num {
+            background: var(--accent);
+            color: #fff;
+            box-shadow: 0 0 18px rgba(16, 185, 129, .5);
+        }
+
+        .step-body {
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: 14px;
+            padding: .9rem 1.2rem;
+            margin-bottom: 1rem;
+            flex: 1;
+            transition: border-color .3s, transform .3s;
+        }
+
+        .step:hover .step-body {
+            border-color: var(--accent);
+            transform: translateX(4px);
+        }
+
+        .step-body h4 {
+            font-size: .9rem;
+            font-weight: 700;
+            margin-bottom: .3rem;
+        }
+
+        .step-body p {
+            font-size: .79rem;
+            color: var(--muted2);
+            line-height: 1.65;
+        }
+
+        /* MONEY CARDS */
+        .money-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 1rem;
+        }
+
+        .money-card {
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            padding: 1.3rem;
+            text-align: center;
+            transition: border-color .3s, transform .3s;
+        }
+
+        .money-card:hover {
+            border-color: var(--gold);
+            transform: translateY(-4px);
+        }
+
+        .money-val {
+            font-size: 1.5rem;
+            font-weight: 800;
+            color: var(--gold);
+        }
+
+        .money-label {
+            font-size: .78rem;
+            color: var(--muted2);
+            margin-top: .3rem;
+            line-height: 1.5;
+        }
+
+        /* PLATFORM CARDS */
+        .platform-row {
+            display: flex;
+            flex-wrap: wrap;
+            gap: .7rem;
+            margin: .8rem 0;
+        }
+
+        .platform-tag {
+            font-size: .8rem;
+            font-weight: 600;
+            padding: .35rem .9rem;
+            border-radius: 999px;
+            border: 1px solid var(--border);
+            color: var(--text);
+            background: var(--card2);
+        }
+
+        .platform-tag.green {
+            border-color: rgba(16, 185, 129, .4);
+            color: var(--accent3);
+        }
+
+        .platform-tag.gold {
+            border-color: rgba(245, 158, 11, .4);
+            color: var(--gold);
+        }
+
+        .platform-tag.blue {
+            border-color: rgba(34, 211, 238, .4);
+            color: var(--blue);
+        }
+
+        .platform-tag.violet {
+            border-color: rgba(99, 102, 241, .4);
+            color: #a5b4fc;
+        }
+
+        /* CALLOUT */
+        .callout {
+            border-radius: 14px;
+            padding: 1.1rem 1.3rem;
+            font-size: .83rem;
+            line-height: 1.75;
+            margin: .8rem 0;
+        }
+
+        .callout.green {
+            background: rgba(16, 185, 129, .07);
+            border: 1px solid rgba(16, 185, 129, .25);
+        }
+
+        .callout.gold {
+            background: rgba(245, 158, 11, .07);
+            border: 1px solid rgba(245, 158, 11, .25);
+        }
+
+        .callout.red {
+            background: rgba(239, 68, 68, .07);
+            border: 1px solid rgba(239, 68, 68, .25);
+        }
+
+        .callout.blue {
+            background: rgba(34, 211, 238, .07);
+            border: 1px solid rgba(34, 211, 238, .25);
+        }
+
+        .callout strong {
+            display: block;
+            font-size: .88rem;
+            margin-bottom: .35rem;
+        }
+
+        /* CODE BLOCK */
+        .code-block {
+            background: rgba(0, 0, 0, .5);
+            border: 1px solid rgba(16, 185, 129, .15);
+            border-radius: 10px;
+            padding: .75rem 1rem;
+            font-family: 'Fira Code', monospace;
+            font-size: .78rem;
+            line-height: 1.7;
+            margin: .5rem 0;
+            overflow-x: auto;
+            color: var(--accent3);
+        }
+
+        /* COMPARISON TABLE */
+        .cmp-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: .82rem;
+            margin: 1rem 0;
+        }
+
+        .cmp-table th {
+            background: rgba(16, 185, 129, .1);
+            color: var(--accent2);
+            font-weight: 700;
+            padding: .65rem 1rem;
+            text-align: left;
+            border-bottom: 2px solid var(--border);
+        }
+
+        .cmp-table td {
+            padding: .6rem 1rem;
+            border-bottom: 1px solid rgba(255, 255, 255, .05);
+            color: var(--muted2);
+        }
+
+        .cmp-table tr:hover td {
+            background: rgba(16, 185, 129, .04);
+        }
+
+        /* DO/DONT */
+        .do-dont {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+            margin: .8rem 0;
+        }
+
+        .dd-box {
+            border-radius: 14px;
+            padding: 1rem 1.1rem;
+        }
+
+        .dd-box.do {
+            background: rgba(16, 185, 129, .07);
+            border: 1px solid rgba(16, 185, 129, .25);
+        }
+
+        .dd-box.dont {
+            background: rgba(239, 68, 68, .07);
+            border: 1px solid rgba(239, 68, 68, .25);
+        }
+
+        .dd-box h4 {
+            font-size: .83rem;
+            font-weight: 700;
+            margin-bottom: .5rem;
+        }
+
+        .dd-box.do h4 {
+            color: var(--accent);
+        }
+
+        .dd-box.dont h4 {
+            color: var(--red);
+        }
+
+        .dd-box li {
+            font-size: .77rem;
+            color: var(--muted2);
+            margin-left: 1rem;
+            line-height: 1.7;
+        }
+
+        /* ROADMAP MONTHS */
+        .month-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+            gap: 1rem;
+        }
+
+        .month-card {
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            padding: 1.2rem;
+            transition: border-color .3s, transform .25s;
+        }
+
+        .month-card:hover {
+            border-color: var(--accent);
+            transform: translateY(-4px);
+        }
+
+        .month-card .mh {
+            font-size: .7rem;
+            font-family: 'Fira Code', monospace;
+            color: var(--accent);
+            margin-bottom: .4rem;
+            letter-spacing: .08em;
+        }
+
+        .month-card h3 {
+            font-size: .92rem;
+            font-weight: 700;
+            margin-bottom: .6rem;
+        }
+
+        .month-card li {
+            font-size: .78rem;
+            color: var(--muted2);
+            margin-left: 1rem;
+            line-height: 1.7;
+        }
+
+        /* PRICING CARDS */
+        .pricing-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+            gap: 1rem;
+        }
+
+        .price-card {
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            padding: 1.2rem;
+            text-align: center;
+            transition: border-color .3s, transform .3s;
+        }
+
+        .price-card:hover {
+            border-color: var(--gold);
+            transform: translateY(-4px);
+            box-shadow: 0 0 28px rgba(245, 158, 11, .18);
+        }
+
+        .price-range {
+            font-size: 1.1rem;
+            font-weight: 800;
+            color: var(--gold);
+        }
+
+        .price-label {
+            font-size: .75rem;
+            color: var(--muted2);
+            margin-top: .3rem;
+        }
+
+        .price-icon {
+            font-size: 1.5rem;
+            margin-bottom: .4rem;
+        }
+
+        /* BENEFIT LIST */
+        .blist {
+            display: flex;
+            flex-direction: column;
+            gap: .6rem;
+            margin: .8rem 0;
+        }
+
+        .blist-item {
+            display: flex;
+            gap: .75rem;
+            align-items: flex-start;
+            padding: .7rem 1rem;
+            background: var(--card);
+            border-radius: 12px;
+            border: 1px solid rgba(255, 255, 255, .06);
+            transition: border-color .25s;
+        }
+
+        .blist-item:hover {
+            border-color: var(--accent);
+        }
+
+        .blist-icon {
+            font-size: 1.2rem;
+            flex-shrink: 0;
+        }
+
+        .blist-text h4 {
+            font-size: .85rem;
+            font-weight: 700;
+            margin-bottom: .15rem;
+        }
+
+        .blist-text p {
+            font-size: .77rem;
+            color: var(--muted2);
+            line-height: 1.6;
+        }
+
+        /* ACCORDION */
+        .acc-item {
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: 14px;
+            overflow: hidden;
+            transition: border-color .25s;
+            margin-bottom: .7rem;
+        }
+
+        .acc-item:hover {
+            border-color: var(--accent);
+        }
+
+        .acc-header {
+            padding: .9rem 1.2rem;
+            cursor: pointer;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-weight: 700;
+            font-size: .88rem;
+            user-select: none;
+        }
+
+        .acc-header span.arr {
+            transition: transform .3s;
+            font-size: .75rem;
+            color: var(--muted);
+        }
+
+        .acc-body {
+            padding: 0 1.2rem;
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height .35s ease, padding .25s;
+        }
+
+        .acc-body.open {
+            max-height: 600px;
+            padding: .3rem 1.2rem 1rem;
+        }
+
+        .acc-body p,
+        .acc-body li {
+            font-size: .8rem;
+            color: var(--muted2);
+            line-height: 1.75;
+        }
+
+        .acc-body li {
+            margin-left: 1.1rem;
+        }
+
+        /* DIVIDER */
+        .div {
+            height: 1px;
+            background: linear-gradient(90deg, transparent, var(--border), transparent);
+            margin: .5rem auto;
+            max-width: 900px;
+        }
+
+        footer.sf {
+            position: relative;
+            z-index: 10;
+            padding: 1.5rem;
+            text-align: center;
+            border-top: 1px solid var(--border);
+            color: var(--muted);
+            font-size: .77rem;
+        }
+
+        footer.sf span {
+            color: var(--accent2);
+        }
+
+        @media(max-width:600px) {
+            section {
+                padding: 2.5rem 1rem;
+            }
+
+            .do-dont {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div id="rbar"></div>
+    <div class="blobs">
+        <div class="blob b1"></div>
+        <div class="blob b2"></div>
+        <div class="blob b3"></div>
+    </div>
+
+    <!-- Back to Home -->
+    <a href="index.html"
+        style="position:fixed;top:1rem;left:1rem;z-index:9999;display:inline-flex;align-items:center;gap:.45rem;padding:.45rem 1rem;background:rgba(7,9,26,.9);border:1px solid rgba(99,102,241,.4);border-radius:999px;color:#a78bfa;font-family:'Outfit',sans-serif;font-size:.8rem;font-weight:700;text-decoration:none;backdrop-filter:blur(10px);transition:all .2s;"
+        onmouseover="this.style.background='rgba(99,102,241,.25)';this.style.borderColor='#6366f1'"
+        onmouseout="this.style.background='rgba(7,9,26,.9)';this.style.borderColor='rgba(99,102,241,.4)'">← Home</a>
+
+    <!-- NAV -->
+    <nav style="padding-left:6rem;">
+        <div class="nav-logo">💰 Freelancing</div>
+        <button class="nb active" onclick="scrollTo('hero')">Intro</button>
+        <button class="nb" onclick="scrollTo('earn')">Earn</button>
+        <button class="nb" onclick="scrollTo('clients')">Find Clients</button>
+        <button class="nb" onclick="scrollTo('pricing')">Pricing</button>
+        <button class="nb" onclick="scrollTo('ai')">AI Builder</button>
+        <button class="nb" onclick="scrollTo('aispeed')">AI Speed</button>
+        <button class="nb" onclick="scrollTo('roadmap')">₹50K Roadmap</button>
+        <button class="nb" onclick="scrollTo('brand')">Premium Brand</button>
+        <button class="nb" onclick="scrollTo('mistakes')">Mistakes</button>
+    </nav>
+
+    <!-- ══════════ HERO ══════════ -->
+    <section id="hero" style="max-width:900px">
+        <div class="hero-badge">💰 &nbsp; Day 3 · Freelancing &amp; AI</div>
+        <h1 class="hero-h1">Freelancing &amp; AI<br>Complete Guide</h1>
+        <p class="hero-sub">From picking your first skill to charging ₹50,000+ per project — a beginner-to-pro blueprint
+            powered by AI tools like Antigravity.</p>
+        <div class="hero-stats">
+            <div class="hstat"><span class="hstat-n">5</span><span class="hstat-l">Core Modules</span></div>
+            <div class="hstat"><span class="hstat-n">₹50K</span><span class="hstat-l">First Goal</span></div>
+            <div class="hstat"><span class="hstat-n">30</span><span class="hstat-l">Day Execution Plan</span></div>
+            <div class="hstat"><span class="hstat-n">12+</span><span class="hstat-l">Strategies</span></div>
+        </div>
+    </section>
+
+    <!-- ══════════ 1. EARN WITH PORTFOLIO SKILLS ══════════ -->
+    <section id="earn">
+        <div class="rv">
+            <p class="eyebrow">01 · Foundation</p>
+            <h2 class="sec-title">💡 How to Earn Using Portfolio Skills</h2>
+            <p class="sec-lead">A portfolio skill is a skill you can <strong>show proof of</strong>. Clients don't buy
+                skills — they buy <em>proof + results</em>. Here are the most in-demand skills you can start with.</p>
+        </div>
+        <div class="cards-grid rv">
+            <div class="card">
+                <div class="ci">🌐</div>
+                <h3>Website Development</h3>
+                <p>Build landing pages, portfolios, and business sites. Highest demand in 2025.</p>
+            </div>
+            <div class="card">
+                <div class="ci">🎨</div>
+                <h3>Graphic Design</h3>
+                <p>Logos, brand identity, social media posts using Canva or Figma.</p>
+            </div>
+            <div class="card">
+                <div class="ci">🎬</div>
+                <h3>Video Editing</h3>
+                <p>Reels, YouTube videos, ads. AI tools cut editing time by 60%.</p>
+            </div>
+            <div class="card">
+                <div class="ci">📱</div>
+                <h3>Social Media Management</h3>
+                <p>Content calendars, posts, engagement for local businesses.</p>
+            </div>
+            <div class="card">
+                <div class="ci">🤖</div>
+                <h3>AI Automation</h3>
+                <p>Set up chatbots, workflows, and automation for businesses.</p>
+            </div>
+            <div class="card">
+                <div class="ci">📄</div>
+                <h3>Resume & Content Writing</h3>
+                <p>Professional resumes, SEO blogs, email sequences.</p>
+            </div>
+        </div>
+
+        <div class="div" style="margin:2rem 0;"></div>
+        <div class="rv">
+            <h3 style="font-size:1rem;font-weight:700;margin-bottom:1.2rem;">🚀 Step-by-Step: How to Start Earning</h3>
+        </div>
+        <div class="steps rv">
+            <div class="step">
+                <div class="step-num">1</div>
+                <div class="step-body">
+                    <h4>Pick ONE High-Demand Skill</h4>
+                    <p>Don't try to learn everything. Choose one: Web Design (AI builder), Canva Design, WordPress,
+                        Social Media Posters, AI Automation, or Resume Design.</p>
+                    <div class="callout green" style="margin-top:.5rem;"><strong>💡 Golden Rule</strong>Master one skill
+                        first. Depth beats breadth when starting out.</div>
+                </div>
+            </div>
+            <div class="step">
+                <div class="step-num">2</div>
+                <div class="step-body">
+                    <h4>Create 3–5 Sample Projects</h4>
+                    <p>Even without clients yet, create demo projects: a portfolio website, a business landing page, an
+                        e-commerce mockup, a poster design set, and a brand logo concept.</p>
+                    <p style="margin-top:.5rem;font-size:.78rem;color:var(--muted2);">📌 Upload them on: GitHub ·
+                        Behance · Dribbble · Your personal website</p>
+                </div>
+            </div>
+            <div class="step">
+                <div class="step-num">3</div>
+                <div class="step-body">
+                    <h4>Build Your Personal Portfolio Website</h4>
+                    <p>Must include: About Me, Services, Projects, Testimonials (even from friends), and a Contact form.
+                        This increases trust by <strong style="color:var(--accent)">70%+</strong>.</p>
+                </div>
+            </div>
+            <div class="step">
+                <div class="step-num">4</div>
+                <div class="step-body">
+                    <h4>Start Active Outreach — Don't Wait</h4>
+                    <p>Clients don't come to you at the start. You go find them. Use the methods detailed in the "Find
+                        Clients" section below.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <div class="div"></div>
+
+    <!-- ══════════ 2. FIND CLIENTS ══════════ -->
+    <section id="clients">
+        <div class="rv">
+            <p class="eyebrow">02 · Client Acquisition</p>
+            <h2 class="sec-title">🔍 Where to Find Clients</h2>
+            <p class="sec-lead">4 proven methods — from freelance platforms to direct business outreach. The direct
+                method is the most powerful and fastest.</p>
+        </div>
+
+        <div class="acc-item rv">
+            <div class="acc-header" onclick="toggleAcc(this)">
+                <span>🌐 Freelance Platforms (Fiverr, Upwork, Freelancer)</span>
+                <span class="arr">▼</span>
+            </div>
+            <div class="acc-body">
+                <div class="platform-row">
+                    <span class="platform-tag green">Fiverr</span>
+                    <span class="platform-tag blue">Upwork</span>
+                    <span class="platform-tag gold">Freelancer.com</span>
+                    <span class="platform-tag violet">PeoplePerHour</span>
+                    <span class="platform-tag">Toptal</span>
+                </div>
+                <p><strong style="color:var(--text)">Strategy:</strong> Create an optimized profile, add strong
+                    keywords, upload your portfolio, and bid daily. Write gig titles like: <em
+                        style="color:var(--accent3)">"Modern Business Website in 48 Hours"</em></p>
+            </div>
+        </div>
+
+        <div class="acc-item rv">
+            <div class="acc-header" onclick="toggleAcc(this)">
+                <span>🗺 Google Maps Method — Most Powerful 💰</span>
+                <span class="arr">▼</span>
+            </div>
+            <div class="acc-body">
+                <p>Search for local businesses with poor or no websites:</p>
+                <div class="code-block" style="margin:.5rem 0;">"Gyms near me" · "Clinics near me" · "Interior designers
+                    near me"</div>
+                <p>Contact them directly with a message like:</p>
+                <div class="callout blue" style="margin-top:.5rem;">
+                    <strong>📨 Template Message:</strong>
+                    "Hi, I noticed your business doesn't have a modern website. I help businesses increase leads with
+                    fast-loading websites. Can I show you a free demo?"
+                </div>
+            </div>
+        </div>
+
+        <div class="acc-item rv">
+            <div class="acc-header" onclick="toggleAcc(this)">
+                <span>💼 LinkedIn Outreach</span>
+                <span class="arr">▼</span>
+            </div>
+            <div class="acc-body">
+                <p>Target: Startup founders, coaches, local business owners. Send <strong
+                        style="color:var(--accent)">10–20 personalized messages daily</strong>. LinkedIn has the highest
+                    conversion rate for B2B freelancing.</p>
+            </div>
+        </div>
+
+        <div class="acc-item rv">
+            <div class="acc-header" onclick="toggleAcc(this)">
+                <span>📧 Cold Email Method</span>
+                <span class="arr">▼</span>
+            </div>
+            <div class="acc-body">
+                <p>Target: Real estate agents, medical clinics, tuition centers, cafes.</p>
+                <div class="callout gold" style="margin-top:.5rem;">
+                    <strong>📧 Subject Line That Works:</strong>
+                    "Free website improvement suggestion for [Business Name]"
+                </div>
+                <p>Include a short loom video or screenshot showing their current site vs what you could build.</p>
+            </div>
+        </div>
+
+        <div class="acc-item rv">
+            <div class="acc-header" onclick="toggleAcc(this)">
+                <span>📸 Instagram DM Method</span>
+                <span class="arr">▼</span>
+            </div>
+            <div class="acc-body">
+                <p>Find local business Instagram pages. Message them:</p>
+                <div class="callout blue" style="margin-top:.5rem;">
+                    <strong>📨 Template:</strong>
+                    "Hi! I help businesses build modern websites that get more customers. Can I share a quick demo of
+                    what I could build for [Business Name]?"
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <div class="div"></div>
+
+    <!-- ══════════ 3. PRICING ══════════ -->
+    <section id="pricing">
+        <div class="rv">
+            <p class="eyebrow">03 · Money</p>
+            <h2 class="sec-title">💸 Pricing Basics — Very Important</h2>
+            <p class="sec-lead">Most beginners make mistakes with pricing. Here's how to price confidently and increase
+                over time.</p>
+        </div>
+
+        <div class="pricing-grid rv">
+            <div class="price-card">
+                <div class="price-icon">📄</div>
+                <div class="price-range">₹2,000–₹5,000</div>
+                <div class="price-label">Simple Landing Page</div>
+            </div>
+            <div class="price-card">
+                <div class="price-icon">🏢</div>
+                <div class="price-range">₹8,000–₹15,000</div>
+                <div class="price-label">Business Website</div>
+            </div>
+            <div class="price-card">
+                <div class="price-icon">🛒</div>
+                <div class="price-range">₹20,000+</div>
+                <div class="price-label">E-commerce Store</div>
+            </div>
+            <div class="price-card">
+                <div class="price-icon">⚡</div>
+                <div class="price-range">₹500–₹1,500/hr</div>
+                <div class="price-label">Hourly Rate</div>
+            </div>
+        </div>
+
+        <div class="rv" style="margin-top:1.5rem;">
+            <h3 style="font-size:1rem;font-weight:700;margin-bottom:.9rem;">3 Pricing Models</h3>
+            <div class="cards-grid">
+                <div class="card">
+                    <div class="ci">⏱</div>
+                    <h3>Hourly</h3>
+                    <p>₹500–₹1,500/hour. Good for ongoing work or unclear scope projects.</p>
+                </div>
+                <div class="card" style="border-color:rgba(245,158,11,.35)">
+                    <div class="ci">📦</div>
+                    <h3>Project Based ✅ Recommended</h3>
+                    <p>Fixed price for full deliverable. Easier to sell and more predictable income.</p>
+                </div>
+                <div class="card">
+                    <div class="ci">📈</div>
+                    <h3>Value Based (Advanced)</h3>
+                    <p>If your website brings ₹2 lakh in revenue, you can charge ₹40,000+. Sell outcomes, not hours.</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="rv" style="margin-top:1.5rem;">
+            <div class="do-dont">
+                <div class="dd-box dont">
+                    <h4>❌ Never Say</h4>
+                    <ul>
+                        <li>"How much will you pay?"</li>
+                        <li>"It depends on your budget"</li>
+                        <li>"I'll do it cheap"</li>
+                    </ul>
+                </div>
+                <div class="dd-box do">
+                    <h4>✅ Always Say</h4>
+                    <ul>
+                        <li>"My standard package starts from ₹X."</li>
+                        <li>"I take 50% advance to begin."</li>
+                        <li>"I specialize in [niche]."</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <div class="div"></div>
+
+    <!-- ══════════ 4. AI BUILDER ══════════ -->
+    <section id="ai">
+        <div class="rv">
+            <p class="eyebrow">04 · AI Tool</p>
+            <h2 class="sec-title">🤖 Antigravity — AI Website Builder</h2>
+            <p class="sec-lead">Antigravity is an AI-powered website builder where you type what you need and it
+                generates a full website in minutes — sections, images, content, and contact forms included.</p>
+        </div>
+
+        <div class="rv">
+            <div style="overflow-x:auto;">
+                <table class="cmp-table">
+                    <thead>
+                        <tr>
+                            <th>Without AI</th>
+                            <th>With Antigravity AI</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>Website time: 3–5 days</td>
+                            <td style="color:var(--accent)">Website time: 30–60 minutes ⚡</td>
+                        </tr>
+                        <tr>
+                            <td>Need coding skills</td>
+                            <td style="color:var(--accent)">No coding required</td>
+                        </tr>
+                        <tr>
+                            <td>1–2 projects/month</td>
+                            <td style="color:var(--accent)">4–8 projects/month</td>
+                        </tr>
+                        <tr>
+                            <td>₹15,000–₹25,000/month</td>
+                            <td style="color:var(--accent)">₹50,000+/month 💰</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <div class="rv" style="margin-top:1.3rem;">
+            <h3 style="font-size:.95rem;font-weight:700;margin-bottom:.9rem;">⚡ Basic Workflow</h3>
+            <div class="steps">
+                <div class="step">
+                    <div class="step-num">1</div>
+                    <div class="step-body">
+                        <h4>Create Account</h4>
+                        <p>Sign up at the Antigravity platform.</p>
+                    </div>
+                </div>
+                <div class="step">
+                    <div class="step-num">2</div>
+                    <div class="step-body">
+                        <h4>Choose Template or Describe</h4>
+                        <p>Type: "Create a gym website with modern dark design and a booking section."</p>
+                    </div>
+                </div>
+                <div class="step">
+                    <div class="step-num">3</div>
+                    <div class="step-body">
+                        <h4>AI Generates Full Site</h4>
+                        <p>Sections, images, text, contact forms — fully generated within minutes.</p>
+                    </div>
+                </div>
+                <div class="step">
+                    <div class="step-num">4</div>
+                    <div class="step-body">
+                        <h4>Edit & Customize</h4>
+                        <p>Change text, images, colors, and sections to match client requirements.</p>
+                    </div>
+                </div>
+                <div class="step">
+                    <div class="step-num">5</div>
+                    <div class="step-body">
+                        <h4>Connect Domain & Publish</h4>
+                        <p>Link their domain and go live. Deliver to client. Invoice sent. Money received. ✅</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="rv">
+            <h3 style="font-size:.95rem;font-weight:700;margin:.8rem 0;">👥 Who Should Use Antigravity?</h3>
+            <div class="platform-row">
+                <span class="platform-tag green">Beginners</span>
+                <span class="platform-tag blue">Non-Coders</span>
+                <span class="platform-tag gold">Fast-Delivery Freelancers</span>
+                <span class="platform-tag violet">Agency Owners</span>
+                <span class="platform-tag green">Students</span>
+            </div>
+        </div>
+    </section>
+
+    <div class="div"></div>
+
+    <!-- ══════════ 5. AI SPEEDS UP WORK ══════════ -->
+    <section id="aispeed">
+        <div class="rv">
+            <p class="eyebrow">05 · AI Power</p>
+            <h2 class="sec-title">⚡ How AI Speeds Up Freelancing</h2>
+            <p class="sec-lead">AI is your 24/7 assistant. Here's how to use it across every part of your freelancing
+                workflow.</p>
+        </div>
+
+        <div class="blist rv">
+            <div class="blist-item">
+                <div class="blist-icon">✍️</div>
+                <div class="blist-text">
+                    <h4>Content Writing — 70% Time Saved</h4>
+                    <p>Use AI for website copy, SEO blogs, Instagram captions, and email templates. What takes 3 hours
+                        now takes 30 minutes.</p>
+                </div>
+            </div>
+            <div class="blist-item">
+                <div class="blist-icon">🎨</div>
+                <div class="blist-text">
+                    <h4>Design — 60% Time Saved</h4>
+                    <p>AI logo generators, AI image generation, AI background removal. No need for a designer on the
+                        team.</p>
+                </div>
+            </div>
+            <div class="blist-item">
+                <div class="blist-icon">💻</div>
+                <div class="blist-text">
+                    <h4>Coding — 50–80% Time Saved</h4>
+                    <p>AI generates HTML/CSS layouts, fixes bugs, writes backend code, and creates APIs. You review and
+                        refine instead of writing from scratch.</p>
+                </div>
+            </div>
+            <div class="blist-item">
+                <div class="blist-icon">📝</div>
+                <div class="blist-text">
+                    <h4>Proposal Writing</h4>
+                    <p>AI writes client proposals, project roadmaps, and quotation drafts in minutes. Present
+                        professionally from day one.</p>
+                </div>
+            </div>
+            <div class="blist-item">
+                <div class="blist-icon">🔎</div>
+                <div class="blist-text">
+                    <h4>Research</h4>
+                    <p>AI finds competitor analysis, pricing comparison, and market research instantly — no hours of
+                        Googling needed.</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="rv" style="margin-top:1.5rem;">
+            <div class="callout gold">
+                <strong>💰 Real Earning Example</strong>
+                Build 4 websites per month × ₹12,000 each = <strong
+                    style="color:var(--gold);font-size:1.1rem;">₹48,000/month</strong><br>
+                With AI handling content, design & code — this is absolutely manageable for one person.
+            </div>
+        </div>
+
+        <div class="rv" style="margin-top:1.3rem;">
+            <h3 style="font-size:.95rem;font-weight:700;margin-bottom:.9rem;">🧠 90-Day Growth Plan</h3>
+            <div class="month-grid">
+                <div class="month-card">
+                    <div class="mh">Month 1</div>
+                    <h3>Build Foundation</h3>
+                    <ul>
+                        <li>Learn your skill</li>
+                        <li>Build 5 demo projects</li>
+                        <li>Create portfolio website</li>
+                    </ul>
+                </div>
+                <div class="month-card">
+                    <div class="mh">Month 2</div>
+                    <h3>Start Earning</h3>
+                    <ul>
+                        <li>Start daily outreach</li>
+                        <li>Close first 2 clients</li>
+                        <li>Collect testimonials</li>
+                    </ul>
+                </div>
+                <div class="month-card">
+                    <div class="mh">Month 3</div>
+                    <h3>Scale Up</h3>
+                    <ul>
+                        <li>Improve branding</li>
+                        <li>Increase pricing</li>
+                        <li>Start referral system</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <div class="div"></div>
+
+    <!-- ══════════ ₹50K ROADMAP ══════════ -->
+    <section id="roadmap">
+        <div class="rv">
+            <p class="eyebrow">06 · The Big Goal</p>
+            <h2 class="sec-title">🔥 Complete Roadmap to Earn First ₹50,000</h2>
+            <p class="sec-lead">A step-by-step, week-by-week execution plan specifically designed for developers and
+                tech students to earn their first ₹50,000 online.</p>
+        </div>
+
+        <div class="steps rv">
+            <div class="step">
+                <div class="step-num">1</div>
+                <div class="step-body">
+                    <h4>Week 1 — Choose High-Income Skill</h4>
+                    <p>Best options for you: AI Website Development, Business Landing Pages, AI Chatbot Setup,
+                        Automation for Small Businesses, Portfolio Websites for Students.</p>
+                    <div class="callout green" style="margin-top:.5rem;"><strong>🎯 Goal:</strong> Pick ONE skill that
+                        businesses already actively pay for.</div>
+                </div>
+            </div>
+            <div class="step">
+                <div class="step-num">2</div>
+                <div class="step-body">
+                    <h4>Week 1–2 — Build 5 Strong Demo Projects</h4>
+                    <p>Create demo websites even for fake businesses:</p>
+                    <div class="platform-row" style="margin-top:.5rem;">
+                        <span class="platform-tag green">Gym</span>
+                        <span class="platform-tag blue">Medical Clinic</span>
+                        <span class="platform-tag gold">Real Estate</span>
+                        <span class="platform-tag violet">Coaching Centre</span>
+                        <span class="platform-tag">Startup SaaS</span>
+                    </div>
+                </div>
+            </div>
+            <div class="step">
+                <div class="step-num">3</div>
+                <div class="step-body">
+                    <h4>Week 2 — Launch Portfolio Website</h4>
+                    <p>Must include: About You, Services, Pricing, 5 Demo Projects, Contact Form, and a WhatsApp Button.
+                    </p>
+                    <p style="font-size:.77rem;color:var(--muted);margin-top:.4rem;">Build using Antigravity, WordPress,
+                        or Webflow.</p>
+                </div>
+            </div>
+            <div class="step">
+                <div class="step-num">4</div>
+                <div class="step-body">
+                    <h4>Week 3 — Start Outreach Daily</h4>
+                    <p>Send 15–20 messages per day across Google Maps, LinkedIn, Instagram DMs, and cold email.</p>
+                    <div class="callout blue" style="margin-top:.5rem;"><strong>📨 Best Opening Message:</strong> "Hi, I
+                        noticed your business doesn't have a modern website. I help businesses like yours get more
+                        customers online. Can I show you a free demo?"</div>
+                </div>
+            </div>
+            <div class="step">
+                <div class="step-num">5</div>
+                <div class="step-body">
+                    <h4>Week 4 — Close First Clients</h4>
+                    <p>Closing Formula: Understand problem → Show demo → Explain benefit → Give price confidently → Ask
+                        for 50% advance before starting.</p>
+                </div>
+            </div>
+            <div class="step">
+                <div class="step-num">6</div>
+                <div class="step-body">
+                    <h4>Ongoing — Deliver Fast with AI</h4>
+                    <p>Use AI website builders for 1-day delivery. Generate content, logos, and proposals using AI
+                        tools. Collect testimonials after every project.</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="rv" style="margin-top:1.5rem;">
+            <h3 style="font-size:.95rem;font-weight:700;margin-bottom:1rem;">💸 Two Ways to Hit ₹50,000</h3>
+            <div class="money-grid">
+                <div class="money-card">
+                    <div class="money-val">₹12,500 × 4</div>
+                    <div class="money-label">Close 4 clients at ₹12,500 per website</div>
+                </div>
+                <div class="money-card">
+                    <div class="money-val">₹5,000 × 10</div>
+                    <div class="money-label">Close 10 clients at ₹5,000 per landing page</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="rv" style="margin-top:1.3rem;">
+            <h3 style="font-size:.95rem;font-weight:700;margin-bottom:.9rem;">📅 Realistic Timeline</h3>
+            <div class="money-grid">
+                <div class="money-card">
+                    <div class="money-val">₹10,000</div>
+                    <div class="money-label">First earnings in 2–3 weeks</div>
+                </div>
+                <div class="money-card">
+                    <div class="money-val">₹25,000</div>
+                    <div class="money-label">Achievable in 1 month</div>
+                </div>
+                <div class="money-card">
+                    <div class="money-val">₹50,000</div>
+                    <div class="money-label">Realistic in 30–60 days (if consistent)</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="rv" style="margin-top:1.3rem;">
+            <h3 style="font-size:.95rem;font-weight:700;margin-bottom:.7rem;">🧠 Pro Tips to Reach Faster</h3>
+            <div class="callout green">
+                <ul style="margin-left:1.2rem;line-height:2;">
+                    <li>✅ Choose local businesses first — easier to close</li>
+                    <li>✅ Offer a limited-time discount for first 3 clients</li>
+                    <li>✅ Show before/after demo screenshots</li>
+                    <li>✅ Offer a monthly maintenance package (recurring income)</li>
+                    <li>✅ Ask every happy client for referrals</li>
+                </ul>
+            </div>
+        </div>
+    </section>
+
+    <div class="div"></div>
+
+    <!-- ══════════ PREMIUM BRAND ══════════ -->
+    <section id="brand">
+        <div class="rv">
+            <p class="eyebrow">07 · Level Up</p>
+            <h2 class="sec-title">💎 How to Build a Premium Freelancing Brand</h2>
+            <p class="sec-lead">A premium brand lets you charge ₹25,000–₹1,00,000 per project. It's not about being
+                expensive — it's about being positioned as a specialist with proven results.</p>
+        </div>
+
+        <div class="blist rv">
+            <div class="blist-item">
+                <div class="blist-icon">🎯</div>
+                <div class="blist-text">
+                    <h4>Step 1 — Choose a Profitable Niche (Specialist &gt; Generalist)</h4>
+                    <p>❌ "I build websites for everyone." &nbsp;&nbsp; ✅ "I build high-conversion websites for medical
+                        clinics." Since you have medical tech + AI background, your best niches: Healthcare Clinics,
+                        Medical Startups, Health Coaches, Diagnostic Labs, AI SaaS Landing Pages.</p>
+                </div>
+            </div>
+            <div class="blist-item">
+                <div class="blist-icon">🌐</div>
+                <div class="blist-text">
+                    <h4>Step 2 — Build a Premium Portfolio Website</h4>
+                    <p>Strong Headline: <em style="color:var(--accent3)">"I Help Clinics Get 30% More Patient Bookings
+                            with High-Conversion Websites."</em> Show projects in case study format: Client problem →
+                        What you did → Result + Screenshot. Not just screenshots.</p>
+                </div>
+            </div>
+            <div class="blist-item">
+                <div class="blist-icon">🏷</div>
+                <div class="blist-text">
+                    <h4>Step 3 — Positioning Statement</h4>
+                    <p>One clear identity: <em style="color:var(--accent3)">"AI Website &amp; Automation Specialist for
+                            Healthcare Businesses."</em> Put this on LinkedIn bio, Instagram bio, portfolio headline,
+                        and email signature.</p>
+                </div>
+            </div>
+            <div class="blist-item">
+                <div class="blist-icon">📦</div>
+                <div class="blist-text">
+                    <h4>Step 4 — Create a Signature Offer (Productized Service)</h4>
+                    <p>Don't sell hours — sell a solution package. Example: <strong style="color:var(--gold)">🥇 Clinic
+                            Growth Website Package — ₹35,000</strong> → Custom AI design, mobile optimization, WhatsApp
+                        integration, appointment form, basic SEO, 1-month support.</p>
+                </div>
+            </div>
+            <div class="blist-item">
+                <div class="blist-icon">✨</div>
+                <div class="blist-text">
+                    <h4>Step 5 — Improve Visual Branding</h4>
+                    <p>Professional logo, consistent color theme, professional profile photo, clean modern typography.
+                        Premium brands look clean and minimal.</p>
+                </div>
+            </div>
+            <div class="blist-item">
+                <div class="blist-icon">📣</div>
+                <div class="blist-text">
+                    <h4>Step 6 — Authority Building (Post 3x/Week)</h4>
+                    <p>Post on LinkedIn and Instagram: website tips, before/after redesigns, AI tools you use, case
+                        study breakdowns. This builds trust and inbound leads over time.</p>
+                </div>
+            </div>
+            <div class="blist-item">
+                <div class="blist-icon">💬</div>
+                <div class="blist-text">
+                    <h4>Step 7 — Premium Communication Style</h4>
+                    <p>❌ "Bro I can do website cheap." &nbsp;&nbsp; ✅ "Based on your requirements, I recommend the
+                        Business Growth Package at ₹28,000. It includes mobile optimization, SEO basics, and lead
+                        capture integration." Confidence = premium.</p>
+                </div>
+            </div>
+            <div class="blist-item">
+                <div class="blist-icon">📈</div>
+                <div class="blist-text">
+                    <h4>Step 8 — Raise Prices After Every 3 Clients</h4>
+                    <div class="platform-row" style="margin-top:.4rem;">
+                        <span class="platform-tag">₹10,000</span>
+                        <span style="align-self:center;color:var(--accent);">→</span>
+                        <span class="platform-tag">₹15,000</span>
+                        <span style="align-self:center;color:var(--accent);">→</span>
+                        <span class="platform-tag">₹25,000</span>
+                        <span style="align-self:center;color:var(--accent);">→</span>
+                        <span class="platform-tag gold">₹40,000+</span>
+                    </div>
+                </div>
+            </div>
+            <div class="blist-item">
+                <div class="blist-icon">🏆</div>
+                <div class="blist-text">
+                    <h4>Step 9 — Sell Results, Not Design</h4>
+                    <p>Instead of "website design", sell: More leads · More bookings · Better credibility · Automation
+                        that saves 5 hours/week. Businesses buy outcomes.</p>
+                </div>
+            </div>
+            <div class="blist-item">
+                <div class="blist-icon">⭐</div>
+                <div class="blist-text">
+                    <h4>Step 10 — Collect Testimonials Aggressively</h4>
+                    <p>After every project ask: "If you're happy with the results, could you share a short testimonial?"
+                        Display on your website, LinkedIn, Google Reviews. Social proof = price power.</p>
+                </div>
+            </div>
+            <div class="blist-item">
+                <div class="blist-icon">⏳</div>
+                <div class="blist-text">
+                    <h4>Step 11 — Build Scarcity</h4>
+                    <p>Premium freelancers say: <em style="color:var(--accent3)">"I take only 3 projects per
+                            month."</em> Scarcity increases perceived value and urgency to close.</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="rv" style="margin-top:1.5rem;">
+            <div class="callout gold">
+                <strong>💰 Income Comparison</strong>
+                General freelancer: ₹5,000 × 10 clients = ₹50,000 (high effort)<br>
+                Premium freelancer: ₹35,000 × 2 clients = ₹70,000 (less work, more respect)<br><br>
+                <strong style="color:var(--accent2)">🚀 Advanced Position:</strong> Since you have tech + medical
+                background — position as "Healthcare AI Website &amp; Automation Consultant." That's rare. Rare =
+                premium.
+            </div>
+        </div>
+    </section>
+
+    <div class="div"></div>
+
+    <!-- ══════════ MISTAKES & FINAL ══════════ -->
+    <section id="mistakes">
+        <div class="rv">
+            <p class="eyebrow">08 · What to Avoid</p>
+            <h2 class="sec-title">⚠️ Common Mistakes & Final Advice</h2>
+        </div>
+
+        <div class="do-dont rv">
+            <div class="dd-box dont">
+                <h4>❌ Mistakes to Avoid</h4>
+                <ul>
+                    <li>Learning too many skills at once</li>
+                    <li>Waiting for clients to come to you</li>
+                    <li>Underpricing too much</li>
+                    <li>No personal brand or portfolio</li>
+                    <li>No follow-up after first message</li>
+                    <li>Poor or slow communication</li>
+                    <li>No contract or advance payment</li>
+                    <li>Overpromising, underdelivering</li>
+                    <li>No niche — trying to serve everyone</li>
+                </ul>
+            </div>
+            <div class="dd-box do">
+                <h4>✅ What to Do Instead</h4>
+                <ul>
+                    <li>Master ONE skill first</li>
+                    <li>Send 15–20 outreach messages daily</li>
+                    <li>Start at ₹5K, raise to ₹40K over time</li>
+                    <li>Build portfolio before hunting clients</li>
+                    <li>Follow up 3 times minimum</li>
+                    <li>Reply within 1 hour always</li>
+                    <li>Always take 50% advance</li>
+                    <li>Under-promise, over-deliver</li>
+                    <li>Niche down to become premium</li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="rv" style="margin-top:1.5rem;">
+            <div class="callout green">
+                <strong>🎯 Your Best Path (For Tech + Coding Background)</strong>
+                Since you already know coding and backend development:<br>
+                👉 AI Website Development &nbsp;|&nbsp; 👉 AI Automation Services<br>
+                👉 Portfolio Website Services &nbsp;|&nbsp; 👉 Medical Tech SaaS Landing Pages (niche advantage)<br><br>
+                You can charge <strong style="color:var(--accent2)">premium rates</strong> because combining tech +
+                medical + AI is extremely rare in the market.
+            </div>
+        </div>
+
+        <div class="rv" style="margin-top:1.3rem;">
+            <div class="callout gold">
+                <strong>🔥 If You Follow This Plan Strictly</strong>
+                You can realistically hit <strong style="font-size:1.2rem;color:var(--gold)">₹50,000 within 45
+                    days</strong>.<br>
+                After that, increase pricing, build niche, create Instagram brand, and scale to ₹1 Lakh/month.
+            </div>
+        </div>
+    </section>
+
+    <div class="div"></div>
+    <footer class="sf">KEC Workshop · Day 3 &nbsp;|&nbsp; <span>Freelancing &amp; AI — Complete Guide</span></footer>
+
+    <script>
+        /* Progress bar */
+        window.addEventListener('scroll', () => {
+            const s = document.documentElement;
+            document.getElementById('rbar').style.width = (s.scrollTop / (s.scrollHeight - s.clientHeight) * 100) + '%';
+        });
+        /* Nav */
+        function scrollTo(id) { document.getElementById(id).scrollIntoView({ behavior: 'smooth' }); document.querySelectorAll('.nb').forEach(b => b.classList.remove('active')); event.target.classList.add('active'); }
+        /* Reveal */
+        const obs = new IntersectionObserver(es => { es.forEach(e => { if (e.isIntersecting) e.target.classList.add('vis'); }); }, { threshold: 0.07 });
+        document.querySelectorAll('.rv').forEach(el => obs.observe(el));
+        /* Accordion */
+        function toggleAcc(header) {
+            const body = header.nextElementSibling;
+            const arr = header.querySelector('.arr');
+            const isOpen = body.classList.contains('open');
+            document.querySelectorAll('.acc-body.open').forEach(b => { b.classList.remove('open'); b.previousElementSibling.querySelector('.arr').textContent = '▼'; });
+            if (!isOpen) { body.classList.add('open'); arr.textContent = '▲'; }
+        }
+    </script>
+</body>
+
+</html>

@@ -1,0 +1,1309 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Professional Skills | KEC Workshop Day 3</title>
+    <meta name="description"
+        content="Transition from student developer to professional developer — README files, project documentation, developer resume, LinkedIn & GitHub optimization, and presenting projects." />
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700;800&family=Fira+Code:wght@400;500&display=swap"
+        rel="stylesheet">
+    <style>
+        *,
+        *::before,
+        *::after {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        :root {
+            --bg: #07091a;
+            --card: #161f35;
+            --card2: #1c273f;
+            --accent: #6366f1;
+            --accent2: #a855f7;
+            --accent3: #22d3ee;
+            --green: #10b981;
+            --orange: #f59e0b;
+            --red: #ef4444;
+            --teal: #14b8a6;
+            --text: #e2e8f0;
+            --muted: #64748b;
+            --muted2: #94a3b8;
+            --border: rgba(99, 102, 241, 0.22);
+        }
+
+        body {
+            font-family: 'Outfit', sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        body::before {
+            content: '';
+            position: fixed;
+            inset: 0;
+            z-index: 0;
+            pointer-events: none;
+            background:
+                radial-gradient(ellipse 80% 55% at 15% 10%, rgba(20, 184, 166, 0.10) 0%, transparent 70%),
+                radial-gradient(ellipse 70% 50% at 85% 85%, rgba(99, 102, 241, 0.10) 0%, transparent 70%),
+                radial-gradient(ellipse 50% 50% at 50% 50%, rgba(168, 85, 247, 0.04) 0%, transparent 80%);
+        }
+
+        .particle {
+            position: fixed;
+            border-radius: 50%;
+            pointer-events: none;
+            z-index: 0;
+            animation: drift linear infinite;
+            opacity: 0.18;
+        }
+
+        @keyframes drift {
+            0% {
+                transform: translateY(100vh) scale(0);
+            }
+
+            100% {
+                transform: translateY(-10vh) scale(1);
+            }
+        }
+
+        /* Header */
+        header {
+            position: sticky;
+            top: 0;
+            z-index: 200;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: .85rem 2rem;
+            background: rgba(7, 9, 26, 0.92);
+            backdrop-filter: blur(16px);
+            border-bottom: 1px solid var(--border);
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: .6rem;
+            font-size: 1.05rem;
+            font-weight: 800;
+            background: linear-gradient(90deg, var(--teal), var(--accent2));
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .logo-icon {
+            width: 32px;
+            height: 32px;
+            border-radius: 9px;
+            background: linear-gradient(135deg, var(--teal), var(--accent2));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: .9rem;
+            flex-shrink: 0;
+        }
+
+        .badge {
+            font-family: 'Fira Code', monospace;
+            font-size: .7rem;
+            padding: .22rem .7rem;
+            background: rgba(20, 184, 166, .1);
+            border: 1px solid rgba(20, 184, 166, .3);
+            border-radius: 999px;
+            color: var(--teal);
+            white-space: nowrap;
+        }
+
+        /* Nav */
+        .progress-nav {
+            position: sticky;
+            top: 60px;
+            z-index: 100;
+            display: flex;
+            gap: .4rem;
+            flex-wrap: wrap;
+            padding: .65rem 2rem;
+            background: rgba(7, 9, 26, 0.78);
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid var(--border);
+        }
+
+        .nav-pill {
+            font-family: 'Fira Code', monospace;
+            font-size: .68rem;
+            padding: .3rem .8rem;
+            border-radius: 999px;
+            cursor: pointer;
+            border: 1px solid var(--border);
+            color: var(--muted2);
+            background: transparent;
+            transition: all .2s;
+            text-decoration: none;
+        }
+
+        .nav-pill:hover,
+        .nav-pill.active {
+            background: rgba(20, 184, 166, .1);
+            border-color: var(--teal);
+            color: var(--teal);
+        }
+
+        /* Main */
+        main {
+            position: relative;
+            z-index: 10;
+            max-width: 960px;
+            margin: 0 auto;
+            padding: 2.5rem 2rem 5rem;
+        }
+
+        /* Hero */
+        .hero {
+            text-align: center;
+            padding: 1.5rem 0 3rem;
+            animation: fadeUp .5s ease both;
+        }
+
+        .hero-eyebrow {
+            font-family: 'Fira Code', monospace;
+            font-size: .72rem;
+            color: var(--accent3);
+            letter-spacing: .14em;
+            text-transform: uppercase;
+            margin-bottom: .8rem;
+        }
+
+        .hero-eyebrow::before {
+            content: '// ';
+            color: var(--teal);
+        }
+
+        .hero-h1 {
+            font-size: clamp(2rem, 5vw, 3.2rem);
+            font-weight: 800;
+            line-height: 1.1;
+            background: linear-gradient(135deg, #fff 30%, var(--teal) 100%);
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 1rem;
+        }
+
+        .hero-sub {
+            font-size: .95rem;
+            color: var(--muted2);
+            max-width: 560px;
+            margin: 0 auto;
+            line-height: 1.8;
+        }
+
+        .tag-strip {
+            display: flex;
+            flex-wrap: wrap;
+            gap: .5rem;
+            margin: 1.2rem 0 0;
+            justify-content: center;
+        }
+
+        .tag {
+            font-family: 'Fira Code', monospace;
+            font-size: .68rem;
+            padding: .25rem .7rem;
+            border-radius: 999px;
+            border: 1px solid var(--border);
+            color: var(--muted2);
+            background: rgba(255, 255, 255, .04);
+        }
+
+        /* Transition badge */
+        .transition-banner {
+            background: linear-gradient(135deg, rgba(20, 184, 166, .1), rgba(99, 102, 241, .1));
+            border: 1px solid rgba(20, 184, 166, .3);
+            border-radius: 18px;
+            padding: 1.4rem 1.8rem;
+            margin-bottom: 2rem;
+            text-align: center;
+            animation: fadeUp .5s ease both;
+        }
+
+        .transition-banner h3 {
+            font-size: 1.1rem;
+            font-weight: 700;
+            margin-bottom: .4rem;
+        }
+
+        .transition-banner p {
+            font-size: .88rem;
+            color: var(--muted2);
+            line-height: 1.7;
+        }
+
+        .t-arrow {
+            font-size: 1.5rem;
+            margin: 0 .8rem;
+            color: var(--teal);
+        }
+
+        /* Sections */
+        .section-block {
+            margin-bottom: 4rem;
+            scroll-margin-top: 120px;
+        }
+
+        .section-header {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            margin-bottom: 1.8rem;
+            animation: fadeUp .5s ease both;
+        }
+
+        .section-num {
+            font-family: 'Fira Code', monospace;
+            font-size: .7rem;
+            padding: .3rem .8rem;
+            border-radius: 999px;
+            border: 1px solid var(--teal);
+            color: var(--teal);
+            background: rgba(20, 184, 166, .1);
+            flex-shrink: 0;
+        }
+
+        .section-title {
+            font-size: clamp(1.3rem, 3vw, 1.9rem);
+            font-weight: 800;
+            background: linear-gradient(135deg, #fff 40%, var(--teal) 100%);
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .section-icon {
+            font-size: 2rem;
+        }
+
+        /* Cards */
+        .card {
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: 18px;
+            padding: 1.5rem 1.8rem;
+            margin-bottom: 1.2rem;
+            animation: fadeUp .5s ease both;
+            transition: border-color .3s, transform .3s;
+        }
+
+        .card:hover {
+            border-color: var(--teal);
+            transform: translateY(-2px);
+        }
+
+        .card h3 {
+            font-size: 1.05rem;
+            font-weight: 700;
+            margin-bottom: .6rem;
+        }
+
+        .card p {
+            font-size: .88rem;
+            color: var(--muted2);
+            line-height: 1.75;
+        }
+
+        .two-col {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1.2rem;
+        }
+
+        @media(max-width:640px) {
+            .two-col {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .card.teal {
+            border-color: rgba(20, 184, 166, .4);
+            background: rgba(20, 184, 166, .07);
+        }
+
+        .card.accent {
+            border-color: rgba(99, 102, 241, .4);
+            background: rgba(99, 102, 241, .07);
+        }
+
+        .card.green {
+            border-color: rgba(16, 185, 129, .4);
+            background: rgba(16, 185, 129, .07);
+        }
+
+        .card.orange {
+            border-color: rgba(245, 158, 11, .4);
+            background: rgba(245, 158, 11, .07);
+        }
+
+        .card.purple {
+            border-color: rgba(168, 85, 247, .4);
+            background: rgba(168, 85, 247, .07);
+        }
+
+        /* Code block */
+        .code-block {
+            font-family: 'Fira Code', monospace;
+            font-size: .81rem;
+            background: #0a0f1e;
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 1rem 1.2rem;
+            color: var(--accent3);
+            line-height: 1.9;
+            margin: .8rem 0;
+            overflow-x: auto;
+        }
+
+        .code-block .h1 {
+            color: #fff;
+            font-weight: 700;
+        }
+
+        .code-block .h2 {
+            color: var(--accent2);
+        }
+
+        .code-block .kw {
+            color: var(--teal);
+        }
+
+        .code-block .str {
+            color: var(--green);
+        }
+
+        .code-block .cmt {
+            color: var(--muted);
+        }
+
+        .code-block .tag {
+            color: var(--orange);
+        }
+
+        .code-block .key {
+            color: var(--accent);
+        }
+
+        .code-block .err {
+            color: var(--red);
+        }
+
+        /* Steps */
+        .step-list {
+            display: flex;
+            flex-direction: column;
+            gap: .8rem;
+            margin: 1rem 0;
+        }
+
+        .step-item {
+            display: flex;
+            align-items: flex-start;
+            gap: 1rem;
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: 14px;
+            padding: 1rem 1.3rem;
+        }
+
+        .step-num {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            flex-shrink: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-family: 'Fira Code', monospace;
+            font-size: .8rem;
+            font-weight: 700;
+            background: linear-gradient(135deg, var(--teal), var(--accent2));
+            color: #fff;
+        }
+
+        .step-text {
+            font-size: .87rem;
+            color: var(--muted2);
+            line-height: 1.65;
+            padding-top: .3rem;
+        }
+
+        .step-text strong {
+            color: var(--text);
+        }
+
+        /* Compare */
+        .compare {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1.2rem;
+        }
+
+        @media(max-width:560px) {
+            .compare {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .compare-col {
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: 18px;
+            overflow: hidden;
+        }
+
+        .compare-head {
+            padding: 1rem 1.4rem;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            gap: .7rem;
+            font-size: .95rem;
+        }
+
+        .compare-head.bad {
+            background: rgba(239, 68, 68, .1);
+            border-bottom: 1px solid rgba(239, 68, 68, .3);
+            color: var(--red);
+        }
+
+        .compare-head.good {
+            background: rgba(16, 185, 129, .1);
+            border-bottom: 1px solid rgba(16, 185, 129, .3);
+            color: var(--green);
+        }
+
+        .compare-list {
+            list-style: none;
+            padding: 1rem 1.4rem;
+            display: flex;
+            flex-direction: column;
+            gap: .5rem;
+        }
+
+        .compare-list li {
+            font-size: .85rem;
+            color: var(--muted2);
+            display: flex;
+            align-items: flex-start;
+            gap: .55rem;
+            line-height: 1.55;
+        }
+
+        .compare-list li::before {
+            content: '→';
+            color: var(--teal);
+            font-family: 'Fira Code', monospace;
+            font-size: .75rem;
+            flex-shrink: 0;
+            margin-top: .15rem;
+        }
+
+        /* README section blocks */
+        .readme-section {
+            background: var(--card2);
+            border-left: 3px solid var(--teal);
+            border-radius: 0 12px 12px 0;
+            padding: 1rem 1.2rem;
+            margin: .6rem 0;
+        }
+
+        .readme-section .rs-label {
+            font-family: 'Fira Code', monospace;
+            font-size: .7rem;
+            color: var(--teal);
+            letter-spacing: .05em;
+            margin-bottom: .3rem;
+        }
+
+        .readme-section .rs-content {
+            font-size: .84rem;
+            color: var(--muted2);
+            line-height: 1.7;
+        }
+
+        /* Skill group */
+        .skill-group {
+            margin: .8rem 0;
+        }
+
+        .sg-label {
+            font-family: 'Fira Code', monospace;
+            font-size: .72rem;
+            color: var(--teal);
+            margin-bottom: .4rem;
+        }
+
+        .sg-tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: .35rem;
+        }
+
+        .sg-tag {
+            font-size: .78rem;
+            padding: .2rem .6rem;
+            border-radius: 999px;
+            border: 1px solid var(--border);
+            color: var(--muted2);
+            background: rgba(255, 255, 255, .04);
+        }
+
+        /* Action verbs */
+        .verb-list {
+            display: flex;
+            flex-wrap: wrap;
+            gap: .5rem;
+            margin-top: .6rem;
+        }
+
+        .verb {
+            font-family: 'Fira Code', monospace;
+            font-size: .78rem;
+            padding: .22rem .65rem;
+            border-radius: 999px;
+            background: rgba(20, 184, 166, .08);
+            border: 1px solid rgba(20, 184, 166, .3);
+            color: var(--teal);
+        }
+
+        /* Project card */
+        .project-showcase {
+            background: var(--card2);
+            border: 1px solid rgba(20, 184, 166, .3);
+            border-radius: 18px;
+            padding: 1.5rem 1.8rem;
+        }
+
+        .ps-row {
+            display: flex;
+            gap: .8rem;
+            padding: .7rem 0;
+            border-bottom: 1px solid var(--border);
+            align-items: flex-start;
+        }
+
+        .ps-row:last-child {
+            border-bottom: none;
+        }
+
+        .ps-label {
+            font-family: 'Fira Code', monospace;
+            font-size: .7rem;
+            color: var(--teal);
+            min-width: 80px;
+            flex-shrink: 0;
+            padding-top: .1rem;
+        }
+
+        .ps-val {
+            font-size: .85rem;
+            color: var(--muted2);
+            line-height: 1.65;
+        }
+
+        /* Divider */
+        .divider {
+            height: 1px;
+            background: var(--border);
+            margin: 3rem 0;
+            position: relative;
+        }
+
+        .divider::after {
+            content: '◆';
+            position: absolute;
+            left: 50%;
+            transform: translateX(-50%) translateY(-50%);
+            background: var(--bg);
+            padding: 0 .6rem;
+            color: var(--teal);
+            font-size: .7rem;
+        }
+
+        .hl {
+            color: var(--accent);
+            font-weight: 700;
+        }
+
+        .hl2 {
+            color: var(--accent2);
+            font-weight: 700;
+        }
+
+        .hl3 {
+            color: var(--accent3);
+            font-weight: 700;
+        }
+
+        .hlg {
+            color: var(--green);
+            font-weight: 700;
+        }
+
+        .hlo {
+            color: var(--orange);
+            font-weight: 700;
+        }
+
+        .hlt {
+            color: var(--teal);
+            font-weight: 700;
+        }
+
+        .hlr {
+            color: var(--red);
+            font-weight: 700;
+        }
+
+        @keyframes fadeUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        footer {
+            position: relative;
+            z-index: 100;
+            padding: 1rem 2rem;
+            border-top: 1px solid var(--border);
+            background: rgba(7, 9, 26, .9);
+            backdrop-filter: blur(12px);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            font-size: .75rem;
+            color: var(--muted);
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="particle"
+        style="width:6px;height:6px;background:var(--teal);left:7%;animation-duration:15s;animation-delay:0s;"></div>
+    <div class="particle"
+        style="width:4px;height:4px;background:var(--accent2);left:30%;animation-duration:20s;animation-delay:2s;">
+    </div>
+    <div class="particle"
+        style="width:5px;height:5px;background:var(--accent3);left:63%;animation-duration:13s;animation-delay:1s;">
+    </div>
+    <div class="particle"
+        style="width:3px;height:3px;background:var(--green);left:84%;animation-duration:18s;animation-delay:3.5s;">
+    </div>
+
+    <!-- Back to Home -->
+    <a href="index.html"
+        style="position:fixed;top:1rem;left:1rem;z-index:9999;display:inline-flex;align-items:center;gap:.45rem;padding:.45rem 1rem;background:rgba(7,9,26,.9);border:1px solid rgba(99,102,241,.4);border-radius:999px;color:#a78bfa;font-family:'Outfit',sans-serif;font-size:.8rem;font-weight:700;text-decoration:none;backdrop-filter:blur(10px);transition:all .2s;"
+        onmouseover="this.style.background='rgba(99,102,241,.25)';this.style.borderColor='#6366f1'"
+        onmouseout="this.style.background='rgba(7,9,26,.9)';this.style.borderColor='rgba(99,102,241,.4)'">← Home</a>
+
+    <header>
+        <div class="logo">
+            <div class="logo-icon">💼</div>KEC Workshop
+        </div>
+        <span class="badge">Professional Skills</span>
+    </header>
+
+    <nav class="progress-nav" aria-label="Page sections">
+        <a class="nav-pill" href="#readme">📄 README</a>
+        <a class="nav-pill" href="#docs">📚 Documentation</a>
+        <a class="nav-pill" href="#resume">📋 Resume</a>
+        <a class="nav-pill" href="#linkedin">🔗 LinkedIn &amp; GitHub</a>
+        <a class="nav-pill" href="#present">🎯 Present Projects</a>
+    </nav>
+
+    <main>
+
+        <!-- HERO -->
+        <div class="hero">
+            <p class="hero-eyebrow">KEC Workshop · Day 3</p>
+            <h1 class="hero-h1">Professional<br>Skills</h1>
+            <p class="hero-sub">The section that separates students who code from developers who get hired. Master
+                README files, documentation, resume, LinkedIn, GitHub, and project presentation.</p>
+            <div class="tag-strip">
+                <span class="tag">README</span>
+                <span class="tag">Documentation</span>
+                <span class="tag">Resume</span>
+                <span class="tag">LinkedIn</span>
+                <span class="tag">GitHub</span>
+                <span class="tag">Project Presentation</span>
+            </div>
+        </div>
+
+        <!-- Transition banner -->
+        <div class="transition-banner">
+            <h3>👨‍🎓 Student Developer <span class="t-arrow">→</span> 👨‍💻 Professional Developer</h3>
+            <p>Many students know how to code. Very few know how to <span class="hlt">present themselves
+                    professionally</span>. This section is small but <span class="hlg">extremely powerful</span>.</p>
+        </div>
+
+        <!-- ── 01: README ── -->
+        <section class="section-block" id="readme">
+            <div class="section-header">
+                <span class="section-icon">📄</span>
+                <span class="section-num">01</span>
+                <h2 class="section-title">Writing Professional README Files</h2>
+            </div>
+
+            <div class="card" style="animation-delay:.05s;">
+                <h3>Your GitHub README = your project's first impression</h3>
+                <p>Recruiters decide in <span class="hlt">30–60 seconds</span> whether a project is worth exploring. A
+                    professional README makes that decision easy.</p>
+            </div>
+
+            <div class="card teal" style="animation-delay:.1s;">
+                <h3>🧱 Structure of a Professional README</h3>
+                <div class="step-list" style="margin-top:1rem;">
+                    <div class="step-item">
+                        <div class="step-num">1</div>
+                        <div class="step-text">
+                            <strong>Project Title</strong> — clear and professional:
+                            <div class="code-block" style="margin-top:.4rem;"><span class="h1"># BusIITJ – Real-Time
+                                    Campus Bus Tracker</span></div>
+                        </div>
+                    </div>
+                    <div class="step-item">
+                        <div class="step-num">2</div>
+                        <div class="step-text">
+                            <strong>Short Description</strong> — 2–3 lines explaining what it does and the tech used:
+                            <div class="code-block" style="margin-top:.4rem;">A real-time campus bus tracking system
+                                built using
+                                Node.js, WebSockets, and MongoDB. It allows students
+                                to view live bus location and schedule updates.</div>
+                        </div>
+                    </div>
+                    <div class="step-item">
+                        <div class="step-num">3</div>
+                        <div class="step-text">
+                            <strong>Tech Stack</strong> — list each technology used:
+                            <div class="code-block" style="margin-top:.4rem;"><span class="h2">## Tech Stack</span>
+                                - Node.js
+                                - Express.js
+                                - MongoDB
+                                - Leaflet.js
+                                - AWS EC2</div>
+                        </div>
+                    </div>
+                    <div class="step-item">
+                        <div class="step-num">4</div>
+                        <div class="step-text">
+                            <strong>Features</strong> — what makes your project useful:
+                            <div class="code-block" style="margin-top:.4rem;"><span class="h2">## Features</span>
+                                - Live bus tracking
+                                - Driver dashboard
+                                - Schedule management
+                                - Real-time updates via WebSockets</div>
+                        </div>
+                    </div>
+                    <div class="step-item">
+                        <div class="step-num">5</div>
+                        <div class="step-text">
+                            <strong>Installation Instructions</strong> — how to run it locally:
+                            <div class="code-block" style="margin-top:.4rem;"><span class="h2">## Installation</span>
+                                git clone https://github.com/yourname/project.git
+                                cd project
+                                npm install
+                                npm start</div>
+                        </div>
+                    </div>
+                    <div class="step-item">
+                        <div class="step-num">6</div>
+                        <div class="step-text">
+                            <strong>Environment Variables</strong> — what the developer needs to set:
+                            <div class="code-block" style="margin-top:.4rem;"><span class="h2">## Environment
+                                    Variables</span>
+                                PORT=3000
+                                MONGO_URI=your_connection_string</div>
+                        </div>
+                    </div>
+                    <div class="step-item">
+                        <div class="step-num">7</div>
+                        <div class="step-text"><strong>Screenshots</strong> — add UI images so visitors instantly see
+                            what the project looks like.</div>
+                    </div>
+                    <div class="step-item">
+                        <div class="step-num">8</div>
+                        <div class="step-text">
+                            <strong>Live Demo Link</strong>:
+                            <div class="code-block" style="margin-top:.4rem;"><span class="h2">## Live Demo</span>
+                                <span class="str">https://busiitj.in</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card green" style="animation-delay:.2s;">
+                <h3>🧠 What Makes a README Professional?</h3>
+                <div
+                    style="display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:.7rem;margin-top:.8rem;">
+                    <div
+                        style="background:rgba(0,0,0,.2);border-radius:10px;padding:.8rem 1rem;font-size:.82rem;color:var(--muted2);">
+                        <span class="hlg">✅</span> Clear structure
+                    </div>
+                    <div
+                        style="background:rgba(0,0,0,.2);border-radius:10px;padding:.8rem 1rem;font-size:.82rem;color:var(--muted2);">
+                        <span class="hlg">✅</span> No spelling mistakes
+                    </div>
+                    <div
+                        style="background:rgba(0,0,0,.2);border-radius:10px;padding:.8rem 1rem;font-size:.82rem;color:var(--muted2);">
+                        <span class="hlg">✅</span> Proper Markdown formatting
+                    </div>
+                    <div
+                        style="background:rgba(0,0,0,.2);border-radius:10px;padding:.8rem 1rem;font-size:.82rem;color:var(--muted2);">
+                        <span class="hlg">✅</span> Feature highlights
+                    </div>
+                    <div
+                        style="background:rgba(0,0,0,.2);border-radius:10px;padding:.8rem 1rem;font-size:.82rem;color:var(--muted2);">
+                        <span class="hlg">✅</span> Deployment instructions
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <div class="divider"></div>
+
+        <!-- ── 02: DOCUMENTATION ── -->
+        <section class="section-block" id="docs">
+            <div class="section-header">
+                <span class="section-icon">📚</span>
+                <span class="section-num">02</span>
+                <h2 class="section-title">Project Documentation</h2>
+            </div>
+
+            <div class="card" style="animation-delay:.05s;">
+                <h3>Documentation shows maturity</h3>
+                <p>Even small projects should be documented. It signals <span class="hlt">structured thinking</span>,
+                    maintainability, and professional communication — qualities every company values.</p>
+            </div>
+
+            <div
+                style="display:grid;grid-template-columns:repeat(auto-fit,minmax(270px,1fr));gap:1.2rem;margin-bottom:1.2rem;">
+                <div class="card accent" style="margin-bottom:0;animation-delay:.1s;">
+                    <h3>📄 1. Problem Statement</h3>
+                    <p style="margin-bottom:.6rem;">What problem does this project solve?</p>
+                    <div class="readme-section">
+                        <div class="rs-label">EXAMPLE</div>
+                        <div class="rs-content">"Students miss campus buses due to lack of live tracking information."
+                        </div>
+                    </div>
+                </div>
+                <div class="card teal" style="margin-bottom:0;animation-delay:.1s;">
+                    <h3>📄 2. System Architecture</h3>
+                    <p style="margin-bottom:.6rem;">Explain the full flow:</p>
+                    <div class="code-block" style="font-size:.78rem;">Frontend → Backend → Database → Deployment</div>
+                    <p style="font-size:.82rem;color:var(--muted2);margin-top:.5rem;">Include an architecture diagram
+                        and API flow if possible.</p>
+                </div>
+                <div class="card purple" style="margin-bottom:0;animation-delay:.13s;">
+                    <h3>📄 3. API Documentation</h3>
+                    <div class="code-block" style="font-size:.78rem;"><span class="kw">GET</span> /api/buses <span
+                            class="cmt">→ list all buses</span>
+                        <span class="kw">POST</span> /api/login <span class="cmt">→ authenticate user</span>
+                    </div>
+                    <p style="font-size:.82rem;color:var(--muted2);margin-top:.5rem;">Document request format, response
+                        format, and error codes.</p>
+                </div>
+                <div class="card orange" style="margin-bottom:0;animation-delay:.13s;">
+                    <h3>📄 4. Deployment Guide</h3>
+                    <p>Step-by-step instructions for deploying on AWS, Netlify, or Render. Include environment variable
+                        setup and NGINX config if relevant.</p>
+                </div>
+            </div>
+
+            <div class="card teal" style="animation-delay:.2s;text-align:center;">
+                <h3>Documentation = Professional Thinking</h3>
+                <p style="margin-top:.4rem;">Companies value structured thinking, maintainable systems, and clear
+                    communication. Documentation proves all three.</p>
+            </div>
+        </section>
+
+        <div class="divider"></div>
+
+        <!-- ── 03: RESUME ── -->
+        <section class="section-block" id="resume">
+            <div class="section-header">
+                <span class="section-icon">📋</span>
+                <span class="section-num">03</span>
+                <h2 class="section-title">Creating a Developer Resume</h2>
+            </div>
+
+            <div class="card" style="animation-delay:.05s;">
+                <h3>Your resume must be:</h3>
+                <div style="display:flex;flex-wrap:wrap;gap:.5rem;margin-top:.7rem;">
+                    <span
+                        style="font-size:.85rem;padding:.3rem .9rem;border-radius:999px;background:rgba(20,184,166,.08);border:1px solid rgba(20,184,166,.3);color:var(--teal);">✔
+                        1 Page</span>
+                    <span
+                        style="font-size:.85rem;padding:.3rem .9rem;border-radius:999px;background:rgba(20,184,166,.08);border:1px solid rgba(20,184,166,.3);color:var(--teal);">✔
+                        Clean</span>
+                    <span
+                        style="font-size:.85rem;padding:.3rem .9rem;border-radius:999px;background:rgba(20,184,166,.08);border:1px solid rgba(20,184,166,.3);color:var(--teal);">✔
+                        Technical-focused</span>
+                    <span
+                        style="font-size:.85rem;padding:.3rem .9rem;border-radius:999px;background:rgba(20,184,166,.08);border:1px solid rgba(20,184,166,.3);color:var(--teal);">✔
+                        Results-driven</span>
+                </div>
+            </div>
+
+            <div class="card teal" style="animation-delay:.1s;">
+                <h3>🧱 Ideal Resume Structure</h3>
+                <div class="step-list" style="margin-top:1rem;">
+                    <div class="step-item">
+                        <div class="step-num">1</div>
+                        <div class="step-text">
+                            <strong>Header</strong> — Name · Phone · Email · GitHub · LinkedIn · Portfolio URL
+                        </div>
+                    </div>
+                    <div class="step-item">
+                        <div class="step-num">2</div>
+                        <div class="step-text">
+                            <strong>Summary</strong> — short &amp; powerful, 2–3 lines:
+                            <div class="readme-section" style="margin-top:.5rem;">
+                                <div class="rs-label">EXAMPLE</div>
+                                <div class="rs-content">"Full-stack developer with experience in building scalable web
+                                    applications using Node.js, MongoDB, and AWS. Passionate about cloud deployment and
+                                    healthcare technology."</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="step-item">
+                        <div class="step-num">3</div>
+                        <div class="step-text">
+                            <strong>Skills Section</strong> — grouped by category:
+                            <div
+                                style="margin-top:.7rem;display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:.5rem;">
+                                <div>
+                                    <div class="skill-group">
+                                        <div class="sg-label">Backend</div>
+                                        <div class="sg-tags"><span class="sg-tag">Node.js</span><span
+                                                class="sg-tag">Express</span><span class="sg-tag">REST APIs</span></div>
+                                    </div>
+                                </div>
+                                <div>
+                                    <div class="skill-group">
+                                        <div class="sg-label">Frontend</div>
+                                        <div class="sg-tags"><span class="sg-tag">HTML</span><span
+                                                class="sg-tag">CSS</span><span class="sg-tag">JavaScript</span></div>
+                                    </div>
+                                </div>
+                                <div>
+                                    <div class="skill-group">
+                                        <div class="sg-label">Cloud</div>
+                                        <div class="sg-tags"><span class="sg-tag">AWS EC2</span><span
+                                                class="sg-tag">Nginx</span><span class="sg-tag">Deploy</span></div>
+                                    </div>
+                                </div>
+                                <div>
+                                    <div class="skill-group">
+                                        <div class="sg-label">Database</div>
+                                        <div class="sg-tags"><span class="sg-tag">MongoDB</span><span
+                                                class="sg-tag">MySQL</span></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="step-item">
+                        <div class="step-num">4</div>
+                        <div class="step-text">
+                            <strong>Projects</strong> — most important section, written with action verbs:
+                            <div class="readme-section" style="margin-top:.6rem;">
+                                <div class="rs-label">BusIITJ – Real-Time Bus Tracker</div>
+                                <div class="rs-content" style="padding-left:.2rem;">
+                                    · Designed backend APIs using Node.js<br>
+                                    · Implemented real-time updates using WebSockets<br>
+                                    · Deployed on AWS EC2 with Nginx &amp; SSL<br>
+                                    · Reduced student waiting uncertainty by improving bus visibility
+                                </div>
+                            </div>
+                            <p style="font-size:.82rem;color:var(--muted2);margin-top:.7rem;">Use strong action verbs:
+                            </p>
+                            <div class="verb-list">
+                                <span class="verb">Designed</span><span class="verb">Implemented</span><span
+                                    class="verb">Optimized</span>
+                                <span class="verb">Deployed</span><span class="verb">Architected</span><span
+                                    class="verb">Reduced</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="step-item">
+                        <div class="step-num">5</div>
+                        <div class="step-text"><strong>Education</strong> — keep it short, one line per entry.</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card"
+                style="animation-delay:.25s;border-color:rgba(239,68,68,.3);background:rgba(239,68,68,.05);">
+                <h3 style="color:var(--red);">🧠 Resume Mistakes to Avoid</h3>
+                <ul style="padding-left:1.2rem;color:var(--muted2);font-size:.85rem;line-height:2.1;margin-top:.6rem;">
+                    <li>❌ Writing long paragraphs instead of bullet points</li>
+                    <li>❌ Adding unrelated or inflated skills</li>
+                    <li>❌ Using colorful, graphics-heavy templates</li>
+                    <li>❌ Adding fake or exaggerated experience</li>
+                </ul>
+            </div>
+        </section>
+
+        <div class="divider"></div>
+
+        <!-- ── 04: LINKEDIN & GITHUB ── -->
+        <section class="section-block" id="linkedin">
+            <div class="section-header">
+                <span class="section-icon">🔗</span>
+                <span class="section-num">04</span>
+                <h2 class="section-title">LinkedIn &amp; GitHub Optimization</h2>
+            </div>
+
+            <div class="card"
+                style="animation-delay:.05s;text-align:center;background:linear-gradient(135deg,rgba(20,184,166,.08),rgba(99,102,241,.08));border-color:rgba(20,184,166,.3);">
+                <h3>This is your digital reputation — make it count</h3>
+            </div>
+
+            <div class="two-col" style="margin-top:1.2rem;">
+                <!-- LinkedIn -->
+                <div class="card accent" style="margin-bottom:0;animation-delay:.1s;">
+                    <h3>🔗 LinkedIn Optimization</h3>
+                    <div style="margin-top:.8rem;display:flex;flex-direction:column;gap:.8rem;">
+                        <div>
+                            <p style="font-size:.8rem;font-weight:700;color:var(--text);margin-bottom:.3rem;">Profile
+                                Photo</p>
+                            <p style="font-size:.82rem;color:var(--muted2);">Professional, clean background, well-lit.
+                            </p>
+                        </div>
+                        <div>
+                            <p style="font-size:.8rem;font-weight:700;color:var(--text);margin-bottom:.3rem;">Headline
+                            </p>
+                            <div class="compare" style="grid-template-columns:1fr;gap:.4rem;">
+                                <div
+                                    style="background:rgba(239,68,68,.06);border:1px solid rgba(239,68,68,.2);border-radius:10px;padding:.5rem .8rem;font-size:.78rem;color:var(--red);">
+                                    ❌ "Student"</div>
+                                <div
+                                    style="background:rgba(16,185,129,.06);border:1px solid rgba(16,185,129,.2);border-radius:10px;padding:.5rem .8rem;font-size:.78rem;color:var(--green);">
+                                    ✅ "Full Stack Developer | Node.js | AWS | Building Scalable Web Applications"</div>
+                            </div>
+                        </div>
+                        <div>
+                            <p style="font-size:.8rem;font-weight:700;color:var(--text);margin-bottom:.3rem;">About
+                                Section</p>
+                            <ul style="padding-left:1.1rem;color:var(--muted2);font-size:.82rem;line-height:1.9;">
+                                <li>What you build</li>
+                                <li>What you specialize in</li>
+                                <li>What you're looking for</li>
+                            </ul>
+                        </div>
+                        <div>
+                            <p style="font-size:.8rem;font-weight:700;color:var(--text);margin-bottom:.3rem;">Projects
+                                Section</p>
+                            <ul style="padding-left:1.1rem;color:var(--muted2);font-size:.82rem;line-height:1.9;">
+                                <li>GitHub links</li>
+                                <li>Live demo links</li>
+                                <li>Clear description</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- GitHub -->
+                <div class="card teal" style="margin-bottom:0;animation-delay:.1s;">
+                    <h3>🐙 GitHub Optimization</h3>
+                    <div style="margin-top:.8rem;display:flex;flex-direction:column;gap:.9rem;">
+                        <div>
+                            <p style="font-size:.8rem;font-weight:700;color:var(--text);margin-bottom:.3rem;">1️⃣ Pin
+                                Best Projects</p>
+                            <p style="font-size:.82rem;color:var(--muted2);">Only 3–6 high-quality, complete projects.
+                                Quality over quantity.</p>
+                        </div>
+                        <div>
+                            <p style="font-size:.8rem;font-weight:700;color:var(--text);margin-bottom:.3rem;">2️⃣ Clean
+                                Repositories</p>
+                            <p style="font-size:.82rem;color:var(--muted2);">Delete random test repos and tutorial
+                                copies. Only keep real projects.</p>
+                        </div>
+                        <div>
+                            <p style="font-size:.8rem;font-weight:700;color:var(--text);margin-bottom:.3rem;">3️⃣ Good
+                                Commit Messages</p>
+                            <div class="compare" style="grid-template-columns:1fr;gap:.4rem;">
+                                <div
+                                    style="background:rgba(239,68,68,.06);border:1px solid rgba(239,68,68,.2);border-radius:8px;padding:.4rem .7rem;font-family:'Fira Code';font-size:.74rem;color:var(--red);">
+                                    ❌ "update"</div>
+                                <div
+                                    style="background:rgba(16,185,129,.06);border:1px solid rgba(16,185,129,.2);border-radius:8px;padding:.4rem .7rem;font-family:'Fira Code';font-size:.74rem;color:var(--green);">
+                                    ✅ "Implemented JWT auth middleware"</div>
+                            </div>
+                        </div>
+                        <div>
+                            <p style="font-size:.8rem;font-weight:700;color:var(--text);margin-bottom:.3rem;">4️⃣ Add
+                                Profile README</p>
+                            <p style="font-size:.82rem;color:var(--muted2);">Create a special repo <code
+                                    style="color:var(--accent3); font-size:.78rem;">yourusername/yourusername</code>
+                                with an intro, skills, projects, and contact info.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <div class="divider"></div>
+
+        <!-- ── 05: PRESENT PROJECTS ── -->
+        <section class="section-block" id="present">
+            <div class="section-header">
+                <span class="section-icon">🎯</span>
+                <span class="section-num">05</span>
+                <h2 class="section-title">How to Present Projects Professionally</h2>
+            </div>
+
+            <div class="compare" style="margin-bottom:1.2rem;">
+                <div class="compare-col">
+                    <div class="compare-head bad">❌ Wrong Way</div>
+                    <ul class="compare-list">
+                        <li>"I built a website using Node.js."</li>
+                        <li>No context on the problem</li>
+                        <li>No mention of impact</li>
+                        <li>No challenges discussed</li>
+                    </ul>
+                </div>
+                <div class="compare-col">
+                    <div class="compare-head good">✅ Structured Way</div>
+                    <ul class="compare-list">
+                        <li>Problem → Solution → Stack</li>
+                        <li>Challenges faced &amp; overcome</li>
+                        <li>Measurable impact</li>
+                        <li>Shows engineering thinking</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="card" style="animation-delay:.1s;">
+                <h3>✅ Use This Format Every Time</h3>
+                <div style="display:flex;flex-wrap:wrap;gap:.5rem;margin-top:.8rem;margin-bottom:1rem;">
+                    <span
+                        style="font-size:.85rem;padding:.3rem .9rem;border-radius:999px;background:rgba(20,184,166,.08);border:1px solid rgba(20,184,166,.3);color:var(--teal);">1️⃣
+                        Problem</span>
+                    <span
+                        style="font-size:.85rem;padding:.3rem .9rem;border-radius:999px;background:rgba(20,184,166,.08);border:1px solid rgba(20,184,166,.3);color:var(--teal);">2️⃣
+                        Solution</span>
+                    <span
+                        style="font-size:.85rem;padding:.3rem .9rem;border-radius:999px;background:rgba(20,184,166,.08);border:1px solid rgba(20,184,166,.3);color:var(--teal);">3️⃣
+                        Tech Stack</span>
+                    <span
+                        style="font-size:.85rem;padding:.3rem .9rem;border-radius:999px;background:rgba(20,184,166,.08);border:1px solid rgba(20,184,166,.3);color:var(--teal);">4️⃣
+                        Challenges</span>
+                    <span
+                        style="font-size:.85rem;padding:.3rem .9rem;border-radius:999px;background:rgba(20,184,166,.08);border:1px solid rgba(20,184,166,.3);color:var(--teal);">5️⃣
+                        Impact</span>
+                </div>
+            </div>
+
+            <div class="project-showcase" style="animation:fadeUp .5s ease both;animation-delay:.15s;">
+                <h3 style="font-size:1rem;font-weight:700;margin-bottom:1.1rem;">🎯 Example — BusIITJ Project
+                    Presentation</h3>
+                <div class="ps-row">
+                    <div class="ps-label">PROBLEM</div>
+                    <div class="ps-val">Students didn't know the bus location and often missed it due to no live
+                        tracking.</div>
+                </div>
+                <div class="ps-row">
+                    <div class="ps-label">SOLUTION</div>
+                    <div class="ps-val">Built a real-time tracking system using WebSockets so students can see the live
+                        bus position on a map.</div>
+                </div>
+                <div class="ps-row">
+                    <div class="ps-label">TECH STACK</div>
+                    <div class="ps-val">
+                        <div style="display:flex;flex-wrap:wrap;gap:.35rem;">
+                            <span
+                                style="font-family:'Fira Code';font-size:.74rem;padding:.15rem .5rem;border-radius:999px;background:rgba(20,184,166,.08);border:1px solid rgba(20,184,166,.25);color:var(--teal);">Node.js</span>
+                            <span
+                                style="font-family:'Fira Code';font-size:.74rem;padding:.15rem .5rem;border-radius:999px;background:rgba(20,184,166,.08);border:1px solid rgba(20,184,166,.25);color:var(--teal);">MongoDB</span>
+                            <span
+                                style="font-family:'Fira Code';font-size:.74rem;padding:.15rem .5rem;border-radius:999px;background:rgba(20,184,166,.08);border:1px solid rgba(20,184,166,.25);color:var(--teal);">AWS
+                                EC2</span>
+                            <span
+                                style="font-family:'Fira Code';font-size:.74rem;padding:.15rem .5rem;border-radius:999px;background:rgba(20,184,166,.08);border:1px solid rgba(20,184,166,.25);color:var(--teal);">Nginx</span>
+                            <span
+                                style="font-family:'Fira Code';font-size:.74rem;padding:.15rem .5rem;border-radius:999px;background:rgba(20,184,166,.08);border:1px solid rgba(20,184,166,.25);color:var(--teal);">WebSockets</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="ps-row">
+                    <div class="ps-label">CHALLENGES</div>
+                    <div class="ps-val">Managing real-time WebSocket connections at scale and ensuring accurate GPS data
+                        synchronization.</div>
+                </div>
+                <div class="ps-row">
+                    <div class="ps-label">IMPACT</div>
+                    <div class="ps-val">Improved transport transparency on campus — students can now track buses live
+                        and plan their time.</div>
+                </div>
+            </div>
+
+            <div class="card"
+                style="margin-top:1.5rem;animation-delay:.25s;background:linear-gradient(135deg,rgba(20,184,166,.08),rgba(168,85,247,.08));border-color:rgba(20,184,166,.3);text-align:center;">
+                <h3>🧠 Professional Mindset Shift</h3>
+                <p style="margin-top:.5rem;">You are not just <span class="hlr">"someone who codes."</span></p>
+                <div style="display:flex;justify-content:center;flex-wrap:wrap;gap:.7rem;margin-top:1rem;">
+                    <span
+                        style="font-size:.9rem;padding:.4rem 1rem;border-radius:999px;background:rgba(20,184,166,.08);border:1px solid rgba(20,184,166,.3);color:var(--teal);">🔍
+                        Problem Solver</span>
+                    <span
+                        style="font-size:.9rem;padding:.4rem 1rem;border-radius:999px;background:rgba(168,85,247,.08);border:1px solid rgba(168,85,247,.3);color:var(--accent2);">🏗️
+                        System Builder</span>
+                    <span
+                        style="font-size:.9rem;padding:.4rem 1rem;border-radius:999px;background:rgba(16,185,129,.08);border:1px solid rgba(16,185,129,.3);color:var(--green);">💡
+                        Solution Provider</span>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <footer>
+        <span>KEC Workshop © 2026 · Day 3</span>
+        <span>Professional Skills &nbsp;|&nbsp; <span style="color:var(--accent2);">Powered by Antigravity</span></span>
+    </footer>
+
+    <script>
+        const sections = document.querySelectorAll('.section-block');
+        const pills = document.querySelectorAll('.nav-pill');
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    pills.forEach(p => p.classList.remove('active'));
+                    const active = document.querySelector(`.nav-pill[href="#${entry.target.id}"]`);
+                    if (active) active.classList.add('active');
+                }
+            });
+        }, { rootMargin: '-30% 0px -60% 0px' });
+        sections.forEach(s => observer.observe(s));
+    </script>
+
+</body>
+
+</html>

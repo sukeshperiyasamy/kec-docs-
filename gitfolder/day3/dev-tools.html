@@ -1,0 +1,1313 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Developer Tools Reference | KEC Workshop</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700;800&family=Fira+Code:wght@400;500&display=swap"
+        rel="stylesheet">
+    <style>
+        *,
+        *::before,
+        *::after {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0
+        }
+
+        :root {
+            --bg: #07091a;
+            --card2: #131d33;
+            --accent: #f59e0b;
+            --accent2: #fbbf24;
+            --accent3: #fde68a;
+            --green: #10b981;
+            --sky: #38bdf8;
+            --purple: #a855f7;
+            --red: #ef4444;
+            --teal: #22d3ee;
+            --orange: #f97316;
+            --text: #e2e8f0;
+            --muted: #64748b;
+            --muted2: #94a3b8;
+            --border: rgba(245, 158, 11, 0.18);
+            --glow: 0 0 32px rgba(245, 158, 11, 0.2);
+        }
+
+        html {
+            scroll-behavior: smooth
+        }
+
+        body {
+            font-family: 'Outfit', sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            font-size: 15px;
+            overflow-x: hidden
+        }
+
+        #rbar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            height: 3px;
+            z-index: 999;
+            width: 0%;
+            background: linear-gradient(90deg, var(--green), var(--sky), var(--purple), var(--accent), var(--red))
+        }
+
+        .blobs {
+            position: fixed;
+            inset: 0;
+            pointer-events: none;
+            z-index: 0;
+            overflow: hidden
+        }
+
+        .blob {
+            position: absolute;
+            border-radius: 50%;
+            filter: blur(90px);
+            opacity: .1;
+            animation: bf 14s ease-in-out infinite alternate
+        }
+
+        .b1 {
+            width: 420px;
+            height: 420px;
+            background: #d97706;
+            top: -100px;
+            left: -80px
+        }
+
+        .b2 {
+            width: 300px;
+            height: 300px;
+            background: #7c3aed;
+            bottom: -80px;
+            right: -50px;
+            animation-delay: 5s
+        }
+
+        .b3 {
+            width: 200px;
+            height: 200px;
+            background: #0ea5e9;
+            top: 50%;
+            left: 60%;
+            animation-delay: 2.5s
+        }
+
+        @keyframes bf {
+            from {
+                transform: scale(1)
+            }
+
+            to {
+                transform: scale(1.12) translate(18px, 10px)
+            }
+        }
+
+        nav {
+            position: sticky;
+            top: 0;
+            z-index: 200;
+            background: rgba(7, 9, 26, .93);
+            backdrop-filter: blur(16px);
+            border-bottom: 1px solid var(--border);
+            padding: .6rem 1rem;
+            display: flex;
+            align-items: center;
+            gap: .4rem;
+            overflow-x: auto;
+            padding-left: 6rem
+        }
+
+        .nav-logo {
+            font-weight: 800;
+            font-size: .92rem;
+            background: linear-gradient(90deg, var(--accent), var(--accent2));
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+            white-space: nowrap;
+            margin-right: .5rem
+        }
+
+        .nb {
+            font-family: 'Outfit', sans-serif;
+            font-size: .68rem;
+            font-weight: 600;
+            padding: .28rem .72rem;
+            border: 1px solid var(--border);
+            border-radius: 999px;
+            background: transparent;
+            color: var(--muted2);
+            cursor: pointer;
+            white-space: nowrap;
+            transition: all .2s
+        }
+
+        .nb:hover,
+        .nb.active {
+            background: var(--accent);
+            border-color: var(--accent);
+            color: #000
+        }
+
+        section {
+            position: relative;
+            z-index: 10;
+            padding: 3.2rem 1.8rem;
+            max-width: 960px;
+            margin: 0 auto
+        }
+
+        .eyebrow {
+            font-family: 'Fira Code', monospace;
+            font-size: .65rem;
+            color: var(--accent3);
+            letter-spacing: .14em;
+            text-transform: uppercase;
+            margin-bottom: .5rem
+        }
+
+        .sec-title {
+            font-size: clamp(1.4rem, 3vw, 2rem);
+            font-weight: 800;
+            line-height: 1.2;
+            background: linear-gradient(135deg, #fff 25%, var(--accent2) 100%);
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: .6rem
+        }
+
+        .sec-lead {
+            font-size: .88rem;
+            color: var(--muted2);
+            line-height: 1.8;
+            max-width: 660px;
+            margin-bottom: 1.4rem
+        }
+
+        .rv {
+            opacity: 0;
+            transform: translateY(24px);
+            transition: opacity .6s ease, transform .6s ease
+        }
+
+        .rv.vis {
+            opacity: 1;
+            transform: translateY(0)
+        }
+
+        /* HERO */
+        #hero {
+            min-height: 85vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            gap: 1.2rem;
+            padding: 4rem 1.8rem;
+            max-width: 960px;
+            margin: 0 auto
+        }
+
+        .hero-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: .4rem;
+            font-family: 'Fira Code', monospace;
+            font-size: .68rem;
+            padding: .28rem .9rem;
+            border-radius: 999px;
+            border: 1px solid rgba(245, 158, 11, .4);
+            color: var(--accent2);
+            background: rgba(245, 158, 11, .07);
+            width: fit-content;
+            animation: fu .5s ease both
+        }
+
+        .hero-h1 {
+            font-size: clamp(2rem, 6vw, 3.4rem);
+            font-weight: 800;
+            line-height: 1.1;
+            background: linear-gradient(135deg, #fff 10%, var(--accent) 55%, var(--accent2) 100%);
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+            animation: fu .5s .08s ease both
+        }
+
+        .hero-sub {
+            font-size: .95rem;
+            color: var(--muted2);
+            max-width: 540px;
+            line-height: 1.8;
+            animation: fu .5s .16s ease both
+        }
+
+        .hero-cats {
+            display: flex;
+            flex-wrap: wrap;
+            gap: .55rem;
+            animation: fu .5s .25s ease both
+        }
+
+        .cat-pill {
+            display: inline-flex;
+            align-items: center;
+            gap: .35rem;
+            padding: .3rem .8rem;
+            border-radius: 999px;
+            font-size: .72rem;
+            font-weight: 700;
+            border: 1px solid;
+            cursor: default;
+            white-space: nowrap
+        }
+
+        .scroll-hint {
+            font-size: .75rem;
+            color: var(--muted);
+            animation: fu .5s .4s ease both, bob 2s 1.5s ease-in-out infinite
+        }
+
+        @keyframes bob {
+
+            0%,
+            100% {
+                transform: translateY(0)
+            }
+
+            50% {
+                transform: translateY(5px)
+            }
+        }
+
+        @keyframes fu {
+            from {
+                opacity: 0;
+                transform: translateY(20px)
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0)
+            }
+        }
+
+        /* CATEGORY HEADER */
+        .cat-header {
+            display: flex;
+            align-items: center;
+            gap: .7rem;
+            margin-bottom: 1.2rem;
+            padding-bottom: .7rem;
+            border-bottom: 1px solid var(--border)
+        }
+
+        .cat-icon {
+            font-size: 1.4rem
+        }
+
+        .cat-label {
+            font-size: 1rem;
+            font-weight: 800
+        }
+
+        .cat-count {
+            font-family: 'Fira Code', monospace;
+            font-size: .65rem;
+            color: var(--muted);
+            padding: .18rem .55rem;
+            border-radius: 999px;
+            background: rgba(255, 255, 255, .05);
+            border: 1px solid rgba(255, 255, 255, .08);
+            margin-left: auto
+        }
+
+        /* TOOL CARDS */
+        .tools-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+            gap: 1rem
+        }
+
+        .tool-card {
+            background: var(--card2);
+            border: 1px solid rgba(255, 255, 255, .07);
+            border-radius: 16px;
+            padding: 1.15rem 1.25rem;
+            display: flex;
+            flex-direction: column;
+            gap: .6rem;
+            transition: transform .25s, box-shadow .25s, border-color .25s;
+            cursor: default;
+            position: relative;
+            overflow: hidden
+        }
+
+        .tool-card::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            opacity: 0;
+            border-radius: 16px;
+            transition: opacity .3s;
+            pointer-events: none
+        }
+
+        .tool-card:hover {
+            transform: translateY(-5px)
+        }
+
+        .tool-card:hover::before {
+            opacity: 1
+        }
+
+        .tool-top {
+            display: flex;
+            align-items: flex-start;
+            gap: .7rem
+        }
+
+        .tool-emoji {
+            min-width: 40px;
+            height: 40px;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2rem;
+            flex-shrink: 0;
+            border: 1px solid rgba(255, 255, 255, .1)
+        }
+
+        .tool-name {
+            font-size: .95rem;
+            font-weight: 800;
+            line-height: 1.2
+        }
+
+        .tool-type {
+            font-family: 'Fira Code', monospace;
+            font-size: .62rem;
+            margin-top: .15rem;
+            padding: .12rem .5rem;
+            border-radius: 999px;
+            border: 1px solid;
+            display: inline-block
+        }
+
+        .tool-desc {
+            font-size: .79rem;
+            color: var(--muted2);
+            line-height: 1.6
+        }
+
+        .tool-uses {
+            display: flex;
+            flex-direction: column;
+            gap: .18rem
+        }
+
+        .tool-use {
+            font-size: .75rem;
+            color: var(--muted2);
+            display: flex;
+            align-items: flex-start;
+            gap: .3rem;
+            line-height: 1.4
+        }
+
+        .tool-use::before {
+            content: '▸';
+            flex-shrink: 0;
+            font-size: .62rem;
+            margin-top: .1rem
+        }
+
+        .tool-link {
+            display: inline-flex;
+            align-items: center;
+            gap: .35rem;
+            font-size: .72rem;
+            font-weight: 700;
+            text-decoration: none;
+            padding: .28rem .75rem;
+            border-radius: 999px;
+            border: 1px solid;
+            transition: all .2s;
+            width: fit-content;
+            margin-top: auto
+        }
+
+        .tool-link:hover {
+            filter: brightness(1.25)
+        }
+
+        .tool-alt {
+            position: absolute;
+            top: .7rem;
+            right: .7rem;
+            font-family: 'Fira Code', monospace;
+            font-size: .58rem;
+            padding: .1rem .45rem;
+            border-radius: 999px;
+            background: rgba(245, 158, 11, .1);
+            border: 1px solid rgba(245, 158, 11, .3);
+            color: var(--accent2)
+        }
+
+        /* DEVTOOLS NOTE */
+        .devtools-note {
+            background: rgba(56, 189, 248, .06);
+            border: 1px solid rgba(56, 189, 248, .2);
+            border-radius: 12px;
+            padding: .85rem 1.1rem;
+            font-size: .82rem;
+            line-height: 1.65;
+            color: var(--sky);
+            margin-top: .75rem
+        }
+
+        .shortcut {
+            background: rgba(255, 255, 255, .08);
+            border: 1px solid rgba(255, 255, 255, .15);
+            border-radius: 6px;
+            padding: .15rem .5rem;
+            font-family: 'Fira Code', monospace;
+            font-size: .78rem;
+            color: #fff;
+            display: inline-block
+        }
+
+        .div {
+            height: 1px;
+            background: linear-gradient(90deg, transparent, rgba(245, 158, 11, .18), transparent);
+            margin: .5rem auto;
+            max-width: 960px
+        }
+
+        .sfoot {
+            position: relative;
+            z-index: 10;
+            padding: 1.4rem;
+            text-align: center;
+            border-top: 1px solid var(--border);
+            color: var(--muted);
+            font-size: .76rem
+        }
+
+        .sfoot span {
+            color: var(--accent2)
+        }
+
+        @media(max-width:600px) {
+            section {
+                padding: 2.2rem 1rem
+            }
+
+            #hero {
+                padding: 3rem 1rem
+            }
+
+            .tools-grid {
+                grid-template-columns: 1fr
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div id="rbar"></div>
+    <div class="blobs">
+        <div class="blob b1"></div>
+        <div class="blob b2"></div>
+        <div class="blob b3"></div>
+    </div>
+
+    <a href="index.html"
+        style="position:fixed;top:1rem;left:1rem;z-index:9999;display:inline-flex;align-items:center;gap:.45rem;padding:.45rem 1rem;background:rgba(7,9,26,.9);border:1px solid rgba(99,102,241,.4);border-radius:999px;color:#a78bfa;font-family:'Outfit',sans-serif;font-size:.8rem;font-weight:700;text-decoration:none;backdrop-filter:blur(10px);transition:all .2s"
+        onmouseover="this.style.background='rgba(99,102,241,.25)';this.style.borderColor='#6366f1'"
+        onmouseout="this.style.background='rgba(7,9,26,.9)';this.style.borderColor='rgba(99,102,241,.4)'">← Home</a>
+
+    <nav>
+        <div class="nav-logo">🧰 Dev Tools</div>
+        <button class="nb active" onclick="goTo('hero',this)">Intro</button>
+        <button class="nb" onclick="goTo('api',this)">API Testing</button>
+        <button class="nb" onclick="goTo('scraping',this)">Scraping</button>
+        <button class="nb" onclick="goTo('detect',this)">Detection</button>
+        <button class="nb" onclick="goTo('responsive',this)">Responsive</button>
+        <button class="nb" onclick="goTo('vcs',this)">Git/GitHub</button>
+        <button class="nb" onclick="goTo('editors',this)">Editors</button>
+        <button class="nb" onclick="goTo('devtools',this)">DevTools</button>
+        <button class="nb" onclick="goTo('design',this)">Design</button>
+        <button class="nb" onclick="goTo('deploy',this)">Deploy</button>
+        <button class="nb" onclick="goTo('database',this)">Database</button>
+        <button class="nb" onclick="goTo('perf',this)">Performance</button>
+        <button class="nb" onclick="goTo('security',this)">Security</button>
+    </nav>
+
+    <!-- HERO -->
+    <section id="hero">
+        <div class="hero-badge">🧰 Developer Tools · KEC Workshop</div>
+        <h1 class="hero-h1">Every Tool a<br>Developer Needs</h1>
+        <p class="hero-sub">21 essential tools across 14 categories — from API testing to security scanning. Know these
+            tools and you are ready to build and ship like a professional.</p>
+        <div class="hero-cats">
+            <span class="cat-pill"
+                style="background:rgba(56,189,248,.08);border-color:rgba(56,189,248,.3);color:var(--sky)">🔌 API
+                Testing</span>
+            <span class="cat-pill"
+                style="background:rgba(16,185,129,.08);border-color:rgba(16,185,129,.3);color:var(--green)">🕷️ Web
+                Scraping</span>
+            <span class="cat-pill"
+                style="background:rgba(168,85,247,.08);border-color:rgba(168,85,247,.3);color:var(--purple)">🔬
+                Detection</span>
+            <span class="cat-pill"
+                style="background:rgba(245,158,11,.08);border-color:rgba(245,158,11,.3);color:var(--accent2)">📱
+                Responsive</span>
+            <span class="cat-pill"
+                style="background:rgba(239,68,68,.08);border-color:rgba(239,68,68,.3);color:var(--red)">🔐
+                Security</span>
+            <span class="cat-pill"
+                style="background:rgba(249,115,22,.08);border-color:rgba(249,115,22,.3);color:var(--orange)">🚀
+                Deployment</span>
+        </div>
+        <div class="scroll-hint">↓ Scroll through all 21 tools</div>
+    </section>
+
+    <div class="div"></div>
+
+    <!-- API TESTING -->
+    <section id="api" class="rv">
+        <div class="cat-header">
+            <div class="cat-icon">🔌</div>
+            <div class="cat-label" style="color:var(--sky)">API Testing Tools</div>
+            <div class="cat-count">2 tools</div>
+        </div>
+        <p class="sec-lead">Test your backend APIs without a frontend — send HTTP requests, inspect responses, debug
+            authentication.</p>
+        <div class="tools-grid">
+
+            <div class="tool-card" style="--hc:var(--sky)"
+                onmouseenter="this.style.boxShadow='0 0 28px rgba(56,189,248,.2)';this.style.borderColor='rgba(56,189,248,.4)'"
+                onmouseleave="this.style.boxShadow='';this.style.borderColor='rgba(255,255,255,.07)'">
+                <div class="tool-top">
+                    <div class="tool-emoji" style="background:rgba(56,189,248,.1);border-color:rgba(56,189,248,.25)">🟦
+                    </div>
+                    <div>
+                        <div class="tool-name">Postman</div>
+                        <span class="tool-type"
+                            style="background:rgba(56,189,248,.1);border-color:rgba(56,189,248,.3);color:var(--sky)">API
+                            Client · Free</span>
+                    </div>
+                </div>
+                <div class="tool-desc">The industry-standard API testing and development tool. Test endpoints, inspect
+                    JSON responses, and organize API collections.</div>
+                <div class="tool-uses">
+                    <span class="tool-use">API endpoint testing (GET / POST / PUT / DELETE)</span>
+                    <span class="tool-use">Authentication testing (JWT, OAuth, API Keys)</span>
+                    <span class="tool-use">Sending custom headers & request bodies</span>
+                    <span class="tool-use">Debugging backend without frontend</span>
+                    <span class="tool-use">Team collections & automated test scripts</span>
+                </div>
+                <a class="tool-link" href="https://www.postman.com/" target="_blank"
+                    style="background:rgba(56,189,248,.1);border-color:rgba(56,189,248,.3);color:var(--sky)">🔗
+                    postman.com</a>
+            </div>
+
+            <div class="tool-card"
+                onmouseenter="this.style.boxShadow='0 0 28px rgba(168,85,247,.15)';this.style.borderColor='rgba(168,85,247,.4)'"
+                onmouseleave="this.style.boxShadow='';this.style.borderColor='rgba(255,255,255,.07)'">
+                <div class="tool-alt">Alternative</div>
+                <div class="tool-top">
+                    <div class="tool-emoji" style="background:rgba(168,85,247,.1);border-color:rgba(168,85,247,.25)">💜
+                    </div>
+                    <div>
+                        <div class="tool-name">Insomnia</div>
+                        <span class="tool-type"
+                            style="background:rgba(168,85,247,.1);border-color:rgba(168,85,247,.3);color:var(--purple)">API
+                            Client · Free</span>
+                    </div>
+                </div>
+                <div class="tool-desc">Lightweight alternative to Postman. Cleaner UI, faster startup, great for REST
+                    and GraphQL API testing.</div>
+                <div class="tool-uses">
+                    <span class="tool-use">REST, GraphQL, and gRPC testing</span>
+                    <span class="tool-use">Environment variables support</span>
+                    <span class="tool-use">Lightweight — faster than Postman</span>
+                </div>
+                <a class="tool-link" href="https://insomnia.rest/" target="_blank"
+                    style="background:rgba(168,85,247,.1);border-color:rgba(168,85,247,.3);color:var(--purple)">🔗
+                    insomnia.rest</a>
+            </div>
+
+        </div>
+    </section>
+
+    <div class="div"></div>
+
+    <!-- WEB SCRAPING -->
+    <section id="scraping" class="rv">
+        <div class="cat-header">
+            <div class="cat-icon">🕷️</div>
+            <div class="cat-label" style="color:var(--green)">Web Scraping Tools</div>
+            <div class="cat-count">2 tools</div>
+        </div>
+        <p class="sec-lead">Extract data from websites automatically — useful for data science, automation, and research
+            projects.</p>
+        <div class="tools-grid">
+
+            <div class="tool-card"
+                onmouseenter="this.style.boxShadow='0 0 28px rgba(16,185,129,.15)';this.style.borderColor='rgba(16,185,129,.4)'"
+                onmouseleave="this.style.boxShadow='';this.style.borderColor='rgba(255,255,255,.07)'">
+                <div class="tool-top">
+                    <div class="tool-emoji" style="background:rgba(16,185,129,.1);border-color:rgba(16,185,129,.25)">🌐
+                    </div>
+                    <div>
+                        <div class="tool-name">Web Scraper</div>
+                        <span class="tool-type"
+                            style="background:rgba(16,185,129,.1);border-color:rgba(16,185,129,.3);color:var(--green)">Chrome
+                            Extension · Free</span>
+                    </div>
+                </div>
+                <div class="tool-desc">Chrome extension to extract structured data from any website using
+                    point-and-click selectors. No coding required.</div>
+                <div class="tool-uses">
+                    <span class="tool-use">Scrape Amazon product names & prices</span>
+                    <span class="tool-use">Extract news headlines, job listings</span>
+                    <span class="tool-use">Export data to CSV for analysis</span>
+                    <span class="tool-use">Site maps and pagination support</span>
+                </div>
+                <a class="tool-link" href="https://webscraper.io/" target="_blank"
+                    style="background:rgba(16,185,129,.1);border-color:rgba(16,185,129,.3);color:var(--green)">🔗
+                    webscraper.io</a>
+            </div>
+
+            <div class="tool-card"
+                onmouseenter="this.style.boxShadow='0 0 28px rgba(16,185,129,.15)';this.style.borderColor='rgba(16,185,129,.4)'"
+                onmouseleave="this.style.boxShadow='';this.style.borderColor='rgba(255,255,255,.07)'">
+                <div class="tool-top">
+                    <div class="tool-emoji" style="background:rgba(16,185,129,.1);border-color:rgba(16,185,129,.25)">🐍
+                    </div>
+                    <div>
+                        <div class="tool-name">BeautifulSoup</div>
+                        <span class="tool-type"
+                            style="background:rgba(16,185,129,.1);border-color:rgba(16,185,129,.3);color:var(--green)">Python
+                            Library · Free</span>
+                    </div>
+                </div>
+                <div class="tool-desc">Powerful Python library for parsing HTML and XML. Used in data science,
+                    automation, and research workflows.</div>
+                <div class="tool-uses">
+                    <span class="tool-use">Parse and navigate HTML structure in Python</span>
+                    <span class="tool-use">Extract specific tags, classes, and attributes</span>
+                    <span class="tool-use">Combine with <code
+                            style="font-size:.7rem;background:rgba(255,255,255,.07);padding:.05rem .3rem;border-radius:4px">requests</code>
+                        library for full scraper</span>
+                    <span class="tool-use">Used in data science & automation projects</span>
+                </div>
+                <a class="tool-link" href="https://www.crummy.com/software/BeautifulSoup/" target="_blank"
+                    style="background:rgba(16,185,129,.1);border-color:rgba(16,185,129,.3);color:var(--green)">🔗
+                    BeautifulSoup docs</a>
+            </div>
+
+        </div>
+    </section>
+
+    <div class="div"></div>
+
+    <!-- DETECTION -->
+    <section id="detect" class="rv">
+        <div class="cat-header">
+            <div class="cat-icon">🔬</div>
+            <div class="cat-label" style="color:var(--purple)">Technology Detection</div>
+            <div class="cat-count">1 tool</div>
+        </div>
+        <div class="tools-grid" style="max-width:340px">
+            <div class="tool-card"
+                onmouseenter="this.style.boxShadow='0 0 28px rgba(168,85,247,.15)';this.style.borderColor='rgba(168,85,247,.4)'"
+                onmouseleave="this.style.boxShadow='';this.style.borderColor='rgba(255,255,255,.07)'">
+                <div class="tool-top">
+                    <div class="tool-emoji" style="background:rgba(168,85,247,.1);border-color:rgba(168,85,247,.25)">🔭
+                    </div>
+                    <div>
+                        <div class="tool-name">Wappalyzer</div>
+                        <span class="tool-type"
+                            style="background:rgba(168,85,247,.1);border-color:rgba(168,85,247,.3);color:var(--purple)">Browser
+                            Extension · Free</span>
+                    </div>
+                </div>
+                <div class="tool-desc">Instantly detect which technologies any website uses — frameworks, CMS,
+                    analytics, server, and more.</div>
+                <div class="tool-uses">
+                    <span class="tool-use">Detect React / Next.js / Angular / Vue</span>
+                    <span class="tool-use">Identify WordPress, Shopify, Webflow</span>
+                    <span class="tool-use">See analytics, CDN, and hosting stack</span>
+                    <span class="tool-use">Great for competitive analysis & learning</span>
+                </div>
+                <a class="tool-link" href="https://www.wappalyzer.com/" target="_blank"
+                    style="background:rgba(168,85,247,.1);border-color:rgba(168,85,247,.3);color:var(--purple)">🔗
+                    wappalyzer.com</a>
+            </div>
+        </div>
+    </section>
+
+    <div class="div"></div>
+
+    <!-- RESPONSIVE -->
+    <section id="responsive" class="rv">
+        <div class="cat-header">
+            <div class="cat-icon">📱</div>
+            <div class="cat-label" style="color:var(--accent2)">Responsive Testing</div>
+            <div class="cat-count">1 tool</div>
+        </div>
+        <div class="tools-grid" style="max-width:340px">
+            <div class="tool-card"
+                onmouseenter="this.style.boxShadow='0 0 28px rgba(245,158,11,.15)';this.style.borderColor='rgba(245,158,11,.4)'"
+                onmouseleave="this.style.boxShadow='';this.style.borderColor='rgba(255,255,255,.07)'">
+                <div class="tool-top">
+                    <div class="tool-emoji" style="background:rgba(245,158,11,.1);border-color:rgba(245,158,11,.25)">📐
+                    </div>
+                    <div>
+                        <div class="tool-name">Responsive Viewer</div>
+                        <span class="tool-type"
+                            style="background:rgba(245,158,11,.1);border-color:rgba(245,158,11,.3);color:var(--accent2)">Chrome
+                            Extension · Free</span>
+                    </div>
+                </div>
+                <div class="tool-desc">Test your website on multiple screen sizes simultaneously in a single browser
+                    window. Saves huge time during responsive debugging.</div>
+                <div class="tool-uses">
+                    <span class="tool-use">Mobile view testing (320px → 768px)</span>
+                    <span class="tool-use">Tablet and desktop side-by-side preview</span>
+                    <span class="tool-use">Debug layout breakpoints visually</span>
+                    <span class="tool-use">Custom device presets</span>
+                </div>
+                <a class="tool-link" href="https://chrome.google.com/webstore" target="_blank"
+                    style="background:rgba(245,158,11,.1);border-color:rgba(245,158,11,.3);color:var(--accent2)">🔗
+                    Chrome Web Store</a>
+            </div>
+        </div>
+    </section>
+
+    <div class="div"></div>
+
+    <!-- VERSION CONTROL -->
+    <section id="vcs" class="rv">
+        <div class="cat-header">
+            <div class="cat-icon">🔀</div>
+            <div class="cat-label" style="color:var(--orange)">Version Control Tools</div>
+            <div class="cat-count">2 tools</div>
+        </div>
+        <p class="sec-lead">Track every code change, collaborate in teams, and revert mistakes. Non-negotiable for every
+            developer.</p>
+        <div class="tools-grid">
+
+            <div class="tool-card"
+                onmouseenter="this.style.boxShadow='0 0 28px rgba(249,115,22,.15)';this.style.borderColor='rgba(249,115,22,.4)'"
+                onmouseleave="this.style.boxShadow='';this.style.borderColor='rgba(255,255,255,.07)'">
+                <div class="tool-top">
+                    <div class="tool-emoji" style="background:rgba(249,115,22,.1);border-color:rgba(249,115,22,.25)">🌿
+                    </div>
+                    <div>
+                        <div class="tool-name">Git</div>
+                        <span class="tool-type"
+                            style="background:rgba(249,115,22,.1);border-color:rgba(249,115,22,.3);color:var(--orange)">CLI
+                            Tool · Free & Open Source</span>
+                    </div>
+                </div>
+                <div class="tool-desc">The distributed version control system that powers all modern software
+                    development. Runs locally on your machine.</div>
+                <div class="tool-uses">
+                    <span class="tool-use">Track every change to your code</span>
+                    <span class="tool-use">Branch for features, merge when done</span>
+                    <span class="tool-use">Rollback to any previous version</span>
+                    <span class="tool-use">Collaborate without overwriting each other</span>
+                </div>
+                <a class="tool-link" href="https://git-scm.com/" target="_blank"
+                    style="background:rgba(249,115,22,.1);border-color:rgba(249,115,22,.3);color:var(--orange)">🔗
+                    git-scm.com</a>
+            </div>
+
+            <div class="tool-card"
+                onmouseenter="this.style.boxShadow='0 0 28px rgba(249,115,22,.15)';this.style.borderColor='rgba(249,115,22,.4)'"
+                onmouseleave="this.style.boxShadow='';this.style.borderColor='rgba(255,255,255,.07)'">
+                <div class="tool-top">
+                    <div class="tool-emoji" style="background:rgba(249,115,22,.1);border-color:rgba(249,115,22,.25)">🐙
+                    </div>
+                    <div>
+                        <div class="tool-name">GitHub</div>
+                        <span class="tool-type"
+                            style="background:rgba(249,115,22,.1);border-color:rgba(249,115,22,.3);color:var(--orange)">Cloud
+                            Platform · Free Tier</span>
+                    </div>
+                </div>
+                <div class="tool-desc">Cloud hosting for Git repositories. The world's largest code collaboration
+                    platform — your public portfolio lives here.</div>
+                <div class="tool-uses">
+                    <span class="tool-use">Store and backup all your projects</span>
+                    <span class="tool-use">Open-source contributions → career boost</span>
+                    <span class="tool-use">GitHub Pages for free website hosting</span>
+                    <span class="tool-use">CI/CD with GitHub Actions</span>
+                </div>
+                <a class="tool-link" href="https://github.com/" target="_blank"
+                    style="background:rgba(249,115,22,.1);border-color:rgba(249,115,22,.3);color:var(--orange)">🔗
+                    github.com</a>
+            </div>
+
+        </div>
+    </section>
+
+    <div class="div"></div>
+
+    <!-- EDITORS -->
+    <section id="editors" class="rv">
+        <div class="cat-header">
+            <div class="cat-icon">⌨️</div>
+            <div class="cat-label" style="color:var(--sky)">Code Editors</div>
+            <div class="cat-count">1 tool</div>
+        </div>
+        <div class="tools-grid" style="max-width:380px">
+            <div class="tool-card"
+                onmouseenter="this.style.boxShadow='0 0 28px rgba(56,189,248,.15)';this.style.borderColor='rgba(56,189,248,.4)'"
+                onmouseleave="this.style.boxShadow='';this.style.borderColor='rgba(255,255,255,.07)'">
+                <div class="tool-top">
+                    <div class="tool-emoji" style="background:rgba(56,189,248,.1);border-color:rgba(56,189,248,.25)">💻
+                    </div>
+                    <div>
+                        <div class="tool-name">VS Code</div>
+                        <span class="tool-type"
+                            style="background:rgba(56,189,248,.1);border-color:rgba(56,189,248,.3);color:var(--sky)">Editor
+                            · Free & Open Source</span>
+                    </div>
+                </div>
+                <div class="tool-desc">The most popular code editor in the world. Lightweight, fast, and extended by
+                    thousands of community extensions.</div>
+                <div class="tool-uses">
+                    <span class="tool-use"><strong>Live Server</strong> — instant browser refresh</span>
+                    <span class="tool-use"><strong>Prettier</strong> — auto-format your code</span>
+                    <span class="tool-use"><strong>ESLint</strong> — catch JS errors in real time</span>
+                    <span class="tool-use"><strong>GitLens</strong> — see git blame inside editor</span>
+                </div>
+                <a class="tool-link" href="https://code.visualstudio.com/" target="_blank"
+                    style="background:rgba(56,189,248,.1);border-color:rgba(56,189,248,.3);color:var(--sky)">🔗
+                    code.visualstudio.com</a>
+            </div>
+        </div>
+    </section>
+
+    <div class="div"></div>
+
+    <!-- BROWSER DEVTOOLS -->
+    <section id="devtools" class="rv">
+        <div class="cat-header">
+            <div class="cat-icon">🛠️</div>
+            <div class="cat-label" style="color:var(--teal)">Browser Developer Tools</div>
+            <div class="cat-count">1 tool</div>
+        </div>
+        <div class="tools-grid" style="max-width:380px">
+            <div class="tool-card"
+                onmouseenter="this.style.boxShadow='0 0 28px rgba(34,211,238,.15)';this.style.borderColor='rgba(34,211,238,.4)'"
+                onmouseleave="this.style.boxShadow='';this.style.borderColor='rgba(255,255,255,.07)'">
+                <div class="tool-top">
+                    <div class="tool-emoji" style="background:rgba(34,211,238,.1);border-color:rgba(34,211,238,.25)">🔍
+                    </div>
+                    <div>
+                        <div class="tool-name">Chrome DevTools</div>
+                        <span class="tool-type"
+                            style="background:rgba(34,211,238,.1);border-color:rgba(34,211,238,.3);color:var(--teal)">Built-in
+                            · Free</span>
+                    </div>
+                </div>
+                <div class="tool-desc">Built into every Chrome/Edge browser. The most important debugging environment
+                    for any web developer.</div>
+                <div class="tool-uses">
+                    <span class="tool-use">Inspect & live-edit HTML and CSS</span>
+                    <span class="tool-use">View JavaScript errors in Console</span>
+                    <span class="tool-use">Monitor network requests & API calls</span>
+                    <span class="tool-use">Performance profiling & memory analysis</span>
+                    <span class="tool-use">Mobile screen size simulation</span>
+                </div>
+                <div class="devtools-note">⌨️ Open with: <span class="shortcut">F12</span> or <span
+                        class="shortcut">Ctrl + Shift + I</span> on any page. Right-click → Inspect also works.</div>
+            </div>
+        </div>
+    </section>
+
+    <div class="div"></div>
+
+    <!-- DESIGN -->
+    <section id="design" class="rv">
+        <div class="cat-header">
+            <div class="cat-icon">🎨</div>
+            <div class="cat-label" style="color:var(--purple)">UI / Design Tools</div>
+            <div class="cat-count">1 tool</div>
+        </div>
+        <div class="tools-grid" style="max-width:340px">
+            <div class="tool-card"
+                onmouseenter="this.style.boxShadow='0 0 28px rgba(168,85,247,.15)';this.style.borderColor='rgba(168,85,247,.4)'"
+                onmouseleave="this.style.boxShadow='';this.style.borderColor='rgba(255,255,255,.07)'">
+                <div class="tool-top">
+                    <div class="tool-emoji" style="background:rgba(168,85,247,.1);border-color:rgba(168,85,247,.25)">🖌️
+                    </div>
+                    <div>
+                        <div class="tool-name">Figma</div>
+                        <span class="tool-type"
+                            style="background:rgba(168,85,247,.1);border-color:rgba(168,85,247,.3);color:var(--purple)">Design
+                            Tool · Free Tier</span>
+                    </div>
+                </div>
+                <div class="tool-desc">The industry-standard UI/UX design tool. Design, prototype, and hand off — all in
+                    the browser with team collaboration.</div>
+                <div class="tool-uses">
+                    <span class="tool-use">Wireframes and low-fi mockups</span>
+                    <span class="tool-use">High-fidelity app & website designs</span>
+                    <span class="tool-use">Interactive prototypes with transitions</span>
+                    <span class="tool-use">Developer handoff — inspect CSS values</span>
+                </div>
+                <a class="tool-link" href="https://www.figma.com/" target="_blank"
+                    style="background:rgba(168,85,247,.1);border-color:rgba(168,85,247,.3);color:var(--purple)">🔗
+                    figma.com</a>
+            </div>
+        </div>
+    </section>
+
+    <div class="div"></div>
+
+    <!-- DEPLOYMENT -->
+    <section id="deploy" class="rv">
+        <div class="cat-header">
+            <div class="cat-icon">🚀</div>
+            <div class="cat-label" style="color:var(--green)">Deployment Tools</div>
+            <div class="cat-count">3 tools</div>
+        </div>
+        <p class="sec-lead">Push your project live to the internet in minutes — no server management needed for frontend
+            and small backend projects.</p>
+        <div class="tools-grid">
+
+            <div class="tool-card"
+                onmouseenter="this.style.boxShadow='0 0 28px rgba(16,185,129,.15)';this.style.borderColor='rgba(16,185,129,.4)'"
+                onmouseleave="this.style.boxShadow='';this.style.borderColor='rgba(255,255,255,.07)'">
+                <div class="tool-top">
+                    <div class="tool-emoji" style="background:rgba(16,185,129,.1);border-color:rgba(16,185,129,.25)">▲
+                    </div>
+                    <div>
+                        <div class="tool-name">Vercel</div>
+                        <span class="tool-type"
+                            style="background:rgba(16,185,129,.1);border-color:rgba(16,185,129,.3);color:var(--green)">Frontend
+                            Hosting · Free Tier</span>
+                    </div>
+                </div>
+                <div class="tool-desc">Best platform for deploying Next.js and React apps. Zero config, global CDN, and
+                    automatic HTTPS.</div>
+                <div class="tool-uses">
+                    <span class="tool-use">Connect GitHub → auto-deploy on push</span>
+                    <span class="tool-use">Optimized for Next.js (made by Vercel)</span>
+                    <span class="tool-use">Preview deployments per pull request</span>
+                </div>
+                <a class="tool-link" href="https://vercel.com/" target="_blank"
+                    style="background:rgba(16,185,129,.1);border-color:rgba(16,185,129,.3);color:var(--green)">🔗
+                    vercel.com</a>
+            </div>
+
+            <div class="tool-card"
+                onmouseenter="this.style.boxShadow='0 0 28px rgba(56,189,248,.15)';this.style.borderColor='rgba(56,189,248,.4)'"
+                onmouseleave="this.style.boxShadow='';this.style.borderColor='rgba(255,255,255,.07)'">
+                <div class="tool-top">
+                    <div class="tool-emoji" style="background:rgba(56,189,248,.1);border-color:rgba(56,189,248,.25)">🌐
+                    </div>
+                    <div>
+                        <div class="tool-name">Netlify</div>
+                        <span class="tool-type"
+                            style="background:rgba(56,189,248,.1);border-color:rgba(56,189,248,.3);color:var(--sky)">Static
+                            Hosting · Free Tier</span>
+                    </div>
+                </div>
+                <div class="tool-desc">Deploy static websites, React apps, and JAMstack sites. Drag-and-drop deploy or
+                    connect GitHub for CI/CD.</div>
+                <div class="tool-uses">
+                    <span class="tool-use">Static site & React app hosting</span>
+                    <span class="tool-use">Drag-and-drop deploy — fastest way to go live</span>
+                    <span class="tool-use">Environment variables & form handling</span>
+                </div>
+                <a class="tool-link" href="https://www.netlify.com/" target="_blank"
+                    style="background:rgba(56,189,248,.1);border-color:rgba(56,189,248,.3);color:var(--sky)">🔗
+                    netlify.com</a>
+            </div>
+
+            <div class="tool-card"
+                onmouseenter="this.style.boxShadow='0 0 28px rgba(168,85,247,.15)';this.style.borderColor='rgba(168,85,247,.4)'"
+                onmouseleave="this.style.boxShadow='';this.style.borderColor='rgba(255,255,255,.07)'">
+                <div class="tool-top">
+                    <div class="tool-emoji" style="background:rgba(168,85,247,.1);border-color:rgba(168,85,247,.25)">⚙️
+                    </div>
+                    <div>
+                        <div class="tool-name">Render</div>
+                        <span class="tool-type"
+                            style="background:rgba(168,85,247,.1);border-color:rgba(168,85,247,.3);color:var(--purple)">Backend
+                            Hosting · Free Tier</span>
+                    </div>
+                </div>
+                <div class="tool-desc">Deploy Node.js, Python, or any backend service. Free tier available — best Heroku
+                    alternative for backend hosting.</div>
+                <div class="tool-uses">
+                    <span class="tool-use">Deploy Express, FastAPI, Django backends</span>
+                    <span class="tool-use">Auto-deploy from GitHub</span>
+                    <span class="tool-use">Managed PostgreSQL databases available</span>
+                </div>
+                <a class="tool-link" href="https://render.com/" target="_blank"
+                    style="background:rgba(168,85,247,.1);border-color:rgba(168,85,247,.3);color:var(--purple)">🔗
+                    render.com</a>
+            </div>
+
+        </div>
+    </section>
+
+    <div class="div"></div>
+
+    <!-- DATABASE -->
+    <section id="database" class="rv">
+        <div class="cat-header">
+            <div class="cat-icon">🗄️</div>
+            <div class="cat-label" style="color:var(--green)">Database GUI Tools</div>
+            <div class="cat-count">2 tools</div>
+        </div>
+        <p class="sec-lead">Visual interfaces for browsing, querying, and managing database records — much easier than
+            raw command line.</p>
+        <div class="tools-grid">
+
+            <div class="tool-card"
+                onmouseenter="this.style.boxShadow='0 0 28px rgba(16,185,129,.15)';this.style.borderColor='rgba(16,185,129,.4)'"
+                onmouseleave="this.style.boxShadow='';this.style.borderColor='rgba(255,255,255,.07)'">
+                <div class="tool-top">
+                    <div class="tool-emoji" style="background:rgba(16,185,129,.1);border-color:rgba(16,185,129,.25)">🍃
+                    </div>
+                    <div>
+                        <div class="tool-name">MongoDB Compass</div>
+                        <span class="tool-type"
+                            style="background:rgba(16,185,129,.1);border-color:rgba(16,185,129,.3);color:var(--green)">GUI
+                            · Free</span>
+                    </div>
+                </div>
+                <div class="tool-desc">Official GUI for MongoDB. Browse collections, run queries, visualize documents,
+                    and manage indexes without the terminal.</div>
+                <div class="tool-uses">
+                    <span class="tool-use">Browse collections and documents visually</span>
+                    <span class="tool-use">Run aggregation pipelines with UI builder</span>
+                    <span class="tool-use">Schema analysis & performance insights</span>
+                </div>
+                <a class="tool-link" href="https://www.mongodb.com/products/compass" target="_blank"
+                    style="background:rgba(16,185,129,.1);border-color:rgba(16,185,129,.3);color:var(--green)">🔗
+                    MongoDB Compass</a>
+            </div>
+
+            <div class="tool-card"
+                onmouseenter="this.style.boxShadow='0 0 28px rgba(56,189,248,.15)';this.style.borderColor='rgba(56,189,248,.4)'"
+                onmouseleave="this.style.boxShadow='';this.style.borderColor='rgba(255,255,255,.07)'">
+                <div class="tool-top">
+                    <div class="tool-emoji" style="background:rgba(56,189,248,.1);border-color:rgba(56,189,248,.25)">🐬
+                    </div>
+                    <div>
+                        <div class="tool-name">MySQL Workbench</div>
+                        <span class="tool-type"
+                            style="background:rgba(56,189,248,.1);border-color:rgba(56,189,248,.3);color:var(--sky)">GUI
+                            · Free</span>
+                    </div>
+                </div>
+                <div class="tool-desc">Official GUI for MySQL. Design schemas, run SQL queries, manage connections, and
+                    reverse-engineer existing databases.</div>
+                <div class="tool-uses">
+                    <span class="tool-use">Visual SQL query builder and runner</span>
+                    <span class="tool-use">ER diagram design for schema planning</span>
+                    <span class="tool-use">Database import/export & user management</span>
+                </div>
+                <a class="tool-link" href="https://www.mysql.com/products/workbench/" target="_blank"
+                    style="background:rgba(56,189,248,.1);border-color:rgba(56,189,248,.3);color:var(--sky)">🔗 MySQL
+                    Workbench</a>
+            </div>
+
+        </div>
+    </section>
+
+    <div class="div"></div>
+
+    <!-- PERFORMANCE & SEO + API DOCS + AUTOMATION + SECURITY -->
+    <section id="perf" class="rv">
+        <div class="cat-header">
+            <div class="cat-icon">📊</div>
+            <div class="cat-label" style="color:var(--accent2)">Performance, SEO, API Docs & Automation</div>
+            <div class="cat-count">4 tools</div>
+        </div>
+        <div class="tools-grid">
+
+            <div class="tool-card"
+                onmouseenter="this.style.boxShadow='0 0 28px rgba(245,158,11,.15)';this.style.borderColor='rgba(245,158,11,.4)'"
+                onmouseleave="this.style.boxShadow='';this.style.borderColor='rgba(255,255,255,.07)'">
+                <div class="tool-top">
+                    <div class="tool-emoji" style="background:rgba(245,158,11,.1);border-color:rgba(245,158,11,.25)">🏎️
+                    </div>
+                    <div>
+                        <div class="tool-name">Google Lighthouse</div>
+                        <span class="tool-type"
+                            style="background:rgba(245,158,11,.1);border-color:rgba(245,158,11,.3);color:var(--accent2)">Built-in
+                            Chrome · Free</span>
+                    </div>
+                </div>
+                <div class="tool-desc">Audit your website for Performance, SEO, Accessibility, and Best Practices. Built
+                    directly into Chrome DevTools.</div>
+                <div class="tool-uses">
+                    <span class="tool-use">Performance score (Core Web Vitals)</span>
+                    <span class="tool-use">SEO audit & accessibility check</span>
+                    <span class="tool-use">Specific improvement suggestions</span>
+                </div>
+                <div class="devtools-note"
+                    style="background:rgba(245,158,11,.05);border-color:rgba(245,158,11,.2);color:var(--accent2)">Open
+                    in: Chrome DevTools → <span class="shortcut"
+                        style="background:rgba(245,158,11,.15)">Lighthouse</span> tab</div>
+            </div>
+
+            <div class="tool-card"
+                onmouseenter="this.style.boxShadow='0 0 28px rgba(245,158,11,.15)';this.style.borderColor='rgba(245,158,11,.4)'"
+                onmouseleave="this.style.boxShadow='';this.style.borderColor='rgba(255,255,255,.07)'">
+                <div class="tool-top">
+                    <div class="tool-emoji" style="background:rgba(245,158,11,.1);border-color:rgba(245,158,11,.25)">⚡
+                    </div>
+                    <div>
+                        <div class="tool-name">GTmetrix</div>
+                        <span class="tool-type"
+                            style="background:rgba(245,158,11,.1);border-color:rgba(245,158,11,.3);color:var(--accent2)">Web
+                            Tool · Free Tier</span>
+                    </div>
+                </div>
+                <div class="tool-desc">Detailed website speed testing with waterfall chart, filmstrip, and actionable
+                    optimization recommendations.</div>
+                <div class="tool-uses">
+                    <span class="tool-use">Page load speed analysis</span>
+                    <span class="tool-use">Largest Contentful Paint (LCP) tracking</span>
+                    <span class="tool-use">Historical monitoring & alerts</span>
+                </div>
+                <a class="tool-link" href="https://gtmetrix.com/" target="_blank"
+                    style="background:rgba(245,158,11,.1);border-color:rgba(245,158,11,.3);color:var(--accent2)">🔗
+                    gtmetrix.com</a>
+            </div>
+
+            <div class="tool-card"
+                onmouseenter="this.style.boxShadow='0 0 28px rgba(56,189,248,.15)';this.style.borderColor='rgba(56,189,248,.4)'"
+                onmouseleave="this.style.boxShadow='';this.style.borderColor='rgba(255,255,255,.07)'">
+                <div class="tool-top">
+                    <div class="tool-emoji" style="background:rgba(56,189,248,.1);border-color:rgba(56,189,248,.25)">📖
+                    </div>
+                    <div>
+                        <div class="tool-name">Swagger</div>
+                        <span class="tool-type"
+                            style="background:rgba(56,189,248,.1);border-color:rgba(56,189,248,.3);color:var(--sky)">API
+                            Docs · Free Tier</span>
+                    </div>
+                </div>
+                <div class="tool-desc">Auto-generate interactive API documentation. Developers can read AND test your
+                    API directly from the docs page.</div>
+                <div class="tool-uses">
+                    <span class="tool-use">OpenAPI specification format</span>
+                    <span class="tool-use">Interactive try-it-out API explorer</span>
+                    <span class="tool-use">Auto-generated from FastAPI / Express</span>
+                </div>
+                <a class="tool-link" href="https://swagger.io/" target="_blank"
+                    style="background:rgba(56,189,248,.1);border-color:rgba(56,189,248,.3);color:var(--sky)">🔗
+                    swagger.io</a>
+            </div>
+
+            <div class="tool-card"
+                onmouseenter="this.style.boxShadow='0 0 28px rgba(249,115,22,.15)';this.style.borderColor='rgba(249,115,22,.4)'"
+                onmouseleave="this.style.boxShadow='';this.style.borderColor='rgba(255,255,255,.07)'">
+                <div class="tool-top">
+                    <div class="tool-emoji" style="background:rgba(249,115,22,.1);border-color:rgba(249,115,22,.25)">⚡
+                    </div>
+                    <div>
+                        <div class="tool-name">Zapier</div>
+                        <span class="tool-type"
+                            style="background:rgba(249,115,22,.1);border-color:rgba(249,115,22,.3);color:var(--orange)">Automation
+                            · Free Tier</span>
+                    </div>
+                </div>
+                <div class="tool-desc">Connect apps and automate workflows without writing code. Link Gmail → Slack →
+                    Sheets → Notion and more.</div>
+                <div class="tool-uses">
+                    <span class="tool-use">Form submit → send email automatically</span>
+                    <span class="tool-use">New GitHub commit → post to Slack</span>
+                    <span class="tool-use">No-code workflow automation</span>
+                </div>
+                <a class="tool-link" href="https://zapier.com/" target="_blank"
+                    style="background:rgba(249,115,22,.1);border-color:rgba(249,115,22,.3);color:var(--orange)">🔗
+                    zapier.com</a>
+            </div>
+
+        </div>
+    </section>
+
+    <div class="div"></div>
+
+    <!-- SECURITY -->
+    <section id="security" class="rv">
+        <div class="cat-header">
+            <div class="cat-icon">🔐</div>
+            <div class="cat-label" style="color:var(--red)">Security Testing</div>
+            <div class="cat-count">1 tool</div>
+        </div>
+        <div class="tools-grid" style="max-width:360px">
+            <div class="tool-card"
+                onmouseenter="this.style.boxShadow='0 0 28px rgba(239,68,68,.15)';this.style.borderColor='rgba(239,68,68,.4)'"
+                onmouseleave="this.style.boxShadow='';this.style.borderColor='rgba(255,255,255,.07)'">
+                <div class="tool-top">
+                    <div class="tool-emoji" style="background:rgba(239,68,68,.1);border-color:rgba(239,68,68,.25)">🕵️
+                    </div>
+                    <div>
+                        <div class="tool-name">Burp Suite</div>
+                        <span class="tool-type"
+                            style="background:rgba(239,68,68,.1);border-color:rgba(239,68,68,.3);color:var(--red)">Security
+                            Tool · Free Community</span>
+                    </div>
+                </div>
+                <div class="tool-desc">Industry-standard web application security testing platform. Used by penetration
+                    testers and security researchers worldwide.</div>
+                <div class="tool-uses">
+                    <span class="tool-use">Intercept & modify HTTP/HTTPS traffic</span>
+                    <span class="tool-use">Scan for XSS, SQL injection vulnerabilities</span>
+                    <span class="tool-use">Authentication and session testing</span>
+                    <span class="tool-use">Used in ethical hacking & bug bounties</span>
+                </div>
+                <a class="tool-link" href="https://portswigger.net/burp" target="_blank"
+                    style="background:rgba(239,68,68,.1);border-color:rgba(239,68,68,.3);color:var(--red)">🔗
+                    portswigger.net/burp</a>
+            </div>
+        </div>
+    </section>
+
+    <div class="div"></div>
+    <footer class="sfoot">KEC Workshop © 2026 · Developer Tools Reference · <span>Powered by Antigravity</span></footer>
+
+    <script>
+        function goTo(id, btn) {
+            document.getElementById(id)?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            document.querySelectorAll('.nb').forEach(b => b.classList.remove('active'));
+            if (btn) btn.classList.add('active');
+        }
+        const obs = new IntersectionObserver(entries => {
+            entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('vis'); obs.unobserve(e.target) } });
+        }, { threshold: 0.07 });
+        document.querySelectorAll('.rv').forEach(el => obs.observe(el));
+        window.addEventListener('scroll', () => {
+            const p = (window.scrollY / (document.documentElement.scrollHeight - window.innerHeight)) * 100;
+            document.getElementById('rbar').style.width = p + '%';
+        });
+    </script>
+</body>
+
+</html>

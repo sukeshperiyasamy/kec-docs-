@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>IoT Temperature Monitoring</title>
+  <style>
+    body { font-family: Arial; text-align: center; }
+    .card {
+      display: inline-block;
+      padding: 20px;
+      margin: 15px;
+      border-radius: 10px;
+      box-shadow: 0 0 10px #aaa;
+      width: 220px;
+    }
+  </style>
+</head>
+<body>
+
+<h1>🌍 IoT Temperature & Humidity Dashboard</h1>
+
+<div class="card">
+  <h2>🌡 Temperature</h2>
+  <p id="temp">-- °C</p>
+</div>
+
+<div class="card">
+  <h2>💧 Humidity</h2>
+  <p id="hum">-- %</p>
+</div>
+
+<script>
+const url =
+"https://api.thingspeak.com/channels/3272751/feeds.json?api_key=YOUR_READ_API_KEY&results=1";
+
+function fetchData() {
+  fetch(url)
+    .then(res => res.json())
+    .then(data => {
+      const feed = data.feeds[0];
+      document.getElementById("temp").innerText = feed.field1 + " °C";
+      document.getElementById("hum").innerText = feed.field2 + " %";
+    });
+}
+
+fetchData();
+setInterval(fetchData, 5000);
+</script>
+
+</body>
+</html>

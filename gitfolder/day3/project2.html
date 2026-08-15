@@ -1,0 +1,1566 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Project 2 — SkyCast Weather Dashboard | KEC Workshop</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700;800&family=Fira+Code:wght@400;500&display=swap"
+        rel="stylesheet">
+    <style>
+        *,
+        *::before,
+        *::after {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0
+        }
+
+        :root {
+            --bg: #07091a;
+            --card: #0f1629;
+            --card2: #161f35;
+            --card3: #1c273f;
+            --accent: #0ea5e9;
+            --accent2: #38bdf8;
+            --accent3: #22d3ee;
+            --violet: #6366f1;
+            --purple: #a855f7;
+            --green: #10b981;
+            --orange: #f59e0b;
+            --red: #ef4444;
+            --text: #e2e8f0;
+            --muted: #64748b;
+            --muted2: #94a3b8;
+            --border: rgba(14, 165, 233, 0.2);
+            --glow: 0 0 36px rgba(14, 165, 233, 0.22);
+        }
+
+        html {
+            scroll-behavior: smooth
+        }
+
+        body {
+            font-family: 'Outfit', sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            font-size: 15px;
+            overflow-x: hidden
+        }
+
+        /* progress bar */
+        #rbar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            height: 3px;
+            z-index: 999;
+            width: 0%;
+            background: linear-gradient(90deg, var(--accent), var(--accent2), var(--accent3))
+        }
+
+        /* blobs */
+        .blobs {
+            position: fixed;
+            inset: 0;
+            pointer-events: none;
+            z-index: 0;
+            overflow: hidden
+        }
+
+        .blob {
+            position: absolute;
+            border-radius: 50%;
+            filter: blur(90px);
+            opacity: .12;
+            animation: bf 14s ease-in-out infinite alternate
+        }
+
+        .b1 {
+            width: 420px;
+            height: 420px;
+            background: var(--accent);
+            top: -100px;
+            left: -80px
+        }
+
+        .b2 {
+            width: 320px;
+            height: 320px;
+            background: var(--violet);
+            bottom: -80px;
+            right: -50px;
+            animation-delay: 5s
+        }
+
+        .b3 {
+            width: 240px;
+            height: 240px;
+            background: var(--accent3);
+            top: 40%;
+            left: 58%;
+            animation-delay: 2.5s
+        }
+
+        @keyframes bf {
+            from {
+                transform: scale(1) translate(0, 0)
+            }
+
+            to {
+                transform: scale(1.1) translate(22px, 14px)
+            }
+        }
+
+        /* NAV */
+        nav {
+            position: sticky;
+            top: 0;
+            z-index: 200;
+            background: rgba(7, 9, 26, .92);
+            backdrop-filter: blur(16px);
+            border-bottom: 1px solid var(--border);
+            padding: .65rem 1rem;
+            display: flex;
+            align-items: center;
+            gap: .4rem;
+            overflow-x: auto;
+            padding-left: 6rem
+        }
+
+        .nav-logo {
+            font-weight: 800;
+            font-size: .95rem;
+            background: linear-gradient(90deg, var(--accent), var(--accent2));
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+            white-space: nowrap;
+            margin-right: .4rem;
+            display: flex;
+            align-items: center;
+            gap: .35rem
+        }
+
+        .nb {
+            font-family: 'Outfit', sans-serif;
+            font-size: .72rem;
+            font-weight: 600;
+            padding: .32rem .8rem;
+            border: 1px solid var(--border);
+            border-radius: 999px;
+            background: transparent;
+            color: var(--muted2);
+            cursor: pointer;
+            white-space: nowrap;
+            transition: all .2s
+        }
+
+        .nb:hover,
+        .nb.active {
+            background: var(--accent);
+            border-color: var(--accent);
+            color: #fff
+        }
+
+        /* SECTIONS */
+        section {
+            position: relative;
+            z-index: 10;
+            padding: 3.5rem 1.8rem;
+            max-width: 900px;
+            margin: 0 auto
+        }
+
+        .eyebrow {
+            font-family: 'Fira Code', monospace;
+            font-size: .68rem;
+            color: var(--accent3);
+            letter-spacing: .14em;
+            text-transform: uppercase;
+            margin-bottom: .5rem
+        }
+
+        .sec-title {
+            font-size: clamp(1.5rem, 3.5vw, 2.2rem);
+            font-weight: 800;
+            line-height: 1.2;
+            background: linear-gradient(135deg, #fff 25%, var(--accent2) 100%);
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: .75rem
+        }
+
+        .sec-lead {
+            font-size: .9rem;
+            color: var(--muted2);
+            line-height: 1.8;
+            max-width: 660px;
+            margin-bottom: 1.8rem
+        }
+
+        .rv {
+            opacity: 0;
+            transform: translateY(26px);
+            transition: opacity .65s ease, transform .65s ease
+        }
+
+        .rv.vis {
+            opacity: 1;
+            transform: translateY(0)
+        }
+
+        /* HERO */
+        #hero {
+            min-height: 88vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            gap: 1.3rem;
+            padding: 4rem 1.8rem;
+            max-width: 900px;
+            margin: 0 auto
+        }
+
+        .hero-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: .45rem;
+            font-family: 'Fira Code', monospace;
+            font-size: .7rem;
+            padding: .3rem .9rem;
+            border-radius: 999px;
+            border: 1px solid rgba(14, 165, 233, .4);
+            color: var(--accent2);
+            background: rgba(14, 165, 233, .07);
+            width: fit-content;
+            animation: fu .6s ease both
+        }
+
+        .hero-h1 {
+            font-size: clamp(2rem, 6vw, 3.5rem);
+            font-weight: 800;
+            line-height: 1.1;
+            background: linear-gradient(135deg, #fff 15%, var(--accent) 55%, var(--accent2) 100%);
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+            animation: fu .6s .08s ease both
+        }
+
+        .hero-sub {
+            font-size: 1rem;
+            color: var(--muted2);
+            max-width: 540px;
+            line-height: 1.8;
+            animation: fu .6s .16s ease both
+        }
+
+        .hero-stats {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 1rem;
+            animation: fu .6s .32s ease both
+        }
+
+        .hstat {
+            background: var(--card2);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: .65rem 1rem;
+            display: flex;
+            flex-direction: column;
+            min-width: 90px
+        }
+
+        .hstat-n {
+            font-size: 1.4rem;
+            font-weight: 800;
+            color: var(--accent2)
+        }
+
+        .hstat-l {
+            font-size: .65rem;
+            color: var(--muted);
+            margin-top: .1rem
+        }
+
+        .scroll-hint {
+            font-size: .75rem;
+            color: var(--muted);
+            display: flex;
+            align-items: center;
+            gap: .4rem;
+            animation: fu .6s .4s ease both, bob 2s 1.5s ease-in-out infinite
+        }
+
+        @keyframes bob {
+
+            0%,
+            100% {
+                transform: translateY(0)
+            }
+
+            50% {
+                transform: translateY(5px)
+            }
+        }
+
+        @keyframes fu {
+            from {
+                opacity: 0;
+                transform: translateY(22px)
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0)
+            }
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(6px)
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0)
+            }
+        }
+
+        /* CARDS */
+        .cards-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 1.1rem
+        }
+
+        .card {
+            background: var(--card2);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            padding: 1.2rem;
+            transition: transform .3s, box-shadow .3s, border-color .3s;
+            cursor: default
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: var(--glow);
+            border-color: var(--accent)
+        }
+
+        .card .ci {
+            font-size: 1.8rem;
+            margin-bottom: .6rem
+        }
+
+        .card h3 {
+            font-size: .88rem;
+            font-weight: 700;
+            margin-bottom: .35rem
+        }
+
+        .card p {
+            font-size: .78rem;
+            color: var(--muted2);
+            line-height: 1.65
+        }
+
+        /* CODE BLOCKS */
+        .code-block {
+            background: rgba(0, 0, 0, .55);
+            border: 1px solid rgba(14, 165, 233, .18);
+            border-radius: 10px;
+            padding: .9rem 1.1rem;
+            font-family: 'Fira Code', monospace;
+            font-size: .8rem;
+            line-height: 1.8;
+            overflow-x: auto;
+            margin: .75rem 0;
+            position: relative
+        }
+
+        .code-block .k {
+            color: #c792ea
+        }
+
+        .code-block .s {
+            color: var(--accent3)
+        }
+
+        .code-block .c {
+            color: var(--accent2)
+        }
+
+        .code-block .g {
+            color: var(--green)
+        }
+
+        .code-block .cm {
+            color: var(--muted)
+        }
+
+        .copy-btn {
+            position: absolute;
+            top: .6rem;
+            right: .6rem;
+            font-family: 'Outfit', sans-serif;
+            font-size: .68rem;
+            font-weight: 700;
+            padding: .25rem .65rem;
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            background: rgba(14, 165, 233, .1);
+            color: var(--accent2);
+            cursor: pointer;
+            transition: all .2s
+        }
+
+        .copy-btn:hover {
+            background: rgba(14, 165, 233, .25)
+        }
+
+        /* API TABLE */
+        .api-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: .82rem;
+            margin: .75rem 0
+        }
+
+        .api-table th {
+            background: rgba(14, 165, 233, .12);
+            color: var(--accent2);
+            font-weight: 700;
+            padding: .65rem 1rem;
+            text-align: left;
+            border-bottom: 2px solid var(--border)
+        }
+
+        .api-table td {
+            padding: .6rem 1rem;
+            border-bottom: 1px solid rgba(255, 255, 255, .05);
+            color: var(--muted2);
+            vertical-align: top
+        }
+
+        .api-table td:first-child {
+            font-family: 'Fira Code', monospace;
+            color: var(--accent3);
+            font-size: .78rem;
+            white-space: nowrap
+        }
+
+        .api-table tr:hover td {
+            background: rgba(14, 165, 233, .04)
+        }
+
+        /* STEP LIST */
+        .step-list {
+            display: flex;
+            flex-direction: column;
+            gap: 0
+        }
+
+        .step {
+            display: flex;
+            align-items: flex-start;
+            gap: 1rem;
+            position: relative
+        }
+
+        .step:not(:last-child)::after {
+            content: '';
+            position: absolute;
+            left: 21px;
+            top: 44px;
+            width: 2px;
+            height: calc(100% - 12px);
+            background: linear-gradient(180deg, var(--accent), transparent)
+        }
+
+        .step-num {
+            min-width: 42px;
+            height: 42px;
+            border-radius: 50%;
+            border: 2px solid var(--accent);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 800;
+            font-size: .85rem;
+            color: var(--accent);
+            background: rgba(14, 165, 233, .1);
+            flex-shrink: 0;
+            position: relative;
+            z-index: 2;
+            margin-top: 8px;
+            transition: all .3s
+        }
+
+        .step:hover .step-num {
+            background: var(--accent);
+            color: #fff;
+            box-shadow: 0 0 18px rgba(14, 165, 233, .6)
+        }
+
+        .step-body {
+            background: var(--card2);
+            border: 1px solid var(--border);
+            border-radius: 14px;
+            padding: .9rem 1.2rem;
+            margin-bottom: 1rem;
+            flex: 1;
+            transition: border-color .3s, transform .3s
+        }
+
+        .step:hover .step-body {
+            border-color: var(--accent);
+            transform: translateX(4px)
+        }
+
+        .step-body h4 {
+            font-size: .9rem;
+            font-weight: 700;
+            margin-bottom: .3rem
+        }
+
+        .step-body p {
+            font-size: .8rem;
+            color: var(--muted2);
+            line-height: 1.65
+        }
+
+        /* DEPENDENCY TABLE */
+        .dep-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+            gap: .85rem;
+            margin-top: .75rem
+        }
+
+        .dep-card {
+            background: var(--card2);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: .9rem 1.1rem;
+            display: flex;
+            gap: .75rem;
+            align-items: flex-start;
+            transition: border-color .25s, transform .25s
+        }
+
+        .dep-card:hover {
+            border-color: var(--accent);
+            transform: translateY(-3px)
+        }
+
+        .dep-icon {
+            font-size: 1.5rem;
+            flex-shrink: 0
+        }
+
+        .dep-text h4 {
+            font-size: .85rem;
+            font-weight: 700;
+            margin-bottom: .2rem;
+            color: var(--accent2)
+        }
+
+        .dep-text p {
+            font-size: .75rem;
+            color: var(--muted2);
+            line-height: 1.5
+        }
+
+        /* PROMPT CARD */
+        .prompt-card {
+            background: linear-gradient(135deg, rgba(14, 165, 233, .08), rgba(99, 102, 241, .06));
+            border: 1px solid rgba(14, 165, 233, .3);
+            border-radius: 18px;
+            padding: 1.5rem;
+            margin: 1rem 0
+        }
+
+        .prompt-label {
+            font-family: 'Fira Code', monospace;
+            font-size: .68rem;
+            color: var(--accent3);
+            letter-spacing: .12em;
+            text-transform: uppercase;
+            margin-bottom: .65rem;
+            display: flex;
+            align-items: center;
+            gap: .4rem
+        }
+
+        .prompt-label::before {
+            content: '🤖'
+        }
+
+        .prompt-text {
+            font-size: .85rem;
+            color: var(--text);
+            line-height: 1.85;
+            white-space: pre-wrap
+        }
+
+        /* ALERT */
+        .alert {
+            border-radius: 12px;
+            padding: .9rem 1.1rem;
+            font-size: .82rem;
+            line-height: 1.65;
+            margin: .75rem 0;
+            display: flex;
+            gap: .65rem;
+            align-items: flex-start
+        }
+
+        .alert-warn {
+            background: rgba(245, 158, 11, .07);
+            border: 1px solid rgba(245, 158, 11, .3);
+            color: #fbbf24
+        }
+
+        .alert-info {
+            background: rgba(14, 165, 233, .07);
+            border: 1px solid rgba(14, 165, 233, .25);
+            color: var(--accent2)
+        }
+
+        .alert-success {
+            background: rgba(16, 185, 129, .07);
+            border: 1px solid rgba(16, 185, 129, .25);
+            color: #34d399
+        }
+
+        /* NETLIFY STEPS */
+        .netlify-steps {
+            display: flex;
+            flex-direction: column;
+            gap: .6rem;
+            margin: .75rem 0
+        }
+
+        .ns {
+            background: var(--card2);
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            padding: .75rem 1rem;
+            display: flex;
+            align-items: center;
+            gap: .75rem;
+            font-size: .82rem;
+            transition: border-color .2s
+        }
+
+        .ns:hover {
+            border-color: var(--accent)
+        }
+
+        .ns-num {
+            min-width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--accent), var(--accent2));
+            color: #fff;
+            font-size: .72rem;
+            font-weight: 800;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0
+        }
+
+        /* FIELD SECTION */
+        .field-section {
+            background: var(--card2);
+            border: 1px solid var(--border);
+            border-radius: 14px;
+            padding: 1.1rem 1.3rem;
+            margin-bottom: 1rem
+        }
+
+        .field-section h4 {
+            font-size: .88rem;
+            font-weight: 700;
+            margin-bottom: .75rem;
+            color: var(--accent2)
+        }
+
+        /* DIV & FOOTER */
+        .div {
+            height: 1px;
+            background: linear-gradient(90deg, transparent, var(--border), transparent);
+            margin: .5rem auto;
+            max-width: 900px
+        }
+
+        .sfoot {
+            position: relative;
+            z-index: 10;
+            padding: 1.5rem;
+            text-align: center;
+            border-top: 1px solid var(--border);
+            color: var(--muted);
+            font-size: .77rem
+        }
+
+        .sfoot span {
+            color: var(--accent2)
+        }
+
+        /* TAG */
+        .tag {
+            display: inline-block;
+            font-family: 'Fira Code', monospace;
+            font-size: .65rem;
+            padding: .15rem .55rem;
+            border-radius: 999px;
+            margin: .15rem
+        }
+
+        .tag-b {
+            color: var(--accent);
+            background: rgba(14, 165, 233, .1);
+            border: 1px solid rgba(14, 165, 233, .25)
+        }
+
+        .tag-g {
+            color: var(--green);
+            background: rgba(16, 185, 129, .08);
+            border: 1px solid rgba(16, 185, 129, .22)
+        }
+
+        .tag-p {
+            color: var(--purple);
+            background: rgba(168, 85, 247, .1);
+            border: 1px solid rgba(168, 85, 247, .25)
+        }
+
+        .tag-o {
+            color: var(--orange);
+            background: rgba(245, 158, 11, .08);
+            border: 1px solid rgba(245, 158, 11, .22)
+        }
+
+        @media(max-width:580px) {
+            section {
+                padding: 2.5rem 1rem
+            }
+
+            #hero {
+                padding: 3rem 1rem
+            }
+
+            .api-table {
+                font-size: .74rem
+            }
+
+            .api-table td,
+            .api-table th {
+                padding: .45rem .6rem
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div id="rbar"></div>
+    <div class="blobs">
+        <div class="blob b1"></div>
+        <div class="blob b2"></div>
+        <div class="blob b3"></div>
+    </div>
+
+    <!-- Back to Home -->
+    <a href="index.html"
+        style="position:fixed;top:1rem;left:1rem;z-index:9999;display:inline-flex;align-items:center;gap:.45rem;padding:.45rem 1rem;background:rgba(7,9,26,.9);border:1px solid rgba(99,102,241,.4);border-radius:999px;color:#a78bfa;font-family:'Outfit',sans-serif;font-size:.8rem;font-weight:700;text-decoration:none;backdrop-filter:blur(10px);transition:all .2s;"
+        onmouseover="this.style.background='rgba(99,102,241,.25)';this.style.borderColor='#6366f1'"
+        onmouseout="this.style.background='rgba(7,9,26,.9)';this.style.borderColor='rgba(99,102,241,.4)'">← Home</a>
+
+    <!-- NAV -->
+    <nav>
+        <div class="nav-logo">⛅ SkyCast</div>
+        <button class="nb active" onclick="goTo('hero')">Intro</button>
+        <button class="nb" onclick="goTo('why')">Why</button>
+        <button class="nb" onclick="goTo('api')">API</button>
+        <button class="nb" onclick="goTo('setup')">Setup</button>
+        <button class="nb" onclick="goTo('fields')">Fields</button>
+        <button class="nb" onclick="goTo('prompt1')">Basic</button>
+        <button class="nb" onclick="goTo('deploy')">Deploy</button>
+        <button class="nb" onclick="goTo('prompt2')">Premium</button>
+        <button class="nb" onclick="goTo('portfolio')">Portfolio</button>
+    </nav>
+
+    <!-- ─── HERO ─── -->
+    <section id="hero">
+        <div class="hero-badge">⛅ Project 2 · KEC Workshop</div>
+        <h1 class="hero-h1">SkyCast<br>Weather Dashboard</h1>
+        <p class="hero-sub">A modern, responsive weather dashboard built with React.js + WeatherAPI, enhanced using
+            AI-generated UI. Learn real-world API integration, data visualization, animations, and cloud deployment.</p>
+        <div class="hero-stats">
+            <div class="hstat"><span class="hstat-n">React</span><span class="hstat-l">Framework</span></div>
+            <div class="hstat"><span class="hstat-n">Recharts</span><span class="hstat-l">Visualization</span></div>
+            <div class="hstat"><span class="hstat-n">Netlify</span><span class="hstat-l">Deployment</span></div>
+            <div class="hstat"><span class="hstat-n">7-day</span><span class="hstat-l">Forecast</span></div>
+        </div>
+        <div class="scroll-hint">↓ Scroll to explore all sections</div>
+    </section>
+
+    <div class="div"></div>
+
+    <!-- ─── WHY ─── -->
+    <section id="why" class="rv">
+        <p class="eyebrow">Section 2</p>
+        <h2 class="sec-title">🎯 Why We Are Doing This Project</h2>
+        <p class="sec-lead">This project transforms a simple API call into a portfolio-level production application,
+            teaching industry-standard skills used in real software teams.</p>
+        <div class="cards-grid">
+            <div class="card">
+                <div class="ci">🔌</div>
+                <h3>API Integration</h3>
+                <p>Learn how to fetch & handle live data from real-world REST APIs using Axios.</p>
+            </div>
+            <div class="card">
+                <div class="ci">⚛️</div>
+                <h3>React.js</h3>
+                <p>Build reusable components, manage state with hooks, and structure a scalable app.</p>
+            </div>
+            <div class="card">
+                <div class="ci">📊</div>
+                <h3>Data Visualization</h3>
+                <p>Display temperature, wind, and rain data using Recharts line & bar charts.</p>
+            </div>
+            <div class="card">
+                <div class="ci">🎬</div>
+                <h3>Animations</h3>
+                <p>Add professional motion effects using Framer Motion for premium feel.</p>
+            </div>
+            <div class="card">
+                <div class="ci">🔐</div>
+                <h3>Environment Variables</h3>
+                <p>Secure API keys using .env files so secrets never appear in GitHub.</p>
+            </div>
+            <div class="card">
+                <div class="ci">🐙</div>
+                <h3>Git & CI/CD</h3>
+                <p>Version control with Git + auto-deploy to Netlify whenever you push code.</p>
+            </div>
+            <div class="card">
+                <div class="ci">🤖</div>
+                <h3>AI Development</h3>
+                <p>Use Antigravity AI to generate, upgrade, and refine component code instantly.</p>
+            </div>
+            <div class="card">
+                <div class="ci">🌐</div>
+                <h3>Live Deployment</h3>
+                <p>Ship a production app to Netlify with a real public URL for your portfolio.</p>
+            </div>
+        </div>
+    </section>
+
+    <div class="div"></div>
+
+    <!-- ─── API ─── -->
+    <section id="api" class="rv">
+        <p class="eyebrow">Sections 3 & 4</p>
+        <h2 class="sec-title">🌍 What is an API & API Key?</h2>
+        <p class="sec-lead">An API (Application Programming Interface) lets two systems communicate. Our React app talks
+            to the WeatherAPI server and gets live data back.</p>
+
+        <div class="cards-grid" style="margin-bottom:1.5rem">
+            <div class="card">
+                <div class="ci">📡</div>
+                <h3>Our App = Frontend</h3>
+                <p>We send a request: <em>"Give me weather for Chennai"</em></p>
+            </div>
+            <div class="card">
+                <div class="ci">🌐</div>
+                <h3>WeatherAPI = Backend</h3>
+                <p>They respond with structured JSON weather data.</p>
+            </div>
+            <div class="card">
+                <div class="ci">📦</div>
+                <h3>JSON Response</h3>
+                <p>We parse the data and display it as cards, charts, and icons in our UI.</p>
+            </div>
+        </div>
+
+        <p class="eyebrow">Sample API response</p>
+        <div class="code-block">
+            <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+            {
+            <span class="s">"temp_c"</span>: <span class="c">32</span>,
+            <span class="s">"humidity"</span>: <span class="c">60</span>,
+            <span class="s">"wind_kph"</span>: <span class="c">15</span>,
+            <span class="s">"condition"</span>: { <span class="s">"text"</span>: <span class="c">"Partly Cloudy"</span>
+            }
+            }
+        </div>
+
+        <h3 style="margin:1.5rem 0 .75rem;font-size:1rem">🔑 What is an API Key?</h3>
+        <div class="cards-grid">
+            <div class="card">
+                <div class="ci">🎫</div>
+                <h3>Unique Secret Code</h3>
+                <p>Identifies your specific application to the WeatherAPI servers.</p>
+            </div>
+            <div class="card">
+                <div class="ci">📈</div>
+                <h3>Tracks Usage</h3>
+                <p>API providers monitor how many requests your key makes per day.</p>
+            </div>
+            <div class="card">
+                <div class="ci">🛡️</div>
+                <h3>Prevents Misuse</h3>
+                <p>Without a key, anyone could spam the server — keys add access control.</p>
+            </div>
+        </div>
+
+        <div class="code-block" style="margin-top:1rem">
+            <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+            <span class="cm"># Example API request URL</span>
+            https://api.weatherapi.com/v1/forecast.json?<span class="k">key</span>=<span class="s">YOUR_KEY</span>&<span
+                class="k">q</span>=<span class="s">Chennai</span>&<span class="k">days</span>=<span class="c">7</span>
+        </div>
+
+        <div class="alert alert-warn">⚠️ <strong>Never expose API keys publicly.</strong> Do not paste them in your
+            HTML/JS files directly. Use .env files instead.</div>
+
+        <h3 style="margin:1.5rem 0 .75rem;font-size:1rem">🔐 What is a .env File?</h3>
+        <p class="sec-lead">.env stores sensitive variables outside your code so they are never pushed to GitHub.</p>
+        <div class="code-block">
+            <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+            <span class="cm"># .env file</span>
+            <span class="k">VITE_WEATHER_API_KEY</span>=<span class="s">your_secret_key_here</span>
+        </div>
+        <div class="code-block">
+            <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+            <span class="cm">// In React (Vite) — access the key securely</span>
+            <span class="k">const</span> API_KEY = <span class="s">import.meta.env</span>.<span
+                class="c">VITE_WEATHER_API_KEY</span>;
+        </div>
+        <div class="alert alert-info">💡 Add <code>.env</code> to your <code>.gitignore</code> file so it is never
+            uploaded to GitHub.</div>
+    </section>
+
+    <div class="div"></div>
+
+    <!-- ─── WEATHERAPI ACCOUNT ─── -->
+    <section id="account" class="rv">
+        <p class="eyebrow">Section 6</p>
+        <h2 class="sec-title">🧾 Create WeatherAPI Account</h2>
+        <p class="sec-lead">WeatherAPI is free to use — no credit card required. You get up to 1 million calls/month on
+            the free tier.</p>
+        <div class="alert alert-info">🌐 Website: <strong><a href="https://www.weatherapi.com/" target="_blank"
+                    style="color:var(--accent2)">https://www.weatherapi.com/</a></strong></div>
+        <div class="netlify-steps">
+            <div class="ns">
+                <div class="ns-num">1</div>Open the website in a browser
+            </div>
+            <div class="ns">
+                <div class="ns-num">2</div>Click <strong>Sign Up</strong>
+            </div>
+            <div class="ns">
+                <div class="ns-num">3</div>Register with your Gmail account
+            </div>
+            <div class="ns">
+                <div class="ns-num">4</div>Go to your <strong>Dashboard</strong>
+            </div>
+            <div class="ns">
+                <div class="ns-num">5</div>Copy your <strong>API Key</strong>
+            </div>
+        </div>
+        <div class="alert alert-success">✅ No credit card required. Free tier gives 1 million API calls/month.</div>
+    </section>
+
+    <div class="div"></div>
+
+    <!-- ─── SETUP ─── -->
+    <section id="setup" class="rv">
+        <p class="eyebrow">Sections 7 & 8</p>
+        <h2 class="sec-title">🧱 Create React Project & Install Dependencies</h2>
+        <p class="sec-lead">We use Vite to create a fast, modern React project. Vite is the recommended build tool for
+            React in 2025.</p>
+
+        <h3 style="margin:.5rem 0 .5rem;font-size:.95rem;color:var(--accent2)">Step 1 — Create Project with Vite</h3>
+        <div class="code-block">
+            <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+            <span class="k">npm</span> create vite@latest <span class="s">skycast</span>
+            <span class="cm"># Select: React → JavaScript</span>
+            <span class="k">cd</span> skycast
+            <span class="k">npm</span> install
+            <span class="k">npm</span> run dev
+        </div>
+
+        <h3 style="margin:1.25rem 0 .5rem;font-size:.95rem;color:var(--accent2)">Step 2 — Install Dependencies</h3>
+        <div class="code-block">
+            <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+            <span class="k">npm</span> install <span class="s">axios recharts framer-motion react-icons</span>
+
+            <span class="cm"># Optional — for Tailwind CSS styling</span>
+            <span class="k">npm</span> install <span class="s">tailwindcss</span>
+        </div>
+
+        <div class="dep-grid">
+            <div class="dep-card">
+                <div class="dep-icon">📡</div>
+                <div class="dep-text">
+                    <h4>axios</h4>
+                    <p>Makes HTTP requests to WeatherAPI and handles responses cleanly.</p>
+                </div>
+            </div>
+            <div class="dep-card">
+                <div class="dep-icon">📊</div>
+                <div class="dep-text">
+                    <h4>recharts</h4>
+                    <p>Line charts, bar charts, and area charts for weather data visualization.</p>
+                </div>
+            </div>
+            <div class="dep-card">
+                <div class="dep-icon">🎬</div>
+                <div class="dep-text">
+                    <h4>framer-motion</h4>
+                    <p>Smooth animations: fade-in cards, slide-up forecast, weather transitions.</p>
+                </div>
+            </div>
+            <div class="dep-card">
+                <div class="dep-icon">✨</div>
+                <div class="dep-text">
+                    <h4>react-icons</h4>
+                    <p>Thousands of ready-to-use icons for weather, UI, and navigation.</p>
+                </div>
+            </div>
+            <div class="dep-card">
+                <div class="dep-icon">🎨</div>
+                <div class="dep-text">
+                    <h4>tailwindcss</h4>
+                    <p>(Optional) Utility-first CSS framework for rapid responsive UI styling.</p>
+                </div>
+            </div>
+        </div>
+
+        <h3 style="margin:1.5rem 0 .5rem;font-size:.95rem;color:var(--accent2)">Step 3 — Add .env File (root of project)
+        </h3>
+        <div class="code-block">
+            <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+            <span class="cm"># Create this file: .env</span>
+            <span class="k">VITE_WEATHER_API_KEY</span>=<span class="s">paste_your_weatherapi_key_here</span>
+        </div>
+
+        <h3 style="margin:1.5rem 0 .5rem;font-size:.95rem;color:var(--accent2)">Folder Structure</h3>
+        <div class="code-block">
+            skycast/
+            ├── src/
+            │ ├── components/
+            │ │ ├── SearchBar.jsx
+            │ │ ├── CurrentWeather.jsx
+            │ │ ├── Forecast.jsx
+            │ │ ├── HourlyChart.jsx
+            │ │ ├── WindChart.jsx
+            │ │ └── SunriseSunset.jsx
+            │ ├── App.jsx
+            │ ├── main.jsx
+            │ └── index.css
+            ├── .env
+            ├── .gitignore
+            └── index.html
+        </div>
+    </section>
+
+    <div class="div"></div>
+
+    <!-- ─── FIELDS ─── -->
+    <section id="fields" class="rv">
+        <p class="eyebrow">Section 9</p>
+        <h2 class="sec-title">🌦 Weather API Fields Explained</h2>
+        <p class="sec-lead">WeatherAPI returns rich JSON data. Here are all the fields we use across different parts of
+            our dashboard.</p>
+
+        <div class="field-section">
+            <h4>☁️ Current Weather Fields</h4>
+            <table class="api-table">
+                <thead>
+                    <tr>
+                        <th>Field</th>
+                        <th>Why We Use It</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>temp_c</td>
+                        <td>Main temperature display on the hero card</td>
+                    </tr>
+                    <tr>
+                        <td>condition.icon</td>
+                        <td>Animated weather icon (sunny, rainy, cloudy etc.)</td>
+                    </tr>
+                    <tr>
+                        <td>condition.text</td>
+                        <td>Human-readable condition description</td>
+                    </tr>
+                    <tr>
+                        <td>humidity</td>
+                        <td>Moisture level shown as circular progress bar</td>
+                    </tr>
+                    <tr>
+                        <td>wind_kph</td>
+                        <td>Wind speed shown in bar chart</td>
+                    </tr>
+                    <tr>
+                        <td>feelslike_c</td>
+                        <td>"Feels like" temperature card</td>
+                    </tr>
+                    <tr>
+                        <td>uv</td>
+                        <td>UV index warning card</td>
+                    </tr>
+                    <tr>
+                        <td>pressure_mb</td>
+                        <td>Atmospheric pressure stat card</td>
+                    </tr>
+                    <tr>
+                        <td>vis_km</td>
+                        <td>Visibility distance card</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <div class="field-section">
+            <h4>📅 7-Day Forecast Fields</h4>
+            <table class="api-table">
+                <thead>
+                    <tr>
+                        <th>Field</th>
+                        <th>Why We Use It</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>maxtemp_c</td>
+                        <td>High temperature for each day</td>
+                    </tr>
+                    <tr>
+                        <td>mintemp_c</td>
+                        <td>Low temperature for each day</td>
+                    </tr>
+                    <tr>
+                        <td>avgtemp_c</td>
+                        <td>Used in the temperature line chart</td>
+                    </tr>
+                    <tr>
+                        <td>totalprecip_mm</td>
+                        <td>Total rainfall amount</td>
+                    </tr>
+                    <tr>
+                        <td>daily_chance_of_rain</td>
+                        <td>Rain probability badge on forecast card</td>
+                    </tr>
+                    <tr>
+                        <td>maxwind_kph</td>
+                        <td>Wind trend across the week</td>
+                    </tr>
+                    <tr>
+                        <td>condition.icon</td>
+                        <td>Weather icon for each forecast day</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <div class="field-section">
+            <h4>🌅 Astro Fields (Sunrise & Moon)</h4>
+            <table class="api-table">
+                <thead>
+                    <tr>
+                        <th>Field</th>
+                        <th>Purpose</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>sunrise</td>
+                        <td>Displayed in the sunrise/sunset card</td>
+                    </tr>
+                    <tr>
+                        <td>sunset</td>
+                        <td>Displayed in the sunrise/sunset card</td>
+                    </tr>
+                    <tr>
+                        <td>moon_phase</td>
+                        <td>Moon phase label (Full Moon, Waning etc.)</td>
+                    </tr>
+                    <tr>
+                        <td>moon_illumination</td>
+                        <td>Moon brightness percentage</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <div class="field-section">
+            <h4>⏰ Hourly Forecast Fields</h4>
+            <table class="api-table">
+                <thead>
+                    <tr>
+                        <th>Field</th>
+                        <th>Purpose</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>time</td>
+                        <td>Hour label on the X-axis of charts</td>
+                    </tr>
+                    <tr>
+                        <td>temp_c</td>
+                        <td>Hourly temperature line chart data</td>
+                    </tr>
+                    <tr>
+                        <td>chance_of_rain</td>
+                        <td>Rain chance area chart</td>
+                    </tr>
+                    <tr>
+                        <td>wind_kph</td>
+                        <td>Hourly wind graph</td>
+                    </tr>
+                    <tr>
+                        <td>uv</td>
+                        <td>UV index variation through the day</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </section>
+
+    <div class="div"></div>
+
+    <!-- ─── PROMPT 1 ─── -->
+    <section id="prompt1" class="rv">
+        <p class="eyebrow">Section 10</p>
+        <h2 class="sec-title">🎨 Basic Design — AI Prompt 1</h2>
+        <p class="sec-lead">Start with a clean, working version first. Paste this prompt into Antigravity to generate
+            the initial React weather dashboard.</p>
+
+        <div class="prompt-card">
+            <div class="prompt-label">AI Prompt 1 — Basic Weather Dashboard</div>
+            <div class="prompt-text">Create a clean React weather dashboard using WeatherAPI.
+                Include:
+                - City search input
+                - Current temperature display
+                - Weather icon
+                - Humidity indicator
+                - Wind speed
+                - 7-day forecast list
+                - Responsive layout
+
+                Use simple CSS.
+                No advanced animation.
+                Keep it minimal and clean.
+                Use React + Axios for API calls.
+                Store API key in .env as VITE_WEATHER_API_KEY.
+                Show loading state and error state.</div>
+        </div>
+
+        <h3 style="margin:1.25rem 0 .75rem;font-size:.95rem;color:var(--accent2)">After generating — test locally:</h3>
+        <div class="code-block">
+            <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+            <span class="k">npm</span> run dev
+            <span class="cm"># Open: http://localhost:5173</span>
+        </div>
+        <div class="alert alert-info">💡 Test with a few city names: Chennai, Mumbai, London, Tokyo. Make sure data
+            loads correctly before moving to the premium upgrade.</div>
+    </section>
+
+    <div class="div"></div>
+
+    <!-- ─── GITHUB ─── -->
+    <section id="github" class="rv">
+        <p class="eyebrow">Section 11</p>
+        <h2 class="sec-title">🐙 Push to GitHub</h2>
+        <p class="sec-lead">Commit your working basic version before upgrading. This way you always have a stable
+            fallback.</p>
+        <div class="code-block">
+            <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+            <span class="k">git</span> init
+            <span class="k">git</span> add .
+            <span class="k">git</span> commit -m <span class="s">"Basic weather dashboard"</span>
+            <span class="k">git</span> branch -M main
+            <span class="k">git</span> remote add origin https://github.com/<span class="s">username</span>/skycast.git
+            <span class="k">git</span> push -u origin main
+        </div>
+        <div class="alert alert-warn">⚠️ Make sure <code>.env</code> is listed in <code>.gitignore</code> before pushing
+            — never push your API key to GitHub!</div>
+        <div class="code-block">
+            <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+            <span class="cm"># .gitignore — make sure this line exists</span>
+            .env
+            node_modules
+            dist
+        </div>
+    </section>
+
+    <div class="div"></div>
+
+    <!-- ─── DEPLOY ─── -->
+    <section id="deploy" class="rv">
+        <p class="eyebrow">Section 12</p>
+        <h2 class="sec-title">🌐 Deploy on Netlify</h2>
+        <p class="sec-lead">Netlify provides instant, free deployment from GitHub with automatic updates every time you
+            push new code.</p>
+
+        <div class="netlify-steps">
+            <div class="ns">
+                <div class="ns-num">1</div>Go to <strong><a href="https://netlify.com" target="_blank"
+                        style="color:var(--accent2)">https://netlify.com</a></strong> and sign in
+            </div>
+            <div class="ns">
+                <div class="ns-num">2</div>Click <strong>Add New Site → Import from GitHub</strong>
+            </div>
+            <div class="ns">
+                <div class="ns-num">3</div>Choose your <strong>skycast</strong> repository
+            </div>
+            <div class="ns">
+                <div class="ns-num">4</div>Set Build Command: <code
+                    style="background:rgba(14,165,233,.1);padding:.1rem .4rem;border-radius:4px;font-family:'Fira Code'">npm run build</code>
+            </div>
+            <div class="ns">
+                <div class="ns-num">5</div>Set Publish Directory: <code
+                    style="background:rgba(14,165,233,.1);padding:.1rem .4rem;border-radius:4px;font-family:'Fira Code'">dist</code>
+            </div>
+            <div class="ns">
+                <div class="ns-num">6</div>Go to <strong>Site Settings → Environment Variables</strong> → Add <code
+                    style="background:rgba(14,165,233,.1);padding:.1rem .4rem;border-radius:4px;font-family:'Fira Code'">VITE_WEATHER_API_KEY</code>
+            </div>
+            <div class="ns">
+                <div class="ns-num">7</div>Click <strong>Deploy Site</strong> 🚀
+            </div>
+        </div>
+
+        <div class="alert alert-success">✅ Netlify auto-deploys every time you push to GitHub. Your live URL will look
+            like: <strong>https://skycast-yourname.netlify.app</strong></div>
+    </section>
+
+    <div class="div"></div>
+
+    <!-- ─── PROMPT 2 ─── -->
+    <section id="prompt2" class="rv">
+        <p class="eyebrow">Section 13</p>
+        <h2 class="sec-title">🚀 Premium Upgrade — AI Prompt 2</h2>
+        <p class="sec-lead">After deploying the basic version, use this premium prompt to completely transform the UI
+            into a production-grade weather station interface.</p>
+
+        <div class="prompt-card">
+            <div class="prompt-label">AI Prompt 2 — Premium SkyCast Upgrade</div>
+            <div class="prompt-text">Upgrade my React weather dashboard to a premium modern weather station UI.
+
+                Requirements:
+                - Glassmorphism cards with blur and glow effects
+                - Animated gradient background that changes based on weather condition
+                - Dark/light mode toggle with smooth transition
+                - Smooth animations using Framer Motion on all cards
+                - Temperature line chart using Recharts
+                - Wind speed bar chart
+                - Humidity circular progress indicator
+                - Dynamic background (sunny = warm gradient, rainy = dark blue, storm = dark purple)
+                - Responsive mobile-first design
+                - Clean folder structure with separate components
+                - Tailwind CSS utility classes
+                - Loading spinner with skeleton cards
+                - Error UI with retry button
+                - Sunrise & sunset visual timeline
+                - 7-day forecast horizontal scroll on mobile
+
+                Keep the existing API logic and .env usage intact.</div>
+        </div>
+
+        <h3 style="margin:1.25rem 0 .75rem;font-size:.95rem;color:var(--accent2)">Animation Features with Framer Motion
+        </h3>
+        <div class="cards-grid">
+            <div class="card">
+                <div class="ci">🌅</div>
+                <h3>Fade-in Cards</h3>
+                <p>Each weather card animates in with opacity fade and upward slide on load.</p>
+            </div>
+            <div class="card">
+                <div class="ci">📈</div>
+                <h3>Slide-up Forecast</h3>
+                <p>The 7-day forecast staggered entrance feels like a professional weather app.</p>
+            </div>
+            <div class="card">
+                <div class="ci">🖱️</div>
+                <h3>Hover Effects</h3>
+                <p>Cards scale and glow on hover, making the dashboard feel interactive and alive.</p>
+            </div>
+            <div class="card">
+                <div class="ci">🌈</div>
+                <h3>Dynamic Background</h3>
+                <p>Gradient changes automatically based on the current weather condition returned by API.</p>
+            </div>
+        </div>
+
+        <h3 style="margin:1.5rem 0 .75rem;font-size:.95rem;color:var(--accent2)">Push Premium Version</h3>
+        <div class="code-block">
+            <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+            <span class="k">git</span> add .
+            <span class="k">git</span> commit -m <span class="s">"Premium animated dashboard"</span>
+            <span class="k">git</span> push
+            <span class="cm"># Netlify auto-deploys — live site updates in ~1 minute</span>
+        </div>
+    </section>
+
+    <div class="div"></div>
+
+    <!-- ─── MOBILE ─── -->
+    <section id="mobile" class="rv">
+        <p class="eyebrow">Section 14</p>
+        <h2 class="sec-title">📱 Mobile-First Design Guidelines</h2>
+        <p class="sec-lead">A weather app is primarily used on mobile. Design for small screens first, then scale up for
+            desktop.</p>
+        <div class="cards-grid">
+            <div class="card">
+                <div class="ci">📦</div>
+                <h3>Flexbox / Grid</h3>
+                <p>Use CSS Flexbox for card stacking and Grid for the forecast layout on desktop.</p>
+            </div>
+            <div class="card">
+                <div class="ci">📐</div>
+                <h3>Stack Vertically</h3>
+                <p>On mobile, all cards should stack in a single column for easy scrolling.</p>
+            </div>
+            <div class="card">
+                <div class="ci">👆</div>
+                <h3>Large Touch Buttons</h3>
+                <p>Minimum 44px touch targets for search, refresh, and forecast day buttons.</p>
+            </div>
+            <div class="card">
+                <div class="ci">📊</div>
+                <h3>Responsive Charts</h3>
+                <p>Recharts has a ResponsiveContainer — always wrap charts with it for mobile.</p>
+            </div>
+            <div class="card">
+                <div class="ci">🗂️</div>
+                <h3>Collapsible Sections</h3>
+                <p>Let users expand/collapse hourly forecast to save screen space on mobile.</p>
+            </div>
+            <div class="card">
+                <div class="ci">🧭</div>
+                <h3>Bottom Navigation</h3>
+                <p>Modern mobile apps use bottom nav bars for switching between views (Today, Week, Map).</p>
+            </div>
+        </div>
+    </section>
+
+    <div class="div"></div>
+
+    <!-- ─── PORTFOLIO ─── -->
+    <section id="portfolio" class="rv">
+        <p class="eyebrow">Final Enhancement</p>
+        <h2 class="sec-title">🏠 Final Portfolio Enhancement</h2>
+        <p class="sec-lead">Turn SkyCast into a complete landing page so it works as both a portfolio project and a live
+            product.</p>
+
+        <div class="step-list">
+            <div class="step">
+                <div class="step-num">1</div>
+                <div class="step-body">
+                    <h4>Hero / Homepage Section</h4>
+                    <p>App logo, headline ("Real-time weather anywhere in the world"), animated weather background, and
+                        a big search bar as the main CTA.</p>
+                </div>
+            </div>
+            <div class="step">
+                <div class="step-num">2</div>
+                <div class="step-body">
+                    <h4>About / Features Section</h4>
+                    <p>Feature cards explaining: 7-day forecast, hourly charts, mobile-first design, dark mode, live API
+                        data. Positions SkyCast as a real product.</p>
+                </div>
+            </div>
+            <div class="step">
+                <div class="step-num">3</div>
+                <div class="step-body">
+                    <h4>Screenshots Section</h4>
+                    <p>Show 2–3 device mockups (desktop, tablet, mobile) so recruiters immediately understand the scope
+                        of your work.</p>
+                </div>
+            </div>
+            <div class="step">
+                <div class="step-num">4</div>
+                <div class="step-body">
+                    <h4>Live Demo + GitHub Buttons</h4>
+                    <p>Two CTA buttons linking to your deployed Netlify URL and your GitHub repository — essential for a
+                        portfolio project.</p>
+                </div>
+            </div>
+        </div>
+
+        <h3 style="margin:1.25rem 0 .75rem;font-size:.95rem;color:var(--accent2)">🏆 Resume Description</h3>
+        <div class="code-block" style="font-family:'Outfit',sans-serif;font-size:.85rem;line-height:1.85">
+            Developed <span class="c">SkyCast</span>, an AI-assisted interactive weather dashboard using <span
+                class="s">React.js</span> and <span class="s">WeatherAPI</span>.
+            Implemented real-time 7-day forecasting, data visualization with <span class="s">Recharts</span>,
+            animated UI transitions with <span class="s">Framer Motion</span>, secure API key management
+            via <span class="s">.env</span> environment variables, Git-based version control, and
+            CI/CD deployment on <span class="s">Netlify</span>. Mobile-first responsive design.
+        </div>
+
+        <h3 style="margin:1.25rem 0 .75rem;font-size:.95rem;color:var(--accent2)">Tech Stack Tags</h3>
+        <div>
+            <span class="tag tag-b">React.js</span>
+            <span class="tag tag-b">Vite</span>
+            <span class="tag tag-b">Axios</span>
+            <span class="tag tag-g">WeatherAPI</span>
+            <span class="tag tag-p">Recharts</span>
+            <span class="tag tag-p">Framer Motion</span>
+            <span class="tag tag-o">Tailwind CSS</span>
+            <span class="tag tag-g">Netlify</span>
+            <span class="tag tag-g">Git & GitHub</span>
+            <span class="tag tag-b">.env Security</span>
+            <span class="tag tag-p">AI-Assisted Dev</span>
+        </div>
+    </section>
+
+    <div class="div"></div>
+    <footer class="sfoot">KEC Workshop © 2026 · Project 2 — SkyCast · <span>Powered by Antigravity</span></footer>
+
+    <script>
+        function goTo(id) {
+            document.getElementById(id)?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            document.querySelectorAll('.nb').forEach(b => b.classList.remove('active'));
+            event.target.classList.add('active');
+        }
+
+        function copyCode(btn) {
+            const block = btn.parentElement;
+            const text = [...block.childNodes].filter(n => n.nodeType === 3 || n.nodeName === 'SPAN').map(n => n.textContent).join('').trim();
+            navigator.clipboard.writeText(text).then(() => {
+                btn.textContent = '✓ Copied';
+                setTimeout(() => { btn.textContent = 'Copy' }, 2000);
+            });
+        }
+
+        // Scroll reveal
+        const obs = new IntersectionObserver(entries => {
+            entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('vis'); obs.unobserve(e.target) } });
+        }, { threshold: 0.1 });
+        document.querySelectorAll('.rv').forEach(el => obs.observe(el));
+
+        // Read progress bar
+        window.addEventListener('scroll', () => {
+            const p = (window.scrollY / (document.documentElement.scrollHeight - window.innerHeight)) * 100;
+            document.getElementById('rbar').style.width = p + '%';
+        });
+    </script>
+</body>
+
+</html>

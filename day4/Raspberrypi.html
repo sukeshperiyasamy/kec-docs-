@@ -1,0 +1,981 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Raspberry Pi – Complete Guide</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: #f5f7fa;
+      color: #333;
+      line-height: 1.75;
+    }
+
+    /* ═══════ HERO ═══════ */
+    .hero {
+      background: linear-gradient(135deg, #e8f5e9, #c8e6c9, #e3f2fd);
+      text-align: center;
+      padding: 70px 20px 50px;
+      position: relative;
+      overflow: hidden;
+      border-bottom: 3px solid #2e7d32;
+    }
+    .hero::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(circle at 25% 60%, rgba(46,125,50,.06) 0%, transparent 55%),
+                  radial-gradient(circle at 75% 40%, rgba(25,118,210,.04) 0%, transparent 55%);
+      animation: heroPulse 10s ease-in-out infinite alternate;
+    }
+    @keyframes heroPulse { 0%{transform:scale(1)} 100%{transform:scale(1.04) rotate(1deg)} }
+    .hero h1 { font-size: 2.8rem; color: #1b5e20; position: relative; z-index: 1; }
+    .hero h1 i { color: #4caf50; margin-right: 10px; }
+    .hero .sub { font-size: 1.15rem; color: #2e7d32; margin-top: 8px; position: relative; z-index: 1; }
+    .hero .desc {
+      font-size: 1rem; color: #555; margin: 16px auto 0; max-width: 780px;
+      position: relative; z-index: 1;
+    }
+
+    /* ═══════ PAGE LINKS ═══════ */
+    .page-links {
+      display: flex; gap: 8px; justify-content: center; flex-wrap: wrap;
+      padding: 14px; background: #ffffff; border-bottom: 1px solid #e0e0e0;
+    }
+    .page-links a {
+      padding: 6px 18px; border-radius: 8px; text-decoration: none;
+      font-size: .9rem; color: #1976d2; border: 1px solid #90caf9; transition: .2s;
+    }
+    .page-links a:hover { background: #e3f2fd; color: #0d47a1; }
+    .page-links a.active { color: #fff; border-color: #2e7d32; background: #2e7d32; }
+
+    /* ═══════ NAV ═══════ */
+    .topnav {
+      background: #ffffff; border-bottom: 1px solid #e0e0e0;
+      padding: 10px 16px; display: flex; flex-wrap: wrap; gap: 6px;
+      justify-content: center; position: sticky; top: 0; z-index: 100;
+      box-shadow: 0 2px 8px rgba(0,0,0,.04);
+    }
+    .topnav a {
+      color: #666; text-decoration: none; padding: 6px 14px; border-radius: 8px;
+      font-size: .85rem; border: 1px solid transparent; transition: .2s;
+    }
+    .topnav a:hover, .topnav a.active { color: #2e7d32; border-color: #a5d6a7; background: #e8f5e9; }
+
+    /* ═══════ CONTAINER ═══════ */
+    .container { max-width: 1100px; margin: auto; padding: 30px 20px 60px; }
+
+    /* ═══════ SECTION ═══════ */
+    .section {
+      margin-top: 50px; padding: 30px; background: #ffffff;
+      border: 1px solid #e0e0e0; border-radius: 16px; position: relative;
+      box-shadow: 0 2px 8px rgba(0,0,0,.04);
+    }
+    .section::before {
+      content: ''; position: absolute; top: 0; left: 0; width: 5px; height: 100%;
+      border-radius: 16px 0 0 16px;
+    }
+    .section.green::before  { background: linear-gradient(180deg, #2e7d32, #66bb6a); }
+    .section.blue::before   { background: linear-gradient(180deg, #1976d2, #64b5f6); }
+    .section.orange::before { background: linear-gradient(180deg, #ff9800, #ffb74d); }
+    .section.teal::before   { background: linear-gradient(180deg, #009688, #80cbc4); }
+    .section.red::before    { background: linear-gradient(180deg, #f44336, #ef9a9a); }
+    .section.purple::before { background: linear-gradient(180deg, #7b1fa2, #ce93d8); }
+    .section.pink::before   { background: linear-gradient(180deg, #e91e63, #f48fb1); }
+    .section.indigo::before { background: linear-gradient(180deg, #303f9f, #7986cb); }
+    .section.amber::before  { background: linear-gradient(180deg, #f57f17, #ffca28); }
+    .section.cyan::before   { background: linear-gradient(180deg, #00838f, #4dd0e1); }
+    .section h2 {
+      font-size: 1.7rem; color: #1b5e20; margin-bottom: 6px;
+      padding-bottom: 10px; border-bottom: 1px solid #e0e0e0;
+    }
+    .section h2 i { color: #4caf50; margin-right: 8px; }
+    .section h3 { font-size: 1.2rem; color: #2e7d32; margin: 22px 0 8px; }
+    .section h3 i { color: #66bb6a; margin-right: 6px; }
+    .section h4 { font-size: 1.05rem; color: #0277bd; margin: 14px 0 6px; }
+    .section p  { margin: 6px 0; color: #555; }
+    .section ul { margin: 10px 0 10px 20px; color: #555; }
+    .section ul li { padding: 3px 0; }
+
+    /* ═══════ TABLES ═══════ */
+    table { width: 100%; border-collapse: collapse; margin: 14px 0 18px; }
+    th, td { padding: 10px 14px; text-align: left; border: 1px solid #e0e0e0; }
+    th { background: #e8f5e9; color: #1b5e20; font-weight: 700; }
+    tr:nth-child(even) { background: #f5f7fa; }
+    tr:hover { background: #e8f0fe; }
+
+    /* ═══════ INFO BOXES ═══════ */
+    .info { padding: 14px 18px; border-radius: 10px; margin: 14px 0; border-left: 4px solid; }
+    .info.warn  { background: #fff8e1; border-color: #ff9800; color: #e65100; }
+    .info.tip   { background: #e8f5e9; border-color: #4caf50; color: #2e7d32; }
+    .info.note  { background: #e3f2fd; border-color: #2196f3; color: #1565c0; }
+    .info.alert { background: #ffebee; border-color: #f44336; color: #c62828; }
+
+    /* ═══════ CODE BLOCK ═══════ */
+    .code {
+      background: #1e293b; border: 1px solid #334155; border-radius: 10px;
+      padding: 18px 20px; overflow-x: auto; font-family: 'Consolas','Courier New',monospace;
+      font-size: .9rem; line-height: 1.6; color: #a5d6a7; margin: 12px 0 18px;
+      position: relative;
+    }
+    .code .cp {
+      position: absolute; top: 10px; right: 10px; background: rgba(144,202,249,.15);
+      border: 1px solid #64b5f6; color: #90caf9; padding: 4px 14px;
+      border-radius: 6px; cursor: pointer; font-size: .78rem;
+    }
+    .code .cp:hover { background: rgba(144,202,249,.25); }
+    .code .label {
+      position: absolute; top: 10px; left: 14px;
+      font-size: .72rem; color: #94a3b8; text-transform: uppercase; letter-spacing: 1px;
+    }
+    .hl-k { color: #4fc3f7; } .hl-g { color: #81c784; } .hl-o { color: #ffb74d; }
+    .hl-s { color: #ce93d8; } .hl-c { color: #616161; font-style: italic; }
+    .hl-b { color: #b39ddb; } .hl-f { color: #f48fb1; }
+
+    /* ═══════ MODEL CARDS ═══════ */
+    .model-grid {
+      display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      gap: 18px; margin: 18px 0;
+    }
+    .model-card {
+      background: #ffffff; border: 1px solid #e0e0e0; border-radius: 14px;
+      padding: 22px; text-align: center; box-shadow: 0 2px 8px rgba(0,0,0,.04);
+      transition: transform .2s, box-shadow .2s;
+    }
+    .model-card:hover { transform: translateY(-3px); box-shadow: 0 6px 20px rgba(0,0,0,.08); }
+    .model-card .mc-icon { font-size: 2.4rem; color: #4caf50; margin-bottom: 10px; }
+    .model-card .mc-title { font-size: 1.1rem; font-weight: 700; color: #1b5e20; margin-bottom: 4px; }
+    .model-card .mc-badge {
+      display: inline-block; padding: 2px 12px; border-radius: 12px; font-size: .75rem;
+      font-weight: 600; margin-bottom: 10px;
+    }
+    .mc-badge.latest { background: #e8f5e9; color: #2e7d32; border: 1px solid #a5d6a7; }
+    .mc-badge.popular { background: #e3f2fd; color: #1565c0; border: 1px solid #90caf9; }
+    .mc-badge.compact { background: #fff3e0; color: #e65100; border: 1px solid #ffcc80; }
+    .mc-badge.tiny { background: #fce4ec; color: #c62828; border: 1px solid #ef9a9a; }
+    .model-card .mc-specs { text-align: left; margin-top: 10px; font-size: .88rem; color: #555; }
+    .model-card .mc-specs li { padding: 2px 0; list-style: none; }
+    .model-card .mc-specs li i { color: #66bb6a; margin-right: 6px; width: 14px; text-align: center; }
+
+    /* ═══════ USE CASES GRID ═══════ */
+    .use-grid {
+      display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+      gap: 12px; margin: 16px 0;
+    }
+    .use-chip {
+      padding: 14px; background: #ffffff; border: 1px solid #e0e0e0; border-radius: 12px;
+      text-align: center; font-size: .9rem; font-weight: 600; color: #333;
+      box-shadow: 0 1px 4px rgba(0,0,0,.04); transition: transform .2s;
+    }
+    .use-chip:hover { transform: translateY(-2px); }
+    .use-chip i { display: block; font-size: 1.6rem; margin-bottom: 8px; color: #4caf50; }
+
+    /* ═══════ PIN TABLE ═══════ */
+    .pin-grid {
+      display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+      gap: 12px; margin: 16px 0;
+    }
+    .pin-card {
+      padding: 14px; background: #ffffff; border: 1px solid #e0e0e0; border-radius: 10px;
+      text-align: center; box-shadow: 0 1px 4px rgba(0,0,0,.04);
+    }
+    .pin-card .pin-type { font-weight: 700; color: #1b5e20; font-size: 1rem; }
+    .pin-card .pin-desc { font-size: .85rem; color: #777; margin-top: 4px; }
+    .pin-card i { font-size: 1.4rem; color: #66bb6a; margin-bottom: 6px; }
+
+    /* ═══════ PORT CARDS ═══════ */
+    .port-grid {
+      display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+      gap: 16px; margin: 18px 0;
+    }
+    .port-card {
+      padding: 18px; background: #ffffff; border: 1px solid #e0e0e0; border-radius: 12px;
+      box-shadow: 0 2px 6px rgba(0,0,0,.04);
+    }
+    .port-card h4 { color: #1b5e20; margin-bottom: 6px; font-size: 1rem; }
+    .port-card h4 i { color: #4caf50; margin-right: 6px; }
+    .port-card p { font-size: .88rem; color: #666; margin: 2px 0; }
+
+    /* ═══════ OS TABLE ═══════ */
+    .os-grid {
+      display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 14px; margin: 16px 0;
+    }
+    .os-chip {
+      padding: 14px 18px; background: #ffffff; border: 1px solid #e0e0e0; border-radius: 10px;
+      display: flex; align-items: center; gap: 12px; font-weight: 600; color: #333;
+      box-shadow: 0 1px 4px rgba(0,0,0,.04);
+    }
+    .os-chip i { font-size: 1.4rem; color: #4caf50; flex-shrink: 0; }
+    .os-chip .os-info { font-size: .82rem; color: #888; font-weight: 400; }
+
+    /* ═══════ PROJECT CHIPS ═══════ */
+    .proj-grid {
+      display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 12px; margin: 16px 0;
+    }
+    .proj-chip {
+      padding: 16px; background: #ffffff; border: 1px solid #e0e0e0; border-radius: 12px;
+      text-align: center; font-weight: 600; color: #333;
+      box-shadow: 0 1px 4px rgba(0,0,0,.04); transition: transform .2s;
+    }
+    .proj-chip:hover { transform: translateY(-2px); }
+    .proj-chip i { display: block; font-size: 1.8rem; margin-bottom: 8px; color: #4caf50; }
+
+    /* ═══════ VS TABLE ═══════ */
+    .vs-table { margin: 16px 0; }
+    .vs-table th { text-align: center; }
+    .vs-table th:first-child { text-align: left; }
+    .vs-head-pi { background: #e8f5e9 !important; color: #1b5e20 !important; }
+    .vs-head-ard { background: #e3f2fd !important; color: #0d47a1 !important; }
+
+    /* ═══════ SAFETY RULES ═══════ */
+    .safety-list { list-style: none; padding: 0; margin: 14px 0; }
+    .safety-list li {
+      padding: 12px 16px; border-bottom: 1px solid #e0e0e0;
+      display: flex; align-items: center; gap: 12px; font-size: .95rem;
+    }
+    .safety-list li:last-child { border: none; }
+    .safety-list li i { color: #f44336; font-size: 1.1rem; flex-shrink: 0; }
+
+    /* ═══════ ADVANCED CARDS ═══════ */
+    .adv-grid {
+      display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 14px; margin: 16px 0;
+    }
+    .adv-card {
+      padding: 18px; background: linear-gradient(135deg, #e8f5e9, #e3f2fd); border: 1px solid #c8e6c9;
+      border-radius: 12px; text-align: center;
+    }
+    .adv-card i { font-size: 2rem; color: #2e7d32; margin-bottom: 8px; }
+    .adv-card .adv-title { font-weight: 700; color: #1b5e20; font-size: .95rem; }
+    .adv-card .adv-desc { font-size: .82rem; color: #666; margin-top: 4px; }
+
+    /* ═══════ STEP HEADER ═══════ */
+    .step-header {
+      display: flex; align-items: center; gap: 16px; margin-bottom: 10px;
+    }
+    .step-num {
+      flex-shrink: 0; width: 52px; height: 52px; border-radius: 14px;
+      background: #e8f5e9;
+      border: 2px solid #4caf50; display: flex; align-items: center;
+      justify-content: center; font-size: 1.4rem; font-weight: 900; color: #2e7d32;
+    }
+
+    /* ═══════ STEPS ═══════ */
+    .steps { counter-reset: st; margin: 14px 0; }
+    .step {
+      display: flex; gap: 14px; align-items: flex-start; padding: 14px 0;
+      border-bottom: 1px solid #e0e0e0;
+    }
+    .step:last-child { border: none; }
+    .step::before {
+      counter-increment: st; content: counter(st);
+      flex-shrink: 0; width: 36px; height: 36px; display: flex;
+      align-items: center; justify-content: center;
+      background: #e8f5e9; border: 2px solid #4caf50; border-radius: 50%;
+      color: #2e7d32; font-weight: 800; font-size: .95rem;
+    }
+
+    /* ═══════ WIRING ═══════ */
+    .wiring {
+      background: #1e293b; border: 1px solid #334155; border-radius: 10px;
+      padding: 20px; font-family: monospace; white-space: pre; color: #b39ddb;
+      overflow-x: auto; margin: 12px 0; font-size: .88rem; line-height: 1.6;
+    }
+
+    /* ═══════ SCROLL TOP ═══════ */
+    .scroll-top {
+      position: fixed; bottom: 30px; right: 30px; width: 48px; height: 48px;
+      background: #2e7d32; color: #fff; border: none; border-radius: 50%;
+      font-size: 1.5rem; cursor: pointer; display: none; z-index: 999;
+      box-shadow: 0 4px 16px rgba(46,125,50,.3); transition: transform .2s;
+    }
+    .scroll-top:hover { transform: scale(1.15); }
+
+    /* ═══════ FOOTER ═══════ */
+    footer { text-align: center; padding: 30px; color: #888; border-top: 1px solid #e0e0e0; }
+
+    /* ═══════ RESPONSIVE ═══════ */
+    @media (max-width: 640px) {
+      .hero h1 { font-size: 1.9rem; }
+      .section { padding: 18px 14px; }
+      .topnav a { font-size: .76rem; padding: 5px 8px; }
+      .model-grid { grid-template-columns: 1fr; }
+      .use-grid { grid-template-columns: 1fr 1fr; }
+      .port-grid { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- ═══════════ HERO ═══════════ -->
+<header class="hero">
+  <h1><i class="fa-brands fa-raspberry-pi"></i> Raspberry Pi – Complete Guide</h1>
+  <p class="sub">Everything you need to know — from basics to advanced projects</p>
+  <p class="desc">Raspberry Pi is a small, affordable single-board computer developed by the <strong>Raspberry Pi Foundation</strong>. Learn about all models, GPIO, ports, projects, and more.</p>
+</header>
+
+<!-- ═══════════ PAGE LINKS ═══════════ -->
+<div class="page-links">
+  <a href="iot.html"><i class="fa-solid fa-globe"></i> IoT</a>
+  <a href="sensor.html"><i class="fa-solid fa-satellite-dish"></i> Sensors</a>
+  <a href="esp32.html"><i class="fa-solid fa-bolt"></i> ESP32</a>
+  <a href="arduino.html"><i class="fa-solid fa-microchip"></i> Arduino</a>
+  <a href="project.html"><i class="fa-solid fa-screwdriver-wrench"></i> Projects</a>
+  <a href="raspproject.html"><i class="fa-solid fa-microchip"></i> Pi Project</a>
+  <a href="Raspberrypi.html" class="active"><i class="fa-brands fa-raspberry-pi"></i> Raspberry Pi</a>
+  <a href="kalilinux.html"><i class="fa-solid fa-skull-crossbones"></i> Kali Linux</a>
+</div>
+
+<!-- ═══════════ NAV ═══════════ -->
+<nav class="topnav">
+  <a href="#sec-what">What is Pi</a>
+  <a href="#sec-versions">Versions</a>
+  <a href="#sec-install">Install OS</a>
+  <a href="#sec-gpio">GPIO Pinout</a>
+  <a href="#sec-led">LED Blink</a>
+  <a href="#sec-ports">Ports</a>
+  <a href="#sec-os">Operating Systems</a>
+  <a href="#sec-headless">Headless Setup</a>
+  <a href="#sec-projects">Projects</a>
+  <a href="#sec-vs">Pi vs Arduino</a>
+  <a href="#sec-safety">Safety</a>
+  <a href="#sec-advanced">Advanced</a>
+</nav>
+
+<div class="container">
+
+<!-- ════════════════════════════════════════════════════════ -->
+<!-- 1. WHAT IS RASPBERRY PI                                -->
+<!-- ════════════════════════════════════════════════════════ -->
+<div class="section green" id="sec-what">
+  <h2><i class="fa-solid fa-circle-question"></i> What is Raspberry Pi?</h2>
+  <p>Raspberry Pi is a <strong>small, affordable single-board computer</strong> developed by the <strong>Raspberry Pi Foundation</strong>. Despite its tiny size, it functions as a fully capable computer that can run Linux-based operating systems.</p>
+
+  <h3><i class="fa-solid fa-bullseye"></i> What is it used for?</h3>
+  <div class="use-grid">
+    <div class="use-chip">
+      <i class="fa-solid fa-code"></i>
+      Programming
+    </div>
+    <div class="use-chip">
+      <i class="fa-solid fa-microchip"></i>
+      Electronics Projects
+    </div>
+    <div class="use-chip">
+      <i class="fa-solid fa-robot"></i>
+      Robotics
+    </div>
+    <div class="use-chip">
+      <i class="fa-solid fa-wifi"></i>
+      IoT
+    </div>
+    <div class="use-chip">
+      <i class="fa-solid fa-server"></i>
+      Servers
+    </div>
+    <div class="use-chip">
+      <i class="fa-solid fa-brain"></i>
+      AI &amp; Edge Computing
+    </div>
+    <div class="use-chip">
+      <i class="fa-solid fa-shield-halved"></i>
+      Cybersecurity Labs
+    </div>
+  </div>
+</div>
+
+<!-- ════════════════════════════════════════════════════════ -->
+<!-- 2. RASPBERRY PI VERSIONS                               -->
+<!-- ════════════════════════════════════════════════════════ -->
+<div class="section blue" id="sec-versions">
+  <h2><i class="fa-solid fa-layer-group"></i> Raspberry Pi Versions (All Major Models)</h2>
+
+  <div class="model-grid">
+
+    <!-- Pi 5 -->
+    <div class="model-card">
+      <div class="mc-icon"><i class="fa-solid fa-rocket"></i></div>
+      <div class="mc-title">Raspberry Pi 5</div>
+      <span class="mc-badge latest"><i class="fa-solid fa-star"></i> Latest &amp; Most Powerful</span>
+      <ul class="mc-specs">
+        <li><i class="fa-solid fa-microchip"></i> Quad-core ARM Cortex-A76 (2.4 GHz)</li>
+        <li><i class="fa-solid fa-memory"></i> RAM: 4GB / 8GB</li>
+        <li><i class="fa-solid fa-display"></i> Dual 4K HDMI</li>
+        <li><i class="fa-solid fa-hard-drive"></i> PCIe support</li>
+        <li><i class="fa-solid fa-plug"></i> USB 3.0 ports</li>
+        <li><i class="fa-solid fa-check"></i> Best for AI, servers, heavy tasks</li>
+      </ul>
+    </div>
+
+    <!-- Pi 4 -->
+    <div class="model-card">
+      <div class="mc-icon"><i class="fa-solid fa-desktop"></i></div>
+      <div class="mc-title">Raspberry Pi 4 Model B</div>
+      <span class="mc-badge popular"><i class="fa-solid fa-users"></i> Most Popular</span>
+      <ul class="mc-specs">
+        <li><i class="fa-solid fa-microchip"></i> Quad-core Cortex-A72</li>
+        <li><i class="fa-solid fa-memory"></i> RAM: 2GB / 4GB / 8GB</li>
+        <li><i class="fa-solid fa-display"></i> Dual HDMI</li>
+        <li><i class="fa-solid fa-plug"></i> USB 3.0</li>
+        <li><i class="fa-solid fa-ethernet"></i> Gigabit Ethernet</li>
+        <li><i class="fa-solid fa-graduation-cap"></i> Most popular for students</li>
+      </ul>
+    </div>
+
+    <!-- Pi 3 -->
+    <div class="model-card">
+      <div class="mc-icon"><i class="fa-solid fa-laptop"></i></div>
+      <div class="mc-title">Raspberry Pi 3 Model B+</div>
+      <span class="mc-badge compact"><i class="fa-solid fa-cubes"></i> Reliable</span>
+      <ul class="mc-specs">
+        <li><i class="fa-solid fa-memory"></i> 1GB RAM</li>
+        <li><i class="fa-solid fa-wifi"></i> WiFi + Bluetooth</li>
+        <li><i class="fa-solid fa-check"></i> Good for IoT projects</li>
+      </ul>
+    </div>
+
+    <!-- Pi Zero 2 W -->
+    <div class="model-card">
+      <div class="mc-icon"><i class="fa-solid fa-minimize"></i></div>
+      <div class="mc-title">Raspberry Pi Zero 2 W</div>
+      <span class="mc-badge tiny"><i class="fa-solid fa-compress"></i> Ultra Compact</span>
+      <ul class="mc-specs">
+        <li><i class="fa-solid fa-ruler"></i> Very small size</li>
+        <li><i class="fa-solid fa-wifi"></i> Built-in WiFi</li>
+        <li><i class="fa-solid fa-check"></i> Used in embedded systems</li>
+      </ul>
+    </div>
+
+  </div>
+</div>
+
+<!-- ════════════════════════════════════════════════════════ -->
+<!-- 3. HOW TO INSTALL RASPBERRY PI OS                      -->
+<!-- ════════════════════════════════════════════════════════ -->
+<div class="section orange" id="sec-install">
+  <div class="step-header">
+    <div class="step-num"><i class="fa-solid fa-download"></i></div>
+    <h2>How to Install Raspberry Pi OS</h2>
+  </div>
+
+  <h3><i class="fa-solid fa-1"></i> Step 1: Download Raspberry Pi Imager</h3>
+  <p>Download from the <strong>official website</strong> of Raspberry Pi Foundation. Install on:</p>
+  <ul>
+    <li><i class="fa-brands fa-windows" style="color:#0078d4;margin-right:6px;"></i> Windows</li>
+    <li><i class="fa-brands fa-apple" style="color:#555;margin-right:6px;"></i> Mac</li>
+    <li><i class="fa-brands fa-linux" style="color:#f8b500;margin-right:6px;"></i> Linux</li>
+  </ul>
+
+  <h3><i class="fa-solid fa-2"></i> Step 2: Insert MicroSD Card</h3>
+  <p>Minimum requirements:</p>
+  <table>
+    <tr><th>Spec</th><th>Requirement</th></tr>
+    <tr><td><strong>Capacity</strong></td><td>16GB minimum (32GB recommended)</td></tr>
+    <tr><td><strong>Class</strong></td><td>Class 10</td></tr>
+  </table>
+
+  <h3><i class="fa-solid fa-3"></i> Step 3: Use Raspberry Pi Imager</h3>
+  <div class="steps">
+    <div class="step"><div><strong>Open Imager</strong> application</div></div>
+    <div class="step"><div><strong>Choose OS</strong> → Raspberry Pi OS (64-bit recommended)</div></div>
+    <div class="step"><div><strong>Choose Storage</strong> → Select SD card</div></div>
+    <div class="step"><div>Click <strong>Write</strong></div></div>
+  </div>
+  <div class="info tip">
+    <i class="fa-solid fa-lightbulb" style="margin-right:6px;"></i>
+    <strong>Optional settings in Imager:</strong> Enable SSH, Set WiFi credentials, Set username/password — these save time on first boot!
+  </div>
+
+  <h3><i class="fa-solid fa-4"></i> Step 4: Insert SD into Pi and Power On</h3>
+  <p>Connect the following:</p>
+  <table>
+    <tr><th>Connection</th><th>Details</th></tr>
+    <tr><td><i class="fa-solid fa-display" style="color:#1976d2;margin-right:6px;"></i> <strong>HDMI</strong></td><td>Connect to monitor</td></tr>
+    <tr><td><i class="fa-solid fa-keyboard" style="color:#4caf50;margin-right:6px;"></i> <strong>Keyboard</strong></td><td>USB keyboard</td></tr>
+    <tr><td><i class="fa-solid fa-computer-mouse" style="color:#ff9800;margin-right:6px;"></i> <strong>Mouse</strong></td><td>USB mouse</td></tr>
+    <tr><td><i class="fa-solid fa-plug" style="color:#f44336;margin-right:6px;"></i> <strong>Power Supply</strong></td><td>5V USB-C</td></tr>
+  </table>
+  <div class="info note">
+    <i class="fa-solid fa-circle-info" style="margin-right:6px;"></i>
+    System boots automatically. You'll see the Raspberry Pi desktop on first successful boot.
+  </div>
+</div>
+
+<!-- ════════════════════════════════════════════════════════ -->
+<!-- 4. GPIO PINOUT                                         -->
+<!-- ════════════════════════════════════════════════════════ -->
+<div class="section teal" id="sec-gpio">
+  <div class="step-header">
+    <div class="step-num"><i class="fa-solid fa-diagram-project"></i></div>
+    <h2>Raspberry Pi GPIO Pinout Diagram (40 Pins)</h2>
+  </div>
+
+  <p><strong>GPIO</strong> = General Purpose Input Output. The Raspberry Pi has <strong>40 physical pins</strong> that allow you to interface with sensors, LEDs, motors, and more.</p>
+
+  <h3><i class="fa-solid fa-tags"></i> Types of Pins</h3>
+  <div class="pin-grid">
+    <div class="pin-card">
+      <i class="fa-solid fa-bolt"></i>
+      <div class="pin-type">5V</div>
+      <div class="pin-desc">Power output</div>
+    </div>
+    <div class="pin-card">
+      <i class="fa-solid fa-bolt"></i>
+      <div class="pin-type">3.3V</div>
+      <div class="pin-desc">Power output</div>
+    </div>
+    <div class="pin-card">
+      <i class="fa-solid fa-plug-circle-minus"></i>
+      <div class="pin-type">GND</div>
+      <div class="pin-desc">Ground</div>
+    </div>
+    <div class="pin-card">
+      <i class="fa-solid fa-right-left"></i>
+      <div class="pin-type">GPIO</div>
+      <div class="pin-desc">Input/Output pins</div>
+    </div>
+    <div class="pin-card">
+      <i class="fa-solid fa-arrows-left-right"></i>
+      <div class="pin-type">I2C</div>
+      <div class="pin-desc">Sensor communication</div>
+    </div>
+    <div class="pin-card">
+      <i class="fa-solid fa-gauge-high"></i>
+      <div class="pin-type">SPI</div>
+      <div class="pin-desc">High-speed communication</div>
+    </div>
+    <div class="pin-card">
+      <i class="fa-solid fa-arrow-right-arrow-left"></i>
+      <div class="pin-type">UART</div>
+      <div class="pin-desc">Serial communication</div>
+    </div>
+    <div class="pin-card">
+      <i class="fa-solid fa-wave-square"></i>
+      <div class="pin-type">PWM</div>
+      <div class="pin-desc">Motor control</div>
+    </div>
+  </div>
+
+  <h3><i class="fa-solid fa-hashtag"></i> Important: BCM vs BOARD Numbering</h3>
+  <table>
+    <tr><th>Mode</th><th>Description</th><th>Example</th></tr>
+    <tr><td><strong>BCM</strong></td><td>Internal GPIO number (Broadcom SoC)</td><td>GPIO17 = BCM pin 17</td></tr>
+    <tr><td><strong>BOARD</strong></td><td>Physical pin number on the header</td><td>Physical pin 11 = GPIO17</td></tr>
+  </table>
+
+  <div class="code"><button class="cp" onclick="copyCode(this)"><i class="fa-regular fa-clipboard"></i> Copy</button><span class="label">Python</span><pre>
+<span class="hl-k">import</span> RPi.GPIO <span class="hl-k">as</span> GPIO
+GPIO.<span class="hl-g">setmode</span>(GPIO.BCM)  <span class="hl-c"># Use BCM numbering</span></pre></div>
+
+  <div class="info tip">
+    <i class="fa-solid fa-lightbulb" style="margin-right:6px;"></i>
+    <strong>BCM mode</strong> is recommended for most projects as it's consistent across Pi models and widely used in library documentation.
+  </div>
+</div>
+
+<!-- ════════════════════════════════════════════════════════ -->
+<!-- 5. GPIO LED BLINK EXAMPLE                              -->
+<!-- ════════════════════════════════════════════════════════ -->
+<div class="section green" id="sec-led">
+  <div class="step-header">
+    <div class="step-num"><i class="fa-solid fa-lightbulb"></i></div>
+    <h2>How to Use GPIO – LED Blink Example</h2>
+  </div>
+
+  <h3><i class="fa-solid fa-toolbox"></i> Components Required</h3>
+  <table>
+    <tr><th>Component</th><th>Quantity</th></tr>
+    <tr><td><i class="fa-solid fa-lightbulb" style="color:#ff9800;margin-right:6px;"></i> LED</td><td>1</td></tr>
+    <tr><td><i class="fa-solid fa-circle-half-stroke" style="color:#9c27b0;margin-right:6px;"></i> 220&#8486; Resistor</td><td>1</td></tr>
+    <tr><td><i class="fa-solid fa-grip" style="color:#4caf50;margin-right:6px;"></i> Breadboard</td><td>1</td></tr>
+    <tr><td><i class="fa-solid fa-cable-car" style="color:#1976d2;margin-right:6px;"></i> Jumper Wires</td><td>2</td></tr>
+  </table>
+
+  <h3><i class="fa-solid fa-plug"></i> Connection</h3>
+  <div class="wiring">
+  Raspberry Pi                       LED Circuit
+  ┌──────────────────┐
+  │                  │
+  │  GPIO17 ─────────┼───── 220&#8486; Resistor ───── LED (+) ───── LED (-) ──┐
+  │                  │                                                    │
+  │  GND ────────────┼────────────────────────────────────────────────────┘
+  │                  │
+  └──────────────────┘
+
+  Connection: GPIO17 → Resistor → LED (Anode) → LED (Cathode) → GND
+  </div>
+
+  <h3><i class="fa-brands fa-python"></i> Python Code</h3>
+  <div class="code"><button class="cp" onclick="copyCode(this)"><i class="fa-regular fa-clipboard"></i> Copy</button><span class="label">Python — led_blink.py</span><pre>
+<span class="hl-k">import</span> RPi.GPIO <span class="hl-k">as</span> GPIO
+<span class="hl-k">import</span> time
+
+GPIO.<span class="hl-g">setmode</span>(GPIO.BCM)
+GPIO.<span class="hl-g">setup</span>(<span class="hl-o">17</span>, GPIO.OUT)
+
+<span class="hl-k">while</span> <span class="hl-b">True</span>:
+    GPIO.<span class="hl-g">output</span>(<span class="hl-o">17</span>, GPIO.HIGH)   <span class="hl-c"># LED ON</span>
+    time.<span class="hl-g">sleep</span>(<span class="hl-o">1</span>)                <span class="hl-c"># Wait 1 second</span>
+    GPIO.<span class="hl-g">output</span>(<span class="hl-o">17</span>, GPIO.LOW)    <span class="hl-c"># LED OFF</span>
+    time.<span class="hl-g">sleep</span>(<span class="hl-o">1</span>)                <span class="hl-c"># Wait 1 second</span></pre></div>
+
+  <h3><i class="fa-solid fa-file-lines"></i> Code Explanation</h3>
+  <table>
+    <tr><th>Line / Block</th><th>What It Does</th></tr>
+    <tr><td><code>import RPi.GPIO as GPIO</code></td><td>Import GPIO library</td></tr>
+    <tr><td><code>GPIO.setmode(GPIO.BCM)</code></td><td>Use BCM pin numbering</td></tr>
+    <tr><td><code>GPIO.setup(17, GPIO.OUT)</code></td><td>Set GPIO17 as output</td></tr>
+    <tr><td><code>GPIO.output(17, GPIO.HIGH)</code></td><td>Turn LED ON (3.3V)</td></tr>
+    <tr><td><code>GPIO.output(17, GPIO.LOW)</code></td><td>Turn LED OFF (0V)</td></tr>
+    <tr><td><code>time.sleep(1)</code></td><td>Wait 1 second</td></tr>
+  </table>
+</div>
+
+<!-- ════════════════════════════════════════════════════════ -->
+<!-- 6. PORTS EXPLAINED                                     -->
+<!-- ════════════════════════════════════════════════════════ -->
+<div class="section purple" id="sec-ports">
+  <div class="step-header">
+    <div class="step-num"><i class="fa-solid fa-plug"></i></div>
+    <h2>Ports Explained (What Each Port Does)</h2>
+  </div>
+
+  <div class="port-grid">
+    <div class="port-card">
+      <h4><i class="fa-solid fa-plug-circle-bolt"></i> Power Port</h4>
+      <p>USB-C (Pi 4 &amp; 5)</p>
+      <p>Needs <strong>5V 3A</strong> power supply</p>
+    </div>
+    <div class="port-card">
+      <h4><i class="fa-solid fa-display"></i> HDMI Port</h4>
+      <p>Connect to monitor</p>
+      <p>Supports <strong>dual display</strong> (Pi 4 &amp; 5)</p>
+    </div>
+    <div class="port-card">
+      <h4><i class="fa-brands fa-usb"></i> USB Ports</h4>
+      <p><strong>USB 2.0</strong> → Keyboard / Mouse</p>
+      <p><strong>USB 3.0</strong> → Fast storage</p>
+    </div>
+    <div class="port-card">
+      <h4><i class="fa-solid fa-ethernet"></i> Ethernet Port</h4>
+      <p>Wired internet connection</p>
+      <p><strong>Gigabit</strong> in Pi 4 &amp; 5</p>
+    </div>
+    <div class="port-card">
+      <h4><i class="fa-solid fa-wifi"></i> WiFi + Bluetooth</h4>
+      <p>Built-in wireless module</p>
+      <p>No external adapter needed</p>
+    </div>
+    <div class="port-card">
+      <h4><i class="fa-solid fa-camera"></i> CSI Camera Port</h4>
+      <p>Raspberry Pi Camera Module</p>
+      <p>Used for AI Vision Projects</p>
+    </div>
+    <div class="port-card">
+      <h4><i class="fa-solid fa-tv"></i> DSI Display Port</h4>
+      <p>Official Raspberry Pi Touch Display</p>
+      <p>7-inch touchscreen support</p>
+    </div>
+  </div>
+</div>
+
+<!-- ════════════════════════════════════════════════════════ -->
+<!-- 7. OPERATING SYSTEMS                                   -->
+<!-- ════════════════════════════════════════════════════════ -->
+<div class="section indigo" id="sec-os">
+  <div class="step-header">
+    <div class="step-num"><i class="fa-brands fa-linux"></i></div>
+    <h2>Operating Systems for Raspberry Pi</h2>
+  </div>
+
+  <p>Besides <strong>Raspberry Pi OS</strong> (default), you can install many other operating systems:</p>
+
+  <div class="os-grid">
+    <div class="os-chip">
+      <i class="fa-brands fa-raspberry-pi"></i>
+      <div>Raspberry Pi OS<br><span class="os-info">Default OS, Debian-based</span></div>
+    </div>
+    <div class="os-chip">
+      <i class="fa-brands fa-ubuntu"></i>
+      <div>Ubuntu Server<br><span class="os-info">Server workloads</span></div>
+    </div>
+    <div class="os-chip">
+      <i class="fa-solid fa-skull-crossbones"></i>
+      <div>Kali Linux<br><span class="os-info">Cybersecurity &amp; Pentesting</span></div>
+    </div>
+    <div class="os-chip">
+      <i class="fa-solid fa-gamepad"></i>
+      <div>RetroPie<br><span class="os-info">Retro Gaming</span></div>
+    </div>
+    <div class="os-chip">
+      <i class="fa-solid fa-house-signal"></i>
+      <div>Home Assistant OS<br><span class="os-info">Smart Home Automation</span></div>
+    </div>
+    <div class="os-chip">
+      <i class="fa-brands fa-windows"></i>
+      <div>Windows IoT Core<br><span class="os-info">Microsoft IoT platform</span></div>
+    </div>
+  </div>
+</div>
+
+<!-- ════════════════════════════════════════════════════════ -->
+<!-- 8. HEADLESS SETUP                                      -->
+<!-- ════════════════════════════════════════════════════════ -->
+<div class="section cyan" id="sec-headless">
+  <div class="step-header">
+    <div class="step-num"><i class="fa-solid fa-terminal"></i></div>
+    <h2>Headless Setup (Without Monitor)</h2>
+  </div>
+
+  <p>You can use Raspberry Pi <strong>without a monitor, keyboard, or mouse</strong> using SSH over WiFi.</p>
+
+  <div class="steps">
+    <div class="step"><div><strong>Flash OS</strong> to SD card using Raspberry Pi Imager</div></div>
+    <div class="step"><div><strong>Enable SSH</strong> in Imager settings (Advanced options)</div></div>
+    <div class="step"><div><strong>Configure WiFi</strong> in Imager settings</div></div>
+    <div class="step"><div><strong>Insert SD</strong> into Pi and power on</div></div>
+    <div class="step"><div><strong>Connect via SSH</strong> from your computer:</div></div>
+  </div>
+
+  <div class="code"><button class="cp" onclick="copyCode(this)"><i class="fa-regular fa-clipboard"></i> Copy</button><span class="label">Terminal</span><pre>
+ssh pi@raspberrypi.local</pre></div>
+
+  <div class="info tip">
+    <i class="fa-solid fa-lightbulb" style="margin-right:6px;"></i>
+    <strong>Tip:</strong> Both your computer and Raspberry Pi must be connected to the <strong>same WiFi network</strong> for SSH to work.
+  </div>
+</div>
+
+<!-- ════════════════════════════════════════════════════════ -->
+<!-- 9. COMMON PROJECTS                                     -->
+<!-- ════════════════════════════════════════════════════════ -->
+<div class="section pink" id="sec-projects">
+  <div class="step-header">
+    <div class="step-num"><i class="fa-solid fa-rocket"></i></div>
+    <h2>Common Projects You Can Build</h2>
+  </div>
+
+  <div class="proj-grid">
+    <div class="proj-chip">
+      <i class="fa-solid fa-house-signal"></i>
+      Smart Home System
+    </div>
+    <div class="proj-chip">
+      <i class="fa-solid fa-video"></i>
+      CCTV Camera
+    </div>
+    <div class="proj-chip">
+      <i class="fa-solid fa-server"></i>
+      Web Server
+    </div>
+    <div class="proj-chip">
+      <i class="fa-solid fa-eye"></i>
+      AI Object Detection
+    </div>
+    <div class="proj-chip">
+      <i class="fa-solid fa-chart-line"></i>
+      IoT Sensor Dashboard
+    </div>
+    <div class="proj-chip">
+      <i class="fa-solid fa-robot"></i>
+      Robot
+    </div>
+    <div class="proj-chip">
+      <i class="fa-solid fa-network-wired"></i>
+      Cluster Computing
+    </div>
+  </div>
+</div>
+
+<!-- ════════════════════════════════════════════════════════ -->
+<!-- 10. RASPBERRY PI VS ARDUINO                            -->
+<!-- ════════════════════════════════════════════════════════ -->
+<div class="section amber" id="sec-vs">
+  <div class="step-header">
+    <div class="step-num"><i class="fa-solid fa-scale-balanced"></i></div>
+    <h2>Raspberry Pi vs Arduino</h2>
+  </div>
+
+  <table class="vs-table">
+    <tr>
+      <th>Feature</th>
+      <th class="vs-head-pi"><i class="fa-brands fa-raspberry-pi"></i> Raspberry Pi</th>
+      <th class="vs-head-ard"><i class="fa-solid fa-microchip"></i> Arduino</th>
+    </tr>
+    <tr>
+      <td><strong>Type</strong></td>
+      <td>Mini Computer</td>
+      <td>Microcontroller</td>
+    </tr>
+    <tr>
+      <td><strong>OS</strong></td>
+      <td>Runs full OS (Linux)</td>
+      <td>No OS</td>
+    </tr>
+    <tr>
+      <td><strong>Multi-tasking</strong></td>
+      <td>Yes — multi-tasking</td>
+      <td>Single task at a time</td>
+    </tr>
+    <tr>
+      <td><strong>Languages</strong></td>
+      <td>Python / Linux / Any</td>
+      <td>C / C++</td>
+    </tr>
+    <tr>
+      <td><strong>GPIO</strong></td>
+      <td>40 pins, 3.3V logic</td>
+      <td>14-54 pins, 5V logic</td>
+    </tr>
+    <tr>
+      <td><strong>Connectivity</strong></td>
+      <td>WiFi, Bluetooth, Ethernet built-in</td>
+      <td>Requires external modules</td>
+    </tr>
+    <tr>
+      <td><strong>Price</strong></td>
+      <td>&#36;35 – &#36;80</td>
+      <td>&#36;3 – &#36;25</td>
+    </tr>
+    <tr>
+      <td><strong>Best For</strong></td>
+      <td>Complex projects, AI, servers</td>
+      <td>Simple sensor projects, motor control</td>
+    </tr>
+  </table>
+
+  <div class="info note">
+    <i class="fa-solid fa-circle-info" style="margin-right:6px;"></i>
+    <strong>Key takeaway:</strong> Use <strong>Raspberry Pi</strong> when you need an OS, networking, or complex processing. Use <strong>Arduino</strong> for simple, real-time hardware control.
+  </div>
+</div>
+
+<!-- ════════════════════════════════════════════════════════ -->
+<!-- 11. SAFETY RULES                                       -->
+<!-- ════════════════════════════════════════════════════════ -->
+<div class="section red" id="sec-safety">
+  <div class="step-header">
+    <div class="step-num"><i class="fa-solid fa-triangle-exclamation"></i></div>
+    <h2>Important Safety Rules</h2>
+  </div>
+
+  <ul class="safety-list">
+    <li>
+      <i class="fa-solid fa-circle-exclamation"></i>
+      <span><strong>Never connect 5V to GPIO pins</strong> — GPIO works at <strong>3.3V only</strong>. Applying 5V will permanently damage the chip.</span>
+    </li>
+    <li>
+      <i class="fa-solid fa-circle-exclamation"></i>
+      <span><strong>GPIO works at 3.3V</strong> — Always use level shifters when interfacing with 5V components.</span>
+    </li>
+    <li>
+      <i class="fa-solid fa-circle-exclamation"></i>
+      <span><strong>Use resistor with LEDs</strong> — Without a current-limiting resistor (220&#8486;), the LED and GPIO pin can be damaged.</span>
+    </li>
+    <li>
+      <i class="fa-solid fa-circle-exclamation"></i>
+      <span><strong>Avoid short circuits</strong> — Double-check wiring before powering on. A short circuit can fry your Pi.</span>
+    </li>
+    <li>
+      <i class="fa-solid fa-circle-exclamation"></i>
+      <span><strong>Use proper power supply</strong> — Always use a 5V 3A USB-C adapter. Underpowering causes instability and SD card corruption.</span>
+    </li>
+  </ul>
+
+  <div class="info alert">
+    <i class="fa-solid fa-triangle-exclamation" style="margin-right:6px;"></i>
+    <strong>Warning:</strong> GPIO damage is <strong>irreversible</strong>. Always verify connections before powering on. When in doubt, use a multimeter to check voltages.
+  </div>
+</div>
+
+<!-- ════════════════════════════════════════════════════════ -->
+<!-- 12. ADVANCED USAGE                                     -->
+<!-- ════════════════════════════════════════════════════════ -->
+<div class="section blue" id="sec-advanced">
+  <div class="step-header">
+    <div class="step-num"><i class="fa-solid fa-wand-magic-sparkles"></i></div>
+    <h2>Advanced Usage</h2>
+  </div>
+
+  <p>Since you're into <strong>Medical Electronics</strong>, <strong>IoT</strong>, and <strong>AI</strong>, here's what you can build with Raspberry Pi:</p>
+
+  <div class="adv-grid">
+    <div class="adv-card">
+      <i class="fa-solid fa-heart-pulse"></i>
+      <div class="adv-title">Real-time Health Monitoring</div>
+      <div class="adv-desc">ECG, SpO2, Heart Rate sensors connected to Pi for live monitoring</div>
+    </div>
+    <div class="adv-card">
+      <i class="fa-solid fa-temperature-half"></i>
+      <div class="adv-title">Thermal Camera Integration</div>
+      <div class="adv-desc">MLX90640 thermal sensor for contactless temperature scanning</div>
+    </div>
+    <div class="adv-card">
+      <i class="fa-solid fa-brain"></i>
+      <div class="adv-title">Edge AI with TensorFlow Lite</div>
+      <div class="adv-desc">Run ML models locally on Pi for object detection &amp; classification</div>
+    </div>
+    <div class="adv-card">
+      <i class="fa-solid fa-satellite-dish"></i>
+      <div class="adv-title">Radar Signal Processing</div>
+      <div class="adv-desc">Interface with radar modules for distance &amp; motion analysis</div>
+    </div>
+    <div class="adv-card">
+      <i class="fa-solid fa-briefcase-medical"></i>
+      <div class="adv-title">Portable Medical Diagnostic</div>
+      <div class="adv-desc">Build a portable device with multiple sensors &amp; a touchscreen</div>
+    </div>
+  </div>
+
+  <div class="info tip">
+    <i class="fa-solid fa-lightbulb" style="margin-right:6px;"></i>
+    <strong>Pro tip:</strong> Combine Raspberry Pi with an <strong>ESP32</strong> for distributed IoT — Pi as the gateway/hub and ESP32 as remote sensor nodes.
+  </div>
+</div>
+
+</div><!-- end container -->
+
+<!-- ═══════════ FOOTER ═══════════ -->
+<footer>
+  <p>Raspberry Pi Complete Guide &mdash; Created for IoT Learning | Day 4</p>
+</footer>
+
+<!-- ═══════════ SCROLL TOP ═══════════ -->
+<button class="scroll-top" onclick="scrollTo({top:0,behavior:'smooth'})"><i class="fa-solid fa-arrow-up"></i></button>
+
+<script>
+/* ── Copy Code ── */
+function copyCode(btn) {
+  const pre = btn.parentElement.querySelector('pre');
+  navigator.clipboard.writeText(pre.innerText);
+  btn.innerHTML = '<i class="fa-solid fa-check"></i> Copied';
+  setTimeout(() => btn.innerHTML = '<i class="fa-regular fa-clipboard"></i> Copy', 1500);
+}
+
+/* ── Scroll-to-top button ── */
+window.addEventListener('scroll', () => {
+  document.querySelector('.scroll-top').style.display = scrollY > 400 ? 'flex' : 'none';
+});
+
+/* ── Scroll Spy for Nav ── */
+const sections = document.querySelectorAll('.section[id]');
+const navLinks = document.querySelectorAll('.topnav a');
+window.addEventListener('scroll', () => {
+  let current = '';
+  sections.forEach(s => { if (scrollY >= s.offsetTop - 120) current = s.id; });
+  navLinks.forEach(a => {
+    const active = a.getAttribute('href') === '#' + current;
+    a.style.color = active ? '#2e7d32' : '#666';
+    a.style.borderColor = active ? '#a5d6a7' : 'transparent';
+    a.style.background = active ? '#e8f5e9' : 'transparent';
+  });
+});
+</script>
+
+</body>
+</html>

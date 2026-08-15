@@ -1,0 +1,1541 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>DNS, Hosting & Web Infrastructure — KEC Workshop Day 3</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link
+    href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700;800&family=Fira+Code:wght@400;500&display=swap"
+    rel="stylesheet">
+  <style>
+    *,
+    *::before,
+    *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0
+    }
+
+    :root {
+      --bg: #07091a;
+      --card: #161f35;
+      --card2: #1c253e;
+      --accent: #3b82f6;
+      --accent2: #60a5fa;
+      --accent3: #93c5fd;
+      --gold: #f59e0b;
+      --green: #10b981;
+      --red: #ef4444;
+      --violet: #a855f7;
+      --cyan: #22d3ee;
+      --text: #e2e8f0;
+      --muted: #64748b;
+      --muted2: #94a3b8;
+      --border: rgba(59, 130, 246, 0.2);
+      --glow: 0 0 36px rgba(59, 130, 246, 0.22)
+    }
+
+    html {
+      scroll-behavior: smooth
+    }
+
+    body {
+      font-family: 'Outfit', sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      font-size: 15px;
+      overflow-x: hidden
+    }
+
+    #rbar {
+      position: fixed;
+      top: 0;
+      left: 0;
+      height: 3px;
+      z-index: 999;
+      width: 0%;
+      background: linear-gradient(90deg, var(--accent), var(--cyan), var(--violet))
+    }
+
+    .blobs {
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      z-index: 0;
+      overflow: hidden
+    }
+
+    .blob {
+      position: absolute;
+      border-radius: 50%;
+      filter: blur(100px);
+      opacity: .12;
+      animation: bf 14s ease-in-out infinite alternate
+    }
+
+    .b1 {
+      width: 420px;
+      height: 420px;
+      background: var(--accent);
+      top: -100px;
+      left: -80px
+    }
+
+    .b2 {
+      width: 300px;
+      height: 300px;
+      background: var(--violet);
+      bottom: -80px;
+      right: -50px;
+      animation-delay: 5s
+    }
+
+    .b3 {
+      width: 240px;
+      height: 240px;
+      background: var(--cyan);
+      top: 40%;
+      left: 60%;
+      animation-delay: 2.5s
+    }
+
+    @keyframes bf {
+      from {
+        transform: scale(1)
+      }
+
+      to {
+        transform: scale(1.1) translate(20px, 14px)
+      }
+    }
+
+    nav {
+      position: sticky;
+      top: 0;
+      z-index: 200;
+      background: rgba(7, 9, 26, .92);
+      backdrop-filter: blur(16px);
+      border-bottom: 1px solid var(--border);
+      padding: .6rem .9rem;
+      display: flex;
+      align-items: center;
+      gap: .35rem;
+      overflow-x: auto
+    }
+
+    .nav-logo {
+      font-weight: 800;
+      font-size: .92rem;
+      background: linear-gradient(90deg, var(--accent), var(--cyan));
+      -webkit-background-clip: text;
+      background-clip: text;
+      -webkit-text-fill-color: transparent;
+      white-space: nowrap;
+      margin-right: .5rem
+    }
+
+    .nb {
+      font-size: .7rem;
+      font-weight: 600;
+      padding: .28rem .7rem;
+      border: 1px solid var(--border);
+      border-radius: 999px;
+      background: transparent;
+      color: var(--muted2);
+      cursor: pointer;
+      white-space: nowrap;
+      transition: all .2s
+    }
+
+    .nb:hover,
+    .nb.active {
+      background: var(--accent);
+      border-color: var(--accent);
+      color: #fff
+    }
+
+    section {
+      position: relative;
+      z-index: 10;
+      padding: 3.5rem 1.8rem;
+      max-width: 900px;
+      margin: 0 auto
+    }
+
+    .ey {
+      font-family: 'Fira Code', monospace;
+      font-size: .68rem;
+      color: var(--cyan);
+      letter-spacing: .14em;
+      text-transform: uppercase;
+      margin-bottom: .5rem
+    }
+
+    .st {
+      font-size: clamp(1.5rem, 3.5vw, 2.1rem);
+      font-weight: 800;
+      line-height: 1.2;
+      background: linear-gradient(135deg, #fff 25%, var(--accent2) 100%);
+      -webkit-background-clip: text;
+      background-clip: text;
+      -webkit-text-fill-color: transparent;
+      margin-bottom: .75rem
+    }
+
+    .sl {
+      font-size: .88rem;
+      color: var(--muted2);
+      line-height: 1.8;
+      max-width: 660px;
+      margin-bottom: 1.8rem
+    }
+
+    .rv {
+      opacity: 0;
+      transform: translateY(26px);
+      transition: opacity .6s ease, transform .6s ease
+    }
+
+    .rv.vis {
+      opacity: 1;
+      transform: translateY(0)
+    }
+
+    #hero {
+      min-height: 85vh;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      gap: 1.2rem;
+      padding: 4rem 1.8rem;
+      max-width: 900px;
+      margin: 0 auto
+    }
+
+    .hb {
+      display: inline-flex;
+      align-items: center;
+      gap: .45rem;
+      font-family: 'Fira Code', monospace;
+      font-size: .7rem;
+      padding: .3rem .9rem;
+      border-radius: 999px;
+      border: 1px solid rgba(59, 130, 246, .4);
+      color: var(--accent2);
+      background: rgba(59, 130, 246, .08);
+      animation: fu .6s ease both;
+      width: fit-content
+    }
+
+    .hh {
+      font-size: clamp(2rem, 6vw, 3.4rem);
+      font-weight: 800;
+      line-height: 1.08;
+      background: linear-gradient(135deg, #fff 15%, var(--accent) 55%, var(--cyan) 100%);
+      -webkit-background-clip: text;
+      background-clip: text;
+      -webkit-text-fill-color: transparent;
+      animation: fu .6s .1s ease both
+    }
+
+    .hs {
+      font-size: .95rem;
+      color: var(--muted2);
+      max-width: 540px;
+      line-height: 1.8;
+      animation: fu .6s .2s ease both
+    }
+
+    .hstats {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 1rem;
+      animation: fu .6s .3s ease both
+    }
+
+    .hstat {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: .65rem 1.1rem;
+      display: flex;
+      flex-direction: column
+    }
+
+    .hn {
+      font-size: 1.35rem;
+      font-weight: 800;
+      color: var(--accent2)
+    }
+
+    .hl {
+      font-size: .65rem;
+      color: var(--muted);
+      margin-top: .1rem
+    }
+
+    @keyframes fu {
+      from {
+        opacity: 0;
+        transform: translateY(22px)
+      }
+
+      to {
+        opacity: 1;
+        transform: translateY(0)
+      }
+    }
+
+    .cg {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(190px, 1fr));
+      gap: 1rem
+    }
+
+    .cd {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 1.2rem;
+      transition: transform .3s, box-shadow .3s, border-color .3s;
+      cursor: default
+    }
+
+    .cd:hover {
+      transform: translateY(-5px);
+      box-shadow: var(--glow);
+      border-color: var(--accent)
+    }
+
+    .cd .ci {
+      font-size: 1.7rem;
+      margin-bottom: .5rem
+    }
+
+    .cd h3 {
+      font-size: .88rem;
+      font-weight: 700;
+      margin-bottom: .3rem
+    }
+
+    .cd p {
+      font-size: .77rem;
+      color: var(--muted2);
+      line-height: 1.65
+    }
+
+    .steps {
+      display: flex;
+      flex-direction: column;
+      gap: 0
+    }
+
+    .step {
+      display: flex;
+      align-items: flex-start;
+      gap: 1rem;
+      position: relative
+    }
+
+    .step:not(:last-child)::after {
+      content: '';
+      position: absolute;
+      left: 20px;
+      top: 42px;
+      width: 2px;
+      height: calc(100% - 10px);
+      background: linear-gradient(180deg, var(--accent), transparent)
+    }
+
+    .sn {
+      min-width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      border: 2px solid var(--accent);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 800;
+      font-size: .82rem;
+      color: var(--accent);
+      background: rgba(59, 130, 246, .1);
+      flex-shrink: 0;
+      margin-top: 8px;
+      transition: all .3s;
+      position: relative;
+      z-index: 2
+    }
+
+    .step:hover .sn {
+      background: var(--accent);
+      color: #fff;
+      box-shadow: 0 0 18px rgba(59, 130, 246, .5)
+    }
+
+    .sb {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: .9rem 1.2rem;
+      margin-bottom: 1rem;
+      flex: 1;
+      transition: border-color .3s, transform .3s
+    }
+
+    .step:hover .sb {
+      border-color: var(--accent);
+      transform: translateX(4px)
+    }
+
+    .sb h4 {
+      font-size: .9rem;
+      font-weight: 700;
+      margin-bottom: .3rem
+    }
+
+    .sb p {
+      font-size: .79rem;
+      color: var(--muted2);
+      line-height: 1.65
+    }
+
+    .cb {
+      background: rgba(0, 0, 0, .5);
+      border: 1px solid rgba(59, 130, 246, .15);
+      border-radius: 10px;
+      padding: .75rem 1rem;
+      font-family: 'Fira Code', monospace;
+      font-size: .78rem;
+      line-height: 1.7;
+      margin: .5rem 0;
+      overflow-x: auto;
+      color: var(--cyan)
+    }
+
+    .co {
+      border-radius: 14px;
+      padding: 1.1rem 1.3rem;
+      font-size: .83rem;
+      line-height: 1.75;
+      margin: .8rem 0
+    }
+
+    .co.b {
+      background: rgba(59, 130, 246, .07);
+      border: 1px solid rgba(59, 130, 246, .25)
+    }
+
+    .co.g {
+      background: rgba(16, 185, 129, .07);
+      border: 1px solid rgba(16, 185, 129, .25)
+    }
+
+    .co.y {
+      background: rgba(245, 158, 11, .07);
+      border: 1px solid rgba(245, 158, 11, .25)
+    }
+
+    .co.r {
+      background: rgba(239, 68, 68, .07);
+      border: 1px solid rgba(239, 68, 68, .25)
+    }
+
+    .co strong {
+      display: block;
+      font-size: .88rem;
+      margin-bottom: .35rem
+    }
+
+    .tbl {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: .82rem;
+      margin: 1rem 0
+    }
+
+    .tbl th {
+      background: rgba(59, 130, 246, .1);
+      color: var(--accent2);
+      font-weight: 700;
+      padding: .65rem 1rem;
+      text-align: left;
+      border-bottom: 2px solid var(--border)
+    }
+
+    .tbl td {
+      padding: .6rem 1rem;
+      border-bottom: 1px solid rgba(255, 255, 255, .05);
+      color: var(--muted2)
+    }
+
+    .tbl tr:hover td {
+      background: rgba(59, 130, 246, .04)
+    }
+
+    .ai {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      overflow: hidden;
+      transition: border-color .25s;
+      margin-bottom: .7rem
+    }
+
+    .ai:hover {
+      border-color: var(--accent)
+    }
+
+    .ah {
+      padding: .9rem 1.2rem;
+      cursor: pointer;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-weight: 700;
+      font-size: .88rem;
+      user-select: none
+    }
+
+    .ah span.ar {
+      font-size: .75rem;
+      color: var(--muted)
+    }
+
+    .ab {
+      padding: 0 1.2rem;
+      max-height: 0;
+      overflow: hidden;
+      transition: max-height .35s ease, padding .25s
+    }
+
+    .ab.open {
+      max-height: 900px;
+      padding: .3rem 1.2rem 1rem
+    }
+
+    .ab p,
+    .ab li {
+      font-size: .8rem;
+      color: var(--muted2);
+      line-height: 1.75
+    }
+
+    .ab li {
+      margin-left: 1.1rem
+    }
+
+    .bl {
+      display: flex;
+      flex-direction: column;
+      gap: .6rem;
+      margin: .8rem 0
+    }
+
+    .bi {
+      display: flex;
+      gap: .75rem;
+      align-items: flex-start;
+      padding: .7rem 1rem;
+      background: var(--card);
+      border-radius: 12px;
+      border: 1px solid rgba(255, 255, 255, .06);
+      transition: border-color .25s
+    }
+
+    .bi:hover {
+      border-color: var(--accent)
+    }
+
+    .bic {
+      font-size: 1.2rem;
+      flex-shrink: 0
+    }
+
+    .bit h4 {
+      font-size: .85rem;
+      font-weight: 700;
+      margin-bottom: .15rem
+    }
+
+    .bit p {
+      font-size: .77rem;
+      color: var(--muted2);
+      line-height: 1.6
+    }
+
+    .pr {
+      display: flex;
+      flex-wrap: wrap;
+      gap: .7rem;
+      margin: .6rem 0
+    }
+
+    .pt {
+      font-size: .78rem;
+      font-weight: 600;
+      padding: .3rem .8rem;
+      border-radius: 999px;
+      border: 1px solid var(--border);
+      color: var(--text);
+      background: var(--card2)
+    }
+
+    .pt.b {
+      border-color: rgba(59, 130, 246, .4);
+      color: var(--accent2)
+    }
+
+    .pt.g {
+      border-color: rgba(16, 185, 129, .4);
+      color: var(--green)
+    }
+
+    .pt.y {
+      border-color: rgba(245, 158, 11, .4);
+      color: var(--gold)
+    }
+
+    .pt.v {
+      border-color: rgba(168, 85, 247, .4);
+      color: var(--violet)
+    }
+
+    .pt.c {
+      border-color: rgba(34, 211, 238, .4);
+      color: var(--cyan)
+    }
+
+    .dv {
+      height: 1px;
+      background: linear-gradient(90deg, transparent, var(--border), transparent);
+      margin: .5rem auto;
+      max-width: 900px
+    }
+
+    footer.sf {
+      position: relative;
+      z-index: 10;
+      padding: 1.5rem;
+      text-align: center;
+      border-top: 1px solid var(--border);
+      color: var(--muted);
+      font-size: .77rem
+    }
+
+    footer.sf span {
+      color: var(--accent2)
+    }
+
+    @media(max-width:600px) {
+      section {
+        padding: 2.5rem 1rem
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <div id="rbar"></div>
+  <div class="blobs">
+    <div class="blob b1"></div>
+    <div class="blob b2"></div>
+    <div class="blob b3"></div>
+  </div>
+  <!-- Back to Home -->
+  <a href="index.html"
+    style="position:fixed;top:1rem;left:1rem;z-index:9999;display:inline-flex;align-items:center;gap:.45rem;padding:.45rem 1rem;background:rgba(7,9,26,.9);border:1px solid rgba(99,102,241,.4);border-radius:999px;color:#a78bfa;font-family:'Outfit',sans-serif;font-size:.8rem;font-weight:700;text-decoration:none;backdrop-filter:blur(10px);transition:all .2s;"
+    onmouseover="this.style.background='rgba(99,102,241,.25)';this.style.borderColor='#6366f1'"
+    onmouseout="this.style.background='rgba(7,9,26,.9)';this.style.borderColor='rgba(99,102,241,.4)'">← Home</a>
+
+  <nav style="padding-left:6rem;">
+    <div class="nav-logo">&#127760; DNS &amp; Hosting</div>
+    <button class="nb active" onclick="goTo('hero')">Intro</button>
+    <button class="nb" onclick="goTo('dns')">DNS</button>
+    <button class="nb" onclick="goTo('howweb')">How Web Works</button>
+    <button class="nb" onclick="goTo('google')">Google Search</button>
+    <button class="nb" onclick="goTo('domain')">Buy Domain</button>
+    <button class="nb" onclick="goTo('records')">DNS Records</button>
+    <button class="nb" onclick="goTo('hosting')">Hosting Types</button>
+    <button class="nb" onclick="goTo('deploy')">Deploy</button>
+    <button class="nb" onclick="goTo('loadbalancer')">Load Balancer</button>
+    <button class="nb" onclick="goTo('million')">1M Users</button>
+  </nav>
+
+  <section id="hero" style="max-width:900px">
+    <div class="hb">&#127760; Day 3 &middot; DNS, Hosting &amp; Infrastructure</div>
+    <h1 class="hh">DNS, Hosting &amp;<br>Web Infrastructure</h1>
+    <p class="hs">From how DNS resolves domain names to handling 1 million users &mdash; a deep dive into everything
+      behind a website.</p>
+    <div class="hstats">
+      <div class="hstat"><span class="hn">10</span><span class="hl">Topics</span></div>
+      <div class="hstat"><span class="hn">6</span><span class="hl">DNS Records</span></div>
+      <div class="hstat"><span class="hn">4</span><span class="hl">Hosting Types</span></div>
+      <div class="hstat"><span class="hn">3</span><span class="hl">Deploy Methods</span></div>
+    </div>
+  </section>
+
+  <section id="dns">
+    <div class="rv">
+      <p class="ey">01 &middot; Foundation</p>
+      <h2 class="st">&#128214; What is DNS?</h2>
+      <p class="sl"><strong>DNS = Domain Name System</strong> &mdash; It&rsquo;s the phonebook of the internet. Humans
+        remember <code style="font-family:'Fira Code';color:var(--cyan)">google.com</code> but computers only understand
+        <code style="font-family:'Fira Code';color:var(--cyan)">142.250.190.78</code>. DNS converts domain names to IP
+        addresses.</p>
+    </div>
+    <div class="rv">
+      <h3 style="font-size:1rem;font-weight:700;margin-bottom:1rem;">&#127758; DNS Resolution Flow &mdash; What happens
+        when you type www.google.com</h3>
+      <div class="steps">
+        <div class="step">
+          <div class="sn">1</div>
+          <div class="sb">
+            <h4>Browser Cache Check</h4>
+            <p>Browser checks if it already knows the IP from a recent visit.</p>
+          </div>
+        </div>
+        <div class="step">
+          <div class="sn">2</div>
+          <div class="sb">
+            <h4>OS DNS Cache</h4>
+            <p>Operating system checks its own cached DNS records.</p>
+          </div>
+        </div>
+        <div class="step">
+          <div class="sn">3</div>
+          <div class="sb">
+            <h4>Router Cache</h4>
+            <p>Your Wi-Fi router has its own DNS cache layer.</p>
+          </div>
+        </div>
+        <div class="step">
+          <div class="sn">4</div>
+          <div class="sb">
+            <h4>ISP DNS Server</h4>
+            <p>Your Internet Service Provider&rsquo;s DNS resolver checks its database.</p>
+          </div>
+        </div>
+        <div class="step">
+          <div class="sn">5</div>
+          <div class="sb">
+            <h4>Root DNS Server</h4>
+            <p>The root server (.) directs to the correct TLD server.</p>
+          </div>
+        </div>
+        <div class="step">
+          <div class="sn">6</div>
+          <div class="sb">
+            <h4>TLD Server (.com)</h4>
+            <p>The .com server knows which authoritative server handles google.com.</p>
+          </div>
+        </div>
+        <div class="step">
+          <div class="sn">7</div>
+          <div class="sb">
+            <h4>Authoritative DNS Server</h4>
+            <p>Returns the actual IP address: <code
+                style="font-family:'Fira Code';color:var(--cyan)">142.250.190.78</code></p>
+          </div>
+        </div>
+        <div class="step">
+          <div class="sn">8</div>
+          <div class="sb">
+            <h4>Browser Connects</h4>
+            <p>Browser opens connection to the server IP and loads the website.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="rv" style="margin-top:1rem;">
+      <div class="co b">
+        <strong>&#128421; DNS Hierarchy</strong>
+        <code
+          style="font-family:'Fira Code';font-size:.82rem;color:var(--cyan);display:block;margin-top:.4rem;line-height:2;">Root Server (.) &rarr; TLD Server (.com) &rarr; Authoritative Name Server &rarr; IP Address</code>
+      </div>
+    </div>
+  </section>
+  <div class="dv"></div>
+
+  <section id="howweb">
+    <div class="rv">
+      <p class="ey">02 &middot; Deep Technical</p>
+      <h2 class="st">&#128421; How a Website Works Internally</h2>
+      <p class="sl">Every website has 3 main parts: <strong>Domain Name</strong> (example.com), <strong>Hosting
+          Server</strong> (where files live), and <strong>Website Files</strong> (HTML, CSS, JS, backend, database).</p>
+    </div>
+    <div class="rv">
+      <h3 style="font-size:.95rem;font-weight:700;margin-bottom:.9rem;">When you type www.amazon.com &mdash; step by
+        step:</h3>
+      <div class="steps">
+        <div class="step">
+          <div class="sn">1</div>
+          <div class="sb">
+            <h4>DNS Resolution</h4>
+            <p>Browser resolves domain using DNS &rarr; gets IP address (e.g., 205.xx.xx.xx).</p>
+          </div>
+        </div>
+        <div class="step">
+          <div class="sn">2</div>
+          <div class="sb">
+            <h4>HTTP Request</h4>
+            <p>Browser sends HTTP request:<br><code
+                style="font-family:'Fira Code';color:var(--cyan)">GET / HTTP/1.1  Host: amazon.com</code></p>
+          </div>
+        </div>
+        <div class="step">
+          <div class="sn">3</div>
+          <div class="sb">
+            <h4>Server Processes</h4>
+            <p>Server receives request, runs backend logic, queries database if needed.</p>
+          </div>
+        </div>
+        <div class="step">
+          <div class="sn">4</div>
+          <div class="sb">
+            <h4>Response Sent</h4>
+            <p>Server sends back HTML response with status code 200 OK.</p>
+          </div>
+        </div>
+        <div class="step">
+          <div class="sn">5</div>
+          <div class="sb">
+            <h4>Browser Renders</h4>
+            <p>Browser parses HTML &rarr; loads CSS &rarr; executes JS &rarr; loads images &rarr; page appears on
+              screen.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="rv" style="margin-top:1rem;">
+      <h3 style="font-size:.95rem;font-weight:700;margin-bottom:.7rem;">&#128256; Backend Deep View (What happens on the
+        server)</h3>
+      <div class="bl">
+        <div class="bi">
+          <div class="bic">&#9989;</div>
+          <div class="bit">
+            <h4>1. TCP Handshake</h4>
+            <p>3-way handshake establishes connection (SYN &rarr; SYN-ACK &rarr; ACK).</p>
+          </div>
+        </div>
+        <div class="bi">
+          <div class="bic">&#128274;</div>
+          <div class="bit">
+            <h4>2. TLS Handshake (HTTPS)</h4>
+            <p>SSL certificate verification and encryption setup.</p>
+          </div>
+        </div>
+        <div class="bi">
+          <div class="bic">&#128230;</div>
+          <div class="bit">
+            <h4>3. HTTP Request Processing</h4>
+            <p>Server routes request, runs application logic.</p>
+          </div>
+        </div>
+        <div class="bi">
+          <div class="bic">&#128451;</div>
+          <div class="bit">
+            <h4>4. Database Query</h4>
+            <p>Fetches data from MySQL, PostgreSQL, or MongoDB.</p>
+          </div>
+        </div>
+        <div class="bi">
+          <div class="bic">&#128228;</div>
+          <div class="bit">
+            <h4>5. Response &amp; Render</h4>
+            <p>Server sends HTML/JSON; browser paints the page.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="rv" style="margin-top:1rem;">
+      <div class="co g">
+        <strong>&#128274; What is HTTPS?</strong>
+        HTTPS = Secure version of HTTP. Uses SSL/TLS certificates for encryption.<br>
+        Without SSL: <code style="font-family:'Fira Code';color:var(--red)">http://example.com</code> &mdash; Not
+        secure<br>
+        With SSL: <code style="font-family:'Fira Code';color:var(--green)">https://example.com</code> &mdash; Encrypted
+        &#128274;
+      </div>
+    </div>
+  </section>
+  <div class="dv"></div>
+
+  <section id="google">
+    <div class="rv">
+      <p class="ey">03 &middot; Search Engine</p>
+      <h2 class="st">&#128269; What Happens When You Search in Google?</h2>
+      <p class="sl">When you search <em>&ldquo;Best laptop under 50000&rdquo;</em>, Google&rsquo;s massive
+        infrastructure processes your query through 3 main stages.</p>
+    </div>
+    <div class="cg rv">
+      <div class="cd">
+        <div class="ci">&#128375;</div>
+        <h3>1. Crawling</h3>
+        <p>Googlebot (web crawler) constantly scans billions of web pages, following links and discovering new content.
+        </p>
+      </div>
+      <div class="cd">
+        <div class="ci">&#128451;</div>
+        <h3>2. Indexing</h3>
+        <p>Stores website content in a massive database. Analyzes text, images, metadata, and page structure.</p>
+      </div>
+      <div class="cd">
+        <div class="ci">&#128200;</div>
+        <h3>3. Ranking</h3>
+        <p>Uses 200+ ranking factors to decide which pages appear first in search results.</p>
+      </div>
+    </div>
+    <div class="rv" style="margin-top:1.3rem;">
+      <h3 style="font-size:.95rem;font-weight:700;margin-bottom:.8rem;">&#128200; Key Ranking Factors</h3>
+      <div class="pr">
+        <span class="pt b">Keywords</span>
+        <span class="pt g">Backlinks</span>
+        <span class="pt y">Page Speed</span>
+        <span class="pt v">Mobile Friendliness</span>
+        <span class="pt c">Domain Authority</span>
+        <span class="pt b">Content Quality</span>
+        <span class="pt g">User Experience</span>
+        <span class="pt y">SSL Certificate</span>
+      </div>
+    </div>
+  </section>
+  <div class="dv"></div>
+
+  <section id="domain">
+    <div class="rv">
+      <p class="ey">04 &middot; Domain Names</p>
+      <h2 class="st">&#127991;&#65039; How to Buy a Domain</h2>
+      <p class="sl">Buying a domain is actually <strong>renting a name</strong> for a fixed time (usually 1 year). You
+        do NOT permanently own it &mdash; you renew yearly.</p>
+    </div>
+    <div class="steps rv">
+      <div class="step">
+        <div class="sn">1</div>
+        <div class="sb">
+          <h4>Go to Domain Registrar</h4>
+          <p>Visit Namecheap, GoDaddy, Hostinger, or any registrar website.</p>
+        </div>
+      </div>
+      <div class="step">
+        <div class="sn">2</div>
+        <div class="sb">
+          <h4>Search Domain Name</h4>
+          <p>Type your desired name (e.g., <code
+              style="font-family:'Fira Code';color:var(--cyan)">sukeshportfolio.com</code>).</p>
+        </div>
+      </div>
+      <div class="step">
+        <div class="sn">3</div>
+        <div class="sb">
+          <h4>Check Availability &amp; Buy</h4>
+          <p>If available, add to cart, choose period (1&ndash;10 years), and pay.</p>
+        </div>
+      </div>
+      <div class="step">
+        <div class="sn">4</div>
+        <div class="sb">
+          <h4>Domain Registered!</h4>
+          <p>The domain is now registered in your name. Configure DNS settings next.</p>
+        </div>
+      </div>
+    </div>
+    <div class="rv" style="margin-top:1.3rem;">
+      <h3 style="font-size:.95rem;font-weight:700;margin-bottom:.7rem;">&#127758; Popular Domain Registrars</h3>
+      <div class="pr">
+        <span class="pt b">Namecheap &#11088;</span>
+        <span class="pt y">GoDaddy</span>
+        <span class="pt g">Hostinger &#11088;</span>
+        <span class="pt v">Squarespace (Google Domains)</span>
+        <span class="pt c">Bluehost</span>
+      </div>
+      <div class="co g" style="margin-top:.8rem;"><strong>&#128161; Best for beginners: Namecheap or
+          Hostinger</strong>Affordable, easy dashboard, good DNS management, free WHOIS privacy.</div>
+    </div>
+    <div class="rv" style="margin-top:1.3rem;">
+      <h3 style="font-size:.95rem;font-weight:700;margin-bottom:.7rem;">&#129504; Domain Name Structure</h3>
+      <div class="cb">blog.example.com<br><br><span style="color:var(--accent2)">blog</span> &rarr; Subdomain<br><span
+          style="color:var(--accent2)">example</span> &rarr; Second-level domain<br><span
+          style="color:var(--accent2)">.com</span> &rarr; Top-level domain (TLD)</div>
+      <div class="pr" style="margin-top:.7rem;">
+        <span class="pt b">.com (Commercial)</span>
+        <span class="pt g">.org (Organization)</span>
+        <span class="pt y">.net (Network)</span>
+        <span class="pt v">.in (India)</span>
+        <span class="pt c">.edu (Education)</span>
+        <span class="pt">.gov (Government)</span>
+      </div>
+    </div>
+  </section>
+  <div class="dv"></div>
+
+  <section id="records">
+    <div class="rv">
+      <p class="ey">05 &middot; Very Important</p>
+      <h2 class="st">&#128203; DNS Records Explained</h2>
+      <p class="sl">When you buy a domain, you configure DNS records. These tell the internet where your domain should
+        point to.</p>
+    </div>
+    <div class="rv" style="overflow-x:auto;">
+      <table class="tbl">
+        <thead>
+          <tr>
+            <th>Record</th>
+            <th>Purpose</th>
+            <th>Example</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td style="color:var(--accent2);font-family:'Fira Code'">A</td>
+            <td style="color:var(--text)">Maps domain &rarr; IPv4 address</td>
+            <td style="font-family:'Fira Code';color:var(--cyan)">example.com &rarr; 192.168.1.1</td>
+          </tr>
+          <tr>
+            <td style="color:var(--accent2);font-family:'Fira Code'">AAAA</td>
+            <td style="color:var(--text)">Maps domain &rarr; IPv6 address</td>
+            <td style="font-family:'Fira Code';color:var(--cyan)">example.com &rarr; 2001:db8::1</td>
+          </tr>
+          <tr>
+            <td style="color:var(--accent2);font-family:'Fira Code'">CNAME</td>
+            <td style="color:var(--text)">Maps domain &rarr; another domain</td>
+            <td style="font-family:'Fira Code';color:var(--cyan)">www.example.com &rarr; example.com</td>
+          </tr>
+          <tr>
+            <td style="color:var(--accent2);font-family:'Fira Code'">MX</td>
+            <td style="color:var(--text)">Mail server for email</td>
+            <td style="font-family:'Fira Code';color:var(--cyan)">example.com &rarr; mail.google.com</td>
+          </tr>
+          <tr>
+            <td style="color:var(--accent2);font-family:'Fira Code'">TXT</td>
+            <td style="color:var(--text)">Verification, SPF, DKIM, security</td>
+            <td style="font-family:'Fira Code';color:var(--cyan)">v=spf1 include:_spf.google.com</td>
+          </tr>
+          <tr>
+            <td style="color:var(--accent2);font-family:'Fira Code'">NS</td>
+            <td style="color:var(--text)">Name server &mdash; points to DNS provider</td>
+            <td style="font-family:'Fira Code';color:var(--cyan)">ns1.hostinger.com</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+  <div class="dv"></div>
+
+  <section id="hosting">
+    <div class="rv">
+      <p class="ey">06 &middot; Server Architecture</p>
+      <h2 class="st">&#127970; Hosting Types (Deep Comparison)</h2>
+      <p class="sl">Hosting = server space where your website lives. Understanding the 4 types is essential for choosing
+        the right infrastructure.</p>
+    </div>
+
+    <div class="ai rv">
+      <div class="ah" onclick="toggleAcc(this)"><span>&#127976; Shared Hosting &mdash; Hostel Room (Many people
+          sharing)</span><span class="ar">&#9660;</span></div>
+      <div class="ab">
+        <p>One physical server hosts <strong style="color:var(--text)">100&ndash;1000 websites</strong>. Resources (CPU,
+          RAM, storage) are shared among all users.</p>
+        <div class="cb">Physical Server (16-64GB RAM, 8-16 CPU cores)<br>&emsp;&#9500; Website 1<br>&emsp;&#9500;
+          Website 2<br>&emsp;&#9500; Website 3<br>&emsp;&#9492; Website 200</div>
+        <p><strong style="color:var(--green)">&#9989; Pros:</strong> Very cheap (&#8377;2000&ndash;&#8377;3000/year),
+          beginner friendly, no server knowledge needed.</p>
+        <p><strong style="color:var(--red)">&#10060; Cons:</strong> Slow if traffic increases, one site can affect
+          others, limited customization.</p>
+        <p><strong style="color:var(--accent2)">Best for:</strong> Portfolio, small business, blog, college project.</p>
+        <p><strong style="color:var(--muted2)">Providers:</strong> Hostinger, Bluehost, GoDaddy.</p>
+      </div>
+    </div>
+
+    <div class="ai rv">
+      <div class="ah" onclick="toggleAcc(this)"><span>&#127970; VPS &mdash; Apartment (Own flat, shared
+          building)</span><span class="ar">&#9660;</span></div>
+      <div class="ab">
+        <p>One physical server split into <strong style="color:var(--text)">multiple virtual servers</strong> using
+          virtualization (KVM/VMware). Each VPS has its own OS, RAM, CPU, storage.</p>
+        <div class="cb">Physical Server<br>&emsp;&#9500; VPS 1 (Ubuntu, 2GB RAM)<br>&emsp;&#9500; VPS 2 (CentOS, 4GB
+          RAM)<br>&emsp;&#9492; VPS 3 (Debian, 8GB RAM)<br><br>Each VPS acts like an independent server.</div>
+        <p><strong style="color:var(--green)">&#9989; Pros:</strong> Full root access, install anything, better
+          performance, secure isolation, scalable.</p>
+        <p><strong style="color:var(--red)">&#10060; Cons:</strong> Needs server knowledge, more expensive than shared.
+        </p>
+        <p><strong style="color:var(--accent2)">Best for:</strong> Full stack apps, startup MVP, API backend, SaaS
+          product.</p>
+        <p><strong style="color:var(--muted2)">Cost: &#8377;400&ndash;&#8377;1500/month. Providers:</strong>
+          DigitalOcean, Linode, AWS.</p>
+      </div>
+    </div>
+
+    <div class="ai rv">
+      <div class="ah" onclick="toggleAcc(this)"><span>&#127968; Dedicated Server &mdash; Independent Villa (Entire
+          building is yours)</span><span class="ar">&#9660;</span></div>
+      <div class="ab">
+        <p>Entire physical machine <strong style="color:var(--text)">only for YOU</strong>. 64&ndash;256 GB RAM,
+          16&ndash;64 CPU cores, multiple SSDs.</p>
+        <div class="cb">Entire Physical Machine<br>&emsp;&#9492; Your Website Only</div>
+        <p><strong style="color:var(--green)">&#9989; Pros:</strong> Maximum performance, full hardware control, no
+          noisy neighbors.</p>
+        <p><strong style="color:var(--red)">&#10060; Cons:</strong> Expensive (&#8377;8000&ndash;&#8377;30,000+/month),
+          maintenance required.</p>
+        <p><strong style="color:var(--accent2)">Best for:</strong> Large e-commerce, high traffic apps, gaming servers,
+          enterprise.</p>
+      </div>
+    </div>
+
+    <div class="ai rv">
+      <div class="ah" onclick="toggleAcc(this)"><span>&#9729;&#65039; Cloud Hosting &mdash; Entire City Working Together
+          (Modern Standard)</span><span class="ar">&#9660;</span></div>
+      <div class="ab">
+        <p>Website runs on <strong style="color:var(--text)">multiple connected servers</strong> with load balancing,
+          distributed storage, and auto scaling.</p>
+        <div class="cb">User &rarr; Load Balancer &rarr; Server 1 | Server 2 | Server 3 &rarr; Shared Cloud Storage
+        </div>
+        <p><strong style="color:var(--green)">&#9989; Pros:</strong> Auto scaling, high availability, very reliable,
+          global deployment, pay-as-you-use.</p>
+        <p><strong style="color:var(--red)">&#10060; Cons:</strong> Complex, billing can spike, requires cloud
+          knowledge.</p>
+        <p><strong style="color:var(--accent2)">Best for:</strong> Startups scaling fast, SaaS, AI apps, global
+          platforms.</p>
+        <p><strong style="color:var(--muted2)">Providers:</strong> AWS, Google Cloud, Microsoft Azure.</p>
+      </div>
+    </div>
+
+    <div class="rv" style="margin-top:1.3rem;overflow-x:auto;">
+      <table class="tbl">
+        <thead>
+          <tr>
+            <th>Feature</th>
+            <th>Shared</th>
+            <th>VPS</th>
+            <th>Dedicated</th>
+            <th>Cloud</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td style="color:var(--text)">Cost</td>
+            <td>Very Low</td>
+            <td>Medium</td>
+            <td>High</td>
+            <td>Variable</td>
+          </tr>
+          <tr>
+            <td style="color:var(--text)">Performance</td>
+            <td>Low</td>
+            <td>Good</td>
+            <td>Excellent</td>
+            <td>Excellent</td>
+          </tr>
+          <tr>
+            <td style="color:var(--text)">Control</td>
+            <td>Low</td>
+            <td>Full</td>
+            <td>Full</td>
+            <td>Full</td>
+          </tr>
+          <tr>
+            <td style="color:var(--text)">Scalability</td>
+            <td>No</td>
+            <td>Limited</td>
+            <td>No</td>
+            <td style="color:var(--green)">Yes &#9989;</td>
+          </tr>
+          <tr>
+            <td style="color:var(--text)">Best For</td>
+            <td>Small sites</td>
+            <td>Apps</td>
+            <td>Big sites</td>
+            <td>Startups</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="rv" style="margin-top:1.3rem;">
+      <h3 style="font-size:.95rem;font-weight:700;margin-bottom:.7rem;">&#128279; How Domain Connects to Hosting</h3>
+      <div class="steps">
+        <div class="step">
+          <div class="sn">1</div>
+          <div class="sb">
+            <h4>Buy Hosting</h4>
+            <p>Hosting provider gives you Nameservers (e.g., ns1.hostinger.com) or an IP address.</p>
+          </div>
+        </div>
+        <div class="step">
+          <div class="sn">2</div>
+          <div class="sb">
+            <h4>Update Domain DNS</h4>
+            <p>Go to your domain registrar &rarr; DNS settings &rarr; Update NS records or add A record pointing to
+              hosting IP.</p>
+          </div>
+        </div>
+        <div class="step">
+          <div class="sn">3</div>
+          <div class="sb">
+            <h4>DNS Propagation</h4>
+            <p>Wait 5 minutes to 24 hours for DNS changes to propagate worldwide. DNS servers cache data.</p>
+          </div>
+        </div>
+        <div class="step">
+          <div class="sn">4</div>
+          <div class="sb">
+            <h4>Website Live!</h4>
+            <p>Domain now resolves to your hosting server. Upload files and your site is accessible.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+  <div class="dv"></div>
+
+  <section id="deploy">
+    <div class="rv">
+      <p class="ey">07 &middot; Deployment</p>
+      <h2 class="st">&#128640; Deploy Your Website Step-by-Step</h2>
+      <p class="sl">3 deployment methods: Static (beginner), Full Stack Node.js (intermediate), and GitHub + Cloudflare
+        (modern).</p>
+    </div>
+
+    <div class="ai rv">
+      <div class="ah" onclick="toggleAcc(this)"><span>&#128640; Method 1 &mdash; Static Website (Easiest &mdash;
+          Namecheap + Hostinger)</span><span class="ar">&#9660;</span></div>
+      <div class="ab">
+        <p>For portfolios, landing pages, college projects.</p>
+        <ol>
+          <li><strong>Build files:</strong> index.html, style.css, script.js</li>
+          <li><strong>Buy domain:</strong> Search on Namecheap, buy for 1 year</li>
+          <li><strong>Buy hosting:</strong> Shared hosting from Hostinger. Get nameservers: <code
+              style="font-family:'Fira Code';color:var(--cyan)">ns1.hostinger.com</code></li>
+          <li><strong>Connect:</strong> In Namecheap &rarr; Domain &rarr; Manage &rarr; replace nameservers</li>
+          <li><strong>Upload:</strong> Hostinger File Manager &rarr; public_html &rarr; upload files</li>
+          <li><strong>Enable SSL:</strong> Free SSL in hosting panel &rarr; <code
+              style="font-family:'Fira Code';color:var(--green)">https://yoursite.com</code> &#128274;</li>
+        </ol>
+      </div>
+    </div>
+
+    <div class="ai rv">
+      <div class="ah" onclick="toggleAcc(this)"><span>&#9889; Method 2 &mdash; Full Stack Node.js (VPS +
+          DigitalOcean)</span><span class="ar">&#9660;</span></div>
+      <div class="ab">
+        <p>For web apps, APIs, bus trackers, SaaS products.</p>
+        <ol>
+          <li><strong>Create VPS:</strong> DigitalOcean Droplet, Ubuntu 22.04. Get IP: <code
+              style="font-family:'Fira Code';color:var(--cyan)">159.89.xx.xx</code></li>
+          <li><strong>Connect SSH:</strong> <code
+              style="font-family:'Fira Code';color:var(--cyan)">ssh root@159.89.xx.xx</code></li>
+          <li><strong>Install Node:</strong> <code
+              style="font-family:'Fira Code';color:var(--cyan)">sudo apt update && sudo apt install nodejs npm</code>
+          </li>
+          <li><strong>Upload project:</strong> <code
+              style="font-family:'Fira Code';color:var(--cyan)">git clone https://github.com/yourproject.git</code></li>
+          <li><strong>Run with PM2:</strong> <code
+              style="font-family:'Fira Code';color:var(--cyan)">npm install -g pm2 && pm2 start server.js && pm2 save && pm2 startup</code>
+          </li>
+          <li><strong>Point domain:</strong> Add A Record: <code
+              style="font-family:'Fira Code';color:var(--cyan)">@ &rarr; 159.89.xx.xx</code></li>
+          <li><strong>Nginx reverse proxy:</strong> Forward port 80 &rarr; localhost:3000</li>
+          <li><strong>SSL:</strong> <code
+              style="font-family:'Fira Code';color:var(--cyan)">sudo certbot --nginx -d yoursite.com</code></li>
+        </ol>
+        <div class="cb">server {<br>&emsp;listen 80;<br>&emsp;server_name yoursite.com;<br>&emsp;location /
+          {<br>&emsp;&emsp;proxy_pass http://localhost:3000;<br>&emsp;}<br>}</div>
+      </div>
+    </div>
+
+    <div class="ai rv">
+      <div class="ah" onclick="toggleAcc(this)"><span>&#9889; Method 3 &mdash; GitHub + Cloudflare Pages (Modern, No
+          Server)</span><span class="ar">&#9660;</span></div>
+      <div class="ab">
+        <p>Best for personal brands, startup landing pages.</p>
+        <ol>
+          <li>Push code to GitHub repository</li>
+          <li>Connect repo to Cloudflare Pages</li>
+          <li>Add custom domain</li>
+          <li>Cloudflare auto-deploys on every push. No server management needed.</li>
+        </ol>
+      </div>
+    </div>
+
+    <div class="rv" style="margin-top:1.3rem;overflow-x:auto;">
+      <table class="tbl">
+        <thead>
+          <tr>
+            <th>Project Type</th>
+            <th>Best Method</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td style="color:var(--text)">Simple Portfolio</td>
+            <td>Method 1 (Shared Hosting)</td>
+          </tr>
+          <tr>
+            <td style="color:var(--text)">Full Stack App</td>
+            <td>Method 2 (VPS)</td>
+          </tr>
+          <tr>
+            <td style="color:var(--text)">Startup Landing</td>
+            <td>Method 3 (Cloudflare)</td>
+          </tr>
+          <tr>
+            <td style="color:var(--text)">Scalable SaaS</td>
+            <td>VPS + Load Balancer + Docker</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="rv" style="margin-top:.8rem;">
+      <div class="co y">
+        <strong>&#128176; Cost Estimation (India)</strong>
+        Domain: &#8377;800&ndash;&#8377;1200/year &nbsp;|&nbsp; Shared Hosting: &#8377;2000&ndash;&#8377;3000/year
+        &nbsp;|&nbsp; VPS: &#8377;400/month
+      </div>
+    </div>
+  </section>
+  <div class="dv"></div>
+
+  <section id="loadbalancer">
+    <div class="rv">
+      <p class="ey">08 &middot; Production Architecture</p>
+      <h2 class="st">&#128678; Load Balancer &mdash; Deep Dive</h2>
+      <p class="sl">A load balancer distributes incoming user requests across multiple servers. Without it, one server
+        getting 10,000 users would crash.</p>
+    </div>
+    <div class="rv">
+      <div class="cb" style="text-align:center;font-size:.85rem;">Users &rarr; Load Balancer &rarr; Server 1 | Server 2
+        | Server 3 | Server 4<br><br><span style="color:var(--muted2)">Each server runs the same application. User never
+          knows multiple servers exist.</span></div>
+    </div>
+
+    <div class="rv" style="margin-top:1.3rem;">
+      <h3 style="font-size:.95rem;font-weight:700;margin-bottom:.8rem;">&#9881;&#65039; Load Balancing Algorithms</h3>
+      <div class="cg">
+        <div class="cd">
+          <div class="ci">&#128260;</div>
+          <h3>Round Robin</h3>
+          <p>Traffic distributed equally: User1 &rarr; S1, User2 &rarr; S2, User3 &rarr; S3, User4 &rarr; S1. Most
+            common.</p>
+        </div>
+        <div class="cd">
+          <div class="ci">&#128201;</div>
+          <h3>Least Connections</h3>
+          <p>Send to server with fewest active users. Better for dynamic workloads.</p>
+        </div>
+        <div class="cd">
+          <div class="ci">&#128271;</div>
+          <h3>IP Hash</h3>
+          <p>User IP determines which server. Useful for session-based apps.</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="rv" style="margin-top:1.3rem;">
+      <h3 style="font-size:.95rem;font-weight:700;margin-bottom:.8rem;">&#128736;&#65039; Types of Load Balancers</h3>
+      <div class="bl">
+        <div class="bi">
+          <div class="bic">&#128187;</div>
+          <div class="bit">
+            <h4>Hardware Load Balancer</h4>
+            <p>Physical machine in data centers. Very expensive, used by large enterprises.</p>
+          </div>
+        </div>
+        <div class="bi">
+          <div class="bic">&#128187;</div>
+          <div class="bit">
+            <h4>Software Load Balancer</h4>
+            <p>Popular tools: <strong style="color:var(--cyan)">NGINX</strong>, HAProxy, Apache. Runs on any server.</p>
+          </div>
+        </div>
+        <div class="bi">
+          <div class="bic">&#9729;&#65039;</div>
+          <div class="bit">
+            <h4>Cloud Load Balancer</h4>
+            <p>AWS ELB, Google Cloud LB, Azure LB. Managed, auto-scaling, no maintenance.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="rv" style="margin-top:1rem;">
+      <h3 style="font-size:.95rem;font-weight:700;margin-bottom:.7rem;">Layer 4 vs Layer 7</h3>
+      <div style="overflow-x:auto;">
+        <table class="tbl">
+          <thead>
+            <tr>
+              <th>Feature</th>
+              <th>Layer 4 (Transport)</th>
+              <th>Layer 7 (Application)</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td style="color:var(--text)">Works on</td>
+              <td>TCP / UDP</td>
+              <td>HTTP / HTTPS</td>
+            </tr>
+            <tr>
+              <td style="color:var(--text)">Speed</td>
+              <td>Faster</td>
+              <td>Slightly slower</td>
+            </tr>
+            <tr>
+              <td style="color:var(--text)">Can route by URL?</td>
+              <td>No</td>
+              <td style="color:var(--green)">Yes &#9989;</td>
+            </tr>
+            <tr>
+              <td style="color:var(--text)">Example</td>
+              <td>All traffic to pool</td>
+              <td style="font-family:'Fira Code';color:var(--cyan)">/api &rarr; Server A, /images &rarr; Server B</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <div class="rv" style="margin-top:1rem;">
+      <h3 style="font-size:.95rem;font-weight:700;margin-bottom:.5rem;">NGINX Load Balancer Config</h3>
+      <div class="cb">upstream backend {<br>&emsp;server 192.168.1.1;<br>&emsp;server 192.168.1.2;<br>&emsp;server
+        192.168.1.3;<br>}<br><br>server {<br>&emsp;location / {<br>&emsp;&emsp;proxy_pass
+        http://backend;<br>&emsp;}<br>}</div>
+    </div>
+    <div class="rv">
+      <div class="co g"><strong>&#128161; Health Check</strong>Good load balancers check: Is server alive? Response time
+        OK? CPU overloaded? If a server fails, traffic is automatically redirected. This is called <strong
+          style="color:var(--green)">High Availability</strong>.</div>
+    </div>
+  </section>
+  <div class="dv"></div>
+
+  <section id="million">
+    <div class="rv">
+      <p class="ey">09 &middot; System Design</p>
+      <h2 class="st">&#128293; How 1 Million Users Are Handled</h2>
+      <p class="sl">1M users means 100K&ndash;200K concurrent, ~5M requests/minute. This needs distributed architecture,
+        not one powerful server.</p>
+    </div>
+
+    <div class="rv">
+      <div class="cb" style="text-align:center;font-size:.82rem;line-height:2.2;">
+        Users &rarr; DNS &rarr; CDN &rarr; Global Load Balancer &rarr; App Load Balancer<br>
+        &darr;<br>
+        App Servers (many) &rarr; Cache (Redis) &rarr; Database Cluster &rarr; Storage
+      </div>
+    </div>
+
+    <div class="bl rv" style="margin-top:1.3rem;">
+      <div class="bi">
+        <div class="bic">&#127760;</div>
+        <div class="bit">
+          <h4>1. CDN Layer (Cloudflare)</h4>
+          <p>Stores static files (images, CSS, JS) globally. Serves from nearest location. Reduces 40&ndash;60% traffic
+            on your server instantly.</p>
+        </div>
+      </div>
+      <div class="bi">
+        <div class="bic">&#127758;</div>
+        <div class="bit">
+          <h4>2. Global Load Balancer</h4>
+          <p>India users &rarr; Mumbai server. US users &rarr; Virginia server. Reduces latency. Example: AWS Route 53.
+          </p>
+        </div>
+      </div>
+      <div class="bi">
+        <div class="bic">&#128678;</div>
+        <div class="bit">
+          <h4>3. App Load Balancer</h4>
+          <p>Distributes traffic across 50+ app servers (8GB RAM, 4 cores each). If one crashes, traffic reroutes
+            automatically.</p>
+        </div>
+      </div>
+      <div class="bi">
+        <div class="bic">&#128187;</div>
+        <div class="bit">
+          <h4>4. Horizontal Scaling</h4>
+          <p>Instead of 1 big server (vertical), use 100 medium servers (horizontal). Auto Scaling creates more servers
+            when traffic spikes.</p>
+        </div>
+      </div>
+      <div class="bi">
+        <div class="bic">&#9889;</div>
+        <div class="bit">
+          <h4>5. Caching &mdash; Redis/Memcached</h4>
+          <p>Instead of querying DB 1M times, cache popular data. Check Redis first &rarr; if found, return instantly
+            &rarr; if not, query DB &rarr; store in cache. Reduces DB load by <strong
+              style="color:var(--green)">80&ndash;90%</strong>.</p>
+        </div>
+      </div>
+      <div class="bi">
+        <div class="bic">&#128451;</div>
+        <div class="bit">
+          <h4>6. Database Scaling</h4>
+          <p><strong>Read Replicas:</strong> Main DB for writes, 3+ replicas for reads.<br><strong>Sharding:</strong>
+            Split users across DBs (Shard1: users 1&ndash;250K, Shard2: 250K&ndash;500K, etc.)</p>
+        </div>
+      </div>
+      <div class="bi">
+        <div class="bic">&#129513;</div>
+        <div class="bit">
+          <h4>7. Microservices</h4>
+          <p>Split into independent services: Auth, Payment, Product, Notification. If payment crashes, website still
+            loads.</p>
+        </div>
+      </div>
+      <div class="bi">
+        <div class="bic">&#128230;</div>
+        <div class="bit">
+          <h4>8. Containers (Docker + Kubernetes)</h4>
+          <p>Kubernetes auto-creates containers, restarts failed pods, scales services, balances traffic. How Netflix
+            scales globally.</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="rv" style="margin-top:1.3rem;">
+      <h3 style="font-size:.95rem;font-weight:700;margin-bottom:.7rem;">&#128202; Real Numbers Simulation</h3>
+      <div class="co b">
+        <strong>Calculation</strong>
+        1M users, ~100K concurrent. Each server handles 2,000 concurrent.<br>
+        <code
+          style="font-family:'Fira Code';color:var(--cyan)">100,000 / 2,000 = 50 servers needed + buffer = 60 servers</code><br>
+        Add: Redis cache + 5 DB replicas + CDN + auto-scaling = system survives.
+      </div>
+    </div>
+
+    <div class="rv" style="margin-top:1rem;">
+      <div class="co y">
+        <strong>&#129504; Golden Rule for 1M Users</strong>
+        &#9989; Remove bottlenecks &nbsp;|&nbsp; &#9989; Distribute load &nbsp;|&nbsp; &#9989; Cache aggressively
+        &nbsp;|&nbsp; &#9989; Scale horizontally
+      </div>
+    </div>
+
+    <div class="rv" style="margin-top:1rem;">
+      <h3 style="font-size:.95rem;font-weight:700;margin-bottom:.7rem;">&#127760; Bonus: What is CDN?</h3>
+      <div class="co g"><strong>CDN = Content Delivery Network</strong>Example: Cloudflare. Stores copies of your
+        website on servers globally. Indian users get content from Indian edge server instead of a US server. Result:
+        <strong style="color:var(--green)">Much faster loading &#9889;</strong></div>
+    </div>
+
+    <div class="rv" style="margin-top:1rem;">
+      <h3 style="font-size:.95rem;font-weight:700;margin-bottom:.7rem;">&#128202; Summary Architecture</h3>
+      <div class="cb" style="text-align:center;font-size:.85rem;line-height:2.4;">User &darr; Browser &darr; DNS &darr;
+        CDN &darr; Load Balancer &darr; Server &darr; Cache &darr; Database &darr; Response &darr; Browser Render</div>
+    </div>
+  </section>
+  <div class="dv"></div>
+
+  <footer class="sf">KEC Workshop &middot; Day 3 &nbsp;|&nbsp; <span>DNS, Hosting &amp; Web Infrastructure</span>
+  </footer>
+  <script>
+    window.addEventListener('scroll', () => { const s = document.documentElement; document.getElementById('rbar').style.width = (s.scrollTop / (s.scrollHeight - s.clientHeight) * 100) + '%'; });
+    function goTo(id) { document.getElementById(id).scrollIntoView({ behavior: 'smooth' }); document.querySelectorAll('.nb').forEach(b => b.classList.remove('active')); if (event && event.target) event.target.classList.add('active'); }
+    const obs = new IntersectionObserver(es => { es.forEach(e => { if (e.isIntersecting) e.target.classList.add('vis'); }); }, { threshold: 0.07 });
+    document.querySelectorAll('.rv').forEach(el => obs.observe(el));
+    function toggleAcc(h) { const b = h.nextElementSibling; const a = h.querySelector('.ar'); const o = b.classList.contains('open'); document.querySelectorAll('.ab.open').forEach(x => { x.classList.remove('open'); x.previousElementSibling.querySelector('.ar').textContent = '\u25BC'; }); if (!o) { b.classList.add('open'); a.textContent = '\u25B2'; } }
+  </script>
+</body>
+
+</html>

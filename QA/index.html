@@ -1,0 +1,1581 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Student Practical Study Handbook</title>
+  <style>
+    :root {
+      --bg: #f4efe8;
+      --bg-2: #efe3d3;
+      --card: rgba(255, 255, 255, 0.86);
+      --card-strong: #fff9f1;
+      --text: #1f1a17;
+      --muted: #6a5a4f;
+      --accent: #c97c2a;
+      --accent-2: #2e6b5b;
+      --border: rgba(70, 50, 35, 0.14);
+      --shadow: 0 18px 50px rgba(73, 46, 22, 0.12);
+      --radius-xl: 28px;
+      --radius-lg: 20px;
+      --radius-md: 14px;
+      --max: 1180px;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    html {
+      scroll-behavior: smooth;
+    }
+
+    body {
+      margin: 0;
+      font-family: "Trebuchet MS", "Segoe UI", Arial, sans-serif;
+      color: var(--text);
+      background:
+        radial-gradient(circle at top left, rgba(201, 124, 42, 0.22), transparent 28%),
+        radial-gradient(circle at top right, rgba(46, 107, 91, 0.18), transparent 32%),
+        linear-gradient(180deg, var(--bg) 0%, var(--bg-2) 100%);
+      min-height: 100vh;
+    }
+
+    body::before {
+      content: "";
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      background-image: linear-gradient(rgba(255,255,255,0.22) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.16) 1px, transparent 1px);
+      background-size: 34px 34px;
+      opacity: 0.28;
+      mask-image: linear-gradient(180deg, rgba(0,0,0,0.7), transparent 95%);
+    }
+
+    .wrap {
+      width: min(var(--max), calc(100% - 32px));
+      margin: 0 auto;
+      padding: 28px 0 48px;
+      position: relative;
+      z-index: 1;
+    }
+
+    .hero {
+      display: grid;
+      grid-template-columns: 1.4fr 0.9fr;
+      gap: 20px;
+      align-items: stretch;
+      margin-bottom: 22px;
+    }
+
+    .panel {
+      background: var(--card);
+      backdrop-filter: blur(18px);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-xl);
+      box-shadow: var(--shadow);
+    }
+
+    .hero-main {
+      padding: 28px;
+      overflow: hidden;
+      position: relative;
+    }
+
+    .hero-main::after {
+      content: "";
+      position: absolute;
+      right: -56px;
+      top: -56px;
+      width: 180px;
+      height: 180px;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(201, 124, 42, 0.34), transparent 70%);
+    }
+
+    .eyebrow {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      padding: 8px 14px;
+      border-radius: 999px;
+      background: rgba(46, 107, 91, 0.12);
+      color: var(--accent-2);
+      font-weight: 700;
+      letter-spacing: 0.03em;
+      text-transform: uppercase;
+      font-size: 0.78rem;
+    }
+
+    h1 {
+      margin: 16px 0 10px;
+      font-size: clamp(2rem, 4vw, 3.55rem);
+      line-height: 0.98;
+      letter-spacing: -0.04em;
+    }
+
+    .hero p {
+      margin: 0;
+      max-width: 68ch;
+      color: var(--muted);
+      line-height: 1.65;
+      font-size: 1.02rem;
+    }
+
+    .hero-side {
+      padding: 22px;
+      display: grid;
+      gap: 16px;
+    }
+
+    .stat-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 12px;
+    }
+
+    .stat {
+      background: var(--card-strong);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      padding: 16px;
+    }
+
+    .stat strong {
+      display: block;
+      font-size: 1.4rem;
+      margin-bottom: 4px;
+    }
+
+    .stat span {
+      color: var(--muted);
+      font-size: 0.92rem;
+    }
+
+    .tabs {
+      display: flex;
+      gap: 12px;
+      margin-bottom: 18px;
+      flex-wrap: wrap;
+    }
+
+    .tab-btn {
+      border: 0;
+      border-radius: 999px;
+      padding: 14px 22px;
+      cursor: pointer;
+      font-size: 1rem;
+      font-weight: 800;
+      letter-spacing: 0.02em;
+      color: var(--text);
+      background: rgba(255, 255, 255, 0.75);
+      border: 1px solid var(--border);
+      transition: transform 0.2s ease, background 0.2s ease, color 0.2s ease, box-shadow 0.2s ease;
+    }
+
+    .tab-btn:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 10px 24px rgba(73, 46, 22, 0.12);
+    }
+
+    .tab-btn.active {
+      background: linear-gradient(135deg, var(--accent), #df9f58);
+      color: white;
+      box-shadow: 0 12px 22px rgba(201, 124, 42, 0.25);
+    }
+
+    .tab-panel {
+      display: none;
+      animation: fadeIn 0.25s ease;
+    }
+
+    .tab-panel.active {
+      display: block;
+    }
+
+    @keyframes fadeIn {
+      from {
+        opacity: 0;
+        transform: translateY(6px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .board {
+      background: rgba(255, 255, 255, 0.68);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-xl);
+      box-shadow: var(--shadow);
+      overflow: hidden;
+    }
+
+    .board-header {
+      padding: 22px 24px 18px;
+      border-bottom: 1px solid var(--border);
+      background: linear-gradient(180deg, rgba(255,255,255,0.78), rgba(255,255,255,0.48));
+    }
+
+    .board-header h2 {
+      margin: 0 0 8px;
+      font-size: 1.5rem;
+    }
+
+    .board-header p {
+      margin: 0;
+      color: var(--muted);
+      line-height: 1.6;
+    }
+
+    .accordion {
+      display: grid;
+      gap: 14px;
+      padding: 18px;
+    }
+
+    details.practical {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      overflow: hidden;
+      box-shadow: 0 10px 28px rgba(73, 46, 22, 0.08);
+    }
+
+    details.practical[open] {
+      background: #fffdf8;
+    }
+
+    summary {
+      list-style: none;
+      cursor: pointer;
+      padding: 18px 20px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      font-weight: 800;
+    }
+
+    summary::-webkit-details-marker {
+      display: none;
+    }
+
+    .title-wrap {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+    }
+
+    .badge {
+      min-width: 42px;
+      height: 42px;
+      border-radius: 14px;
+      display: grid;
+      place-items: center;
+      background: rgba(46, 107, 91, 0.12);
+      color: var(--accent-2);
+      font-weight: 900;
+    }
+
+    .summary-text {
+      display: grid;
+      gap: 4px;
+    }
+
+    .summary-text small {
+      font-weight: 600;
+      color: var(--muted);
+    }
+
+    .summary-caret {
+      color: var(--muted);
+      font-size: 1.2rem;
+    }
+
+    .content {
+      padding: 0 20px 20px;
+      border-top: 1px solid var(--border);
+    }
+
+    .grid-2 {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 14px;
+      padding-top: 16px;
+    }
+
+    .section-box {
+      background: rgba(255, 255, 255, 0.78);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      padding: 16px;
+    }
+
+    .section-box h3 {
+      margin: 0 0 10px;
+      font-size: 1rem;
+      color: var(--accent-2);
+    }
+
+    .section-box p,
+    .section-box li {
+      margin: 0;
+      color: var(--text);
+      line-height: 1.65;
+    }
+
+    .section-box ul,
+    .section-box ol {
+      margin: 0;
+      padding-left: 18px;
+      display: grid;
+      gap: 8px;
+    }
+
+    .code-block {
+      margin: 0;
+      padding: 16px;
+      overflow: auto;
+      border-radius: 16px;
+      background: #171513;
+      color: #f3eadf;
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      line-height: 1.6;
+      white-space: pre-wrap;
+      word-break: break-word;
+      font-size: 0.93rem;
+    }
+
+    .code-panel {
+      padding: 18px;
+      display: grid;
+      gap: 18px;
+    }
+
+    .code-library {
+      display: grid;
+      gap: 18px;
+    }
+
+    .code-group {
+      display: grid;
+      gap: 14px;
+    }
+
+    .code-group h3 {
+      margin: 0;
+      font-size: 1.1rem;
+      color: var(--accent-2);
+    }
+
+    .code-card {
+      background: rgba(255, 255, 255, 0.78);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      overflow: hidden;
+      box-shadow: 0 10px 28px rgba(73, 46, 22, 0.08);
+    }
+
+    .code-card summary {
+      padding: 16px 18px;
+      background: transparent;
+    }
+
+    .code-card .summary-text small {
+      display: block;
+      font-weight: 600;
+      color: var(--muted);
+      margin-top: 4px;
+    }
+
+    .code-card .content {
+      padding-top: 0;
+    }
+
+    .code-meta {
+      margin: 0 0 10px;
+      color: var(--muted);
+      line-height: 1.6;
+    }
+
+    .note {
+      background: linear-gradient(135deg, rgba(201,124,42,0.14), rgba(46,107,91,0.12));
+      border: 1px solid rgba(201,124,42,0.2);
+      border-radius: var(--radius-lg);
+      padding: 18px;
+      color: var(--muted);
+      line-height: 1.6;
+    }
+
+    .footer {
+      margin-top: 18px;
+      text-align: center;
+      color: var(--muted);
+      font-size: 0.92rem;
+      padding-bottom: 10px;
+    }
+
+    @media (max-width: 920px) {
+      .hero {
+        grid-template-columns: 1fr;
+      }
+
+      .grid-2 {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    @media (max-width: 640px) {
+      .wrap {
+        width: min(100% - 20px, var(--max));
+        padding-top: 12px;
+      }
+
+      .hero-main,
+      .hero-side,
+      .board-header,
+      .accordion,
+      .code-panel {
+        padding-left: 16px;
+        padding-right: 16px;
+      }
+
+      summary {
+        align-items: flex-start;
+        flex-direction: column;
+      }
+
+      .title-wrap {
+        width: 100%;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <section class="hero">
+      <div class="panel hero-main">
+        <div class="eyebrow">Student Practical Study Handbook</div>
+        <h1>Step-by-step practical notes in one clean webpage.</h1>
+        <p>
+          Use the <strong>Steps</strong> button to open the full handbook content. The <strong>Code</strong> button shows a ready-to-copy sample source panel for the page structure and tab logic.
+        </p>
+      </div>
+      <aside class="panel hero-side">
+        <div class="stat-grid">
+          <div class="stat"><strong>45</strong><span>Practical topics</span></div>
+          <div class="stat"><strong>3</strong><span>Core web techs</span></div>
+          <div class="stat"><strong>1</strong><span>Single file page</span></div>
+          <div class="stat"><strong>2</strong><span>Toggle buttons</span></div>
+        </div>
+        <div class="note">
+          This page is responsive, fast to open, and organized so students can read the handbook without leaving the browser.
+        </div>
+      </aside>
+    </section>
+
+    <div class="tabs" role="tablist" aria-label="Handbook views">
+      <button class="tab-btn active" type="button" data-target="stepsPanel" aria-controls="stepsPanel" aria-selected="true">Steps</button>
+      <button class="tab-btn" type="button" data-target="codePanel" aria-controls="codePanel" aria-selected="false">Code</button>
+    </div>
+
+    <section id="stepsPanel" class="tab-panel active" role="tabpanel">
+      <div class="board">
+        <div class="board-header">
+          <h2>Steps View</h2>
+          <p>The full handbook content is organized below. Open any practical to see its aim, requirements, steps, sample code, expected output, and viva questions.</p>
+        </div>
+        <div class="accordion" id="handbookAccordion"></div>
+      </div>
+    </section>
+
+    <section id="codePanel" class="tab-panel" role="tabpanel">
+      <div class="board">
+        <div class="board-header">
+          <h2>Code View</h2>
+          <p>This panel shows the practical code snippets you provided, grouped by topic for faster review and copying.</p>
+        </div>
+        <div class="code-panel">
+          <div class="code-library" id="codeLibrary"></div>
+          <div class="note">
+            If you want, I can also turn this into separate files named <strong>index.html</strong> and <strong>style.css</strong> instead of one file.
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <div class="footer">Student Practical Study Handbook</div>
+  </div>
+
+  <script>
+    const handbook = [
+      {
+        number: 1,
+        title: "Smart Bakery Website",
+        aim: "To create a responsive bakery website using HTML and CSS.",
+        requirements: ["Code editor", "Browser"],
+        steps: [
+          "Create index.html.",
+          "Add header/hero section.",
+          "Add 3 product cards.",
+          "Add order button.",
+          "Add contact section.",
+          "Style using CSS."
+        ],
+        code: "<header>Bakery</header>\n<section>Products</section>\n<footer>Contact</footer>",
+        expected: "A bakery webpage with sections and mobile-friendly layout.",
+        viva: ["What is responsive design?", "Why use CSS?"]
+      },
+      {
+        number: 2,
+        title: "Study Timer",
+        aim: "To build a Pomodoro countdown timer.",
+        requirements: ["HTML", "CSS", "JavaScript"],
+        steps: ["Create timer display.", "Add Start, Pause, Reset buttons.", "Use setInterval().", "Update timer every second."],
+        code: "setInterval(()=>{},1000)",
+        expected: "Timer starts, pauses, resets correctly.",
+        viva: ["What is setInterval()?", "Difference between timer and delay?"]
+      },
+      {
+        number: 3,
+        title: "Emergency Contact Page",
+        aim: "To create a webpage with emergency contacts.",
+        requirements: [],
+        steps: ["Add title.", "Add 5 contact names.", "Add clickable call links using tel: ."],
+        code: '<a href="tel:100">Police</a>',
+        expected: "Clicking links opens dial option.",
+        viva: ["What is anchor tag?"]
+      },
+      {
+        number: 4,
+        title: "Mood Color Generator",
+        aim: "To change background color based on user mood.",
+        requirements: [],
+        steps: ["Create 3 buttons.", "Detect click event.", "Change background color.", "Show message."],
+        code: "document.body.style.background='yellow';",
+        expected: "Different colors for different buttons.",
+        viva: ["What is an event?"]
+      },
+      {
+        number: 5,
+        title: "Student Portfolio",
+        aim: "To design a one-page portfolio.",
+        requirements: [],
+        steps: ["Add name/profile.", "Add skills section.", "Add project section.", "Add contact details."],
+        code: "",
+        expected: "Professional portfolio webpage.",
+        viva: ["What is class in CSS?"]
+      },
+      {
+        number: 6,
+        title: "Smart Calculator",
+        aim: "To build calculator with dark mode.",
+        requirements: [],
+        steps: ["Add number buttons.", "Add operators.", "Evaluate result.", "Add dark mode toggle."],
+        code: "function calc(){ }",
+        expected: "Calculator performs operations.",
+        viva: ["What is function in JavaScript?"]
+      },
+      {
+        number: 7,
+        title: "Daily Expense Tracker",
+        aim: "To track expenses and total amount.",
+        requirements: [],
+        steps: ["Input item and amount.", "Add item to list.", "Update total."],
+        code: "",
+        expected: "Expense list with running total.",
+        viva: ["What is DOM manipulation?"]
+      },
+      {
+        number: 8,
+        title: "Quiz Challenge App",
+        aim: "To create MCQ quiz with score.",
+        requirements: [],
+        steps: ["Store questions in array.", "Show question.", "Check answer.", "Display score."],
+        code: "",
+        expected: "Quiz completes with final marks.",
+        viva: ["What is array?"]
+      },
+      {
+        number: 9,
+        title: "Weather Dashboard UI",
+        aim: "To display weather information card.",
+        requirements: [],
+        steps: ["Create weather card.", "Use API/static data.", "Show city and temperature."],
+        code: "",
+        expected: "Weather card visible.",
+        viva: ["What is API?"]
+      },
+      {
+        number: 10,
+        title: "Lost & Found Portal",
+        aim: "To create a simple lost item reporting page.",
+        requirements: [],
+        steps: ["Create form.", "Add item name, place, contact.", "Show sample reports."],
+        code: "",
+        expected: "Users can enter lost item details.",
+        viva: ["What is form tag?"]
+      },
+      {
+        number: 11,
+        title: "Secret File Hunt",
+        aim: "To locate a hidden file and display its contents using Linux commands.",
+        requirements: ["Linux system / terminal"],
+        steps: ["Open terminal.", "Use ls -a to view hidden files.", "Navigate folders using cd.", "Open the hidden file using cat."],
+        code: "ls -a\ncd foldername\ncat .secret.txt",
+        expected: "Hidden file is found and secret code/content is displayed.",
+        viva: ["What does ls -a show?", "Why are hidden files used?"]
+      },
+      {
+        number: 12,
+        title: "Auto Backup Script",
+        aim: "To create a shell script that backs up a folder with date and time.",
+        requirements: [],
+        steps: ["Create source folder.", "Write backup command using cp -r.", "Add timestamp using date.", "Run script."],
+        code: "cp -r source backup_$(date +%F_%H-%M)",
+        expected: "Backup folder created with timestamp name.",
+        viva: ["What does -r mean in cp -r?"]
+      },
+      {
+        number: 13,
+        title: "User Security Task",
+        aim: "To create a user and secure a private folder.",
+        requirements: [],
+        steps: ["Create new user.", "Set password.", "Create folder.", "Give permission only to owner."],
+        code: "sudo useradd student1\nsudo passwd student1\nmkdir private\nchmod 700 private",
+        expected: "User created and folder accessible only by owner.",
+        viva: ["What is chmod 700?"]
+      },
+      {
+        number: 14,
+        title: "Process Detective",
+        aim: "To identify top memory-consuming processes.",
+        requirements: [],
+        steps: ["Open terminal.", "Use process command.", "Sort by memory usage.", "Save report."],
+        code: "ps aux --sort=-%mem | head -5",
+        expected: "Top memory processes displayed.",
+        viva: ["What is a process?"]
+      },
+      {
+        number: 15,
+        title: "Linux Calculator Script",
+        aim: "To perform arithmetic using shell script.",
+        requirements: [],
+        steps: ["Read two numbers.", "Read operator choice.", "Perform calculation.", "Display result."],
+        code: "read a b\necho $((a+b))",
+        expected: "Correct arithmetic result shown.",
+        viva: ["What is $(( )) used for?"]
+      },
+      {
+        number: 16,
+        title: "Permission Repair",
+        aim: "To set file permission so only owner can read file.",
+        requirements: [],
+        steps: ["Create file.", "Apply permission.", "Verify using ls -l."],
+        code: "chmod 400 file.txt",
+        expected: "Only owner has read permission.",
+        viva: ["Difference between read, write, execute?"]
+      },
+      {
+        number: 17,
+        title: "Network Check Tool",
+        aim: "To check internet/network status using ping.",
+        requirements: [],
+        steps: ["Create script.", "Ping website.", "Print Online or Offline."],
+        code: "ping -c 1 google.com && echo Online || echo Offline",
+        expected: "Displays network status.",
+        viva: ["What is ping used for?"]
+      },
+      {
+        number: 18,
+        title: "Package Install Report",
+        aim: "To install software package and verify installation.",
+        requirements: [],
+        steps: ["Update package list.", "Install package.", "Check version."],
+        code: "sudo apt install git\ngit --version",
+        expected: "Software installed successfully.",
+        viva: ["What is package manager?"]
+      },
+      {
+        number: 19,
+        title: "Smart Traffic Signal",
+        aim: "To control 3 LEDs as traffic light using Arduino.",
+        requirements: ["Arduino board", "3 LEDs", "Resistors"],
+        steps: ["Connect LEDs to digital pins.", "Set pins as output.", "Glow Red, Yellow, Green in sequence."],
+        code: "pinMode(2,OUTPUT);",
+        expected: "LEDs work like traffic signal.",
+        viva: ["What is pinMode()?"]
+      },
+      {
+        number: 20,
+        title: "Clap Switch Light",
+        aim: "To toggle LED using sound sensor or push button.",
+        requirements: [],
+        steps: ["Connect input sensor/button.", "Read input state.", "Change LED state."],
+        code: "",
+        expected: "LED toggles ON/OFF when triggered.",
+        viva: ["What is digitalRead()?"]
+      },
+      {
+        number: 21,
+        title: "Automatic Night Lamp",
+        aim: "To automatically turn ON an LED in darkness using an LDR sensor.",
+        requirements: ["Arduino/ESP32", "LDR sensor", "LED", "Resistor"],
+        steps: ["Connect LDR to analog pin.", "Connect LED to output pin.", "Read LDR value.", "If light is low, turn ON LED."],
+        code: "int val = analogRead(A0);\nif(val < 500) digitalWrite(2,HIGH);",
+        expected: "LED glows automatically in darkness.",
+        viva: ["What is analogRead()?", "Why use an LDR?"]
+      },
+      {
+        number: 22,
+        title: "Temperature Alert System",
+        aim: "To detect temperature and activate buzzer when threshold is crossed.",
+        requirements: ["Arduino/ESP32", "Temperature sensor", "Buzzer"],
+        steps: ["Read temperature sensor value.", "Compare with threshold.", "If above limit, turn buzzer ON."],
+        code: "if(temp > 30) digitalWrite(3,HIGH);",
+        expected: "Buzzer sounds when temperature is high.",
+        viva: ["What is threshold value?"]
+      },
+      {
+        number: 23,
+        title: "Push Button Counter",
+        aim: "To count button presses and display count in Serial Monitor.",
+        requirements: [],
+        steps: ["Connect push button.", "Detect press.", "Increase counter.", "Print count."],
+        code: "count++;\nSerial.println(count);",
+        expected: "Count increases on each press.",
+        viva: ["What is Serial Monitor?"]
+      },
+      {
+        number: 24,
+        title: "Servo Gate Controller",
+        aim: "To control servo motor like an automatic gate.",
+        requirements: ["Arduino", "Servo motor", "Push button"],
+        steps: ["Connect servo.", "Read button input.", "Rotate to 90 degrees.", "Wait and return to 0 degrees."],
+        code: "servo.write(90);",
+        expected: "Servo opens and closes like gate.",
+        viva: ["What is servo motor?"]
+      },
+      {
+        number: 25,
+        title: "ESP32 Wi-Fi LED Control",
+        aim: "To control LED through webpage using ESP32 Wi-Fi.",
+        requirements: ["ESP32 board", "LED", "Wi-Fi network"],
+        steps: ["Connect ESP32 to Wi-Fi.", "Start web server.", "Create ON/OFF buttons.", "Control LED from browser."],
+        code: "",
+        expected: "LED controlled through webpage.",
+        viva: ["Why use ESP32 instead of Arduino Uno?"]
+      },
+      {
+        number: 26,
+        title: "Pi System Health Dashboard",
+        aim: "To display CPU, RAM, and disk usage on Raspberry Pi.",
+        requirements: ["Raspberry Pi", "Terminal"],
+        steps: ["Open terminal.", "Run commands for CPU/RAM/disk.", "Save output if needed."],
+        code: "top\nfree -h\ndf -h",
+        expected: "System resource details shown.",
+        viva: ["What is Raspberry Pi?"]
+      },
+      {
+        number: 27,
+        title: "Smart Camera Trigger",
+        aim: "To capture image using webcam when triggered.",
+        requirements: ["Raspberry Pi / PC", "Webcam"],
+        steps: ["Connect webcam.", "Install capture tool.", "Run capture command.", "Save image with filename."],
+        code: "fswebcam image.jpg",
+        expected: "Image is captured and saved.",
+        viva: ["What is webcam driver?"]
+      },
+      {
+        number: 28,
+        title: "Bus Tracker UI",
+        aim: "To design a simple college bus timing webpage.",
+        requirements: [],
+        steps: ["Create page title.", "Add bus routes.", "Add timing table/cards.", "Style using CSS."],
+        code: "",
+        expected: "Bus schedule page displayed.",
+        viva: ["What is table tag in HTML?"]
+      },
+      {
+        number: 29,
+        title: "Attendance System UI",
+        aim: "To create student attendance form.",
+        requirements: [],
+        steps: ["Add form fields: Name, Roll Number.", "Add date field.", "Add submit button.", "Style page."],
+        code: "",
+        expected: "Attendance form displayed.",
+        viva: ["What is input tag?"]
+      },
+      {
+        number: 30,
+        title: "Countdown Timer App",
+        aim: "To create countdown timer with Start and Reset buttons.",
+        requirements: [],
+        steps: ["Set initial time.", "Decrease time every second.", "Stop at zero.", "Reset when needed."],
+        code: "clearInterval(timer);",
+        expected: "Countdown timer works correctly.",
+        viva: ["What is clearInterval()?"]
+      },
+      {
+        number: 31,
+        title: "System Information Script",
+        aim: "To create a batch file that saves system specifications into a text file.",
+        requirements: [],
+        steps: ["Open Notepad.", "Write batch commands.", "Save as systeminfo.bat.", "Run the file."],
+        code: "@echo off\necho Computer Name: %COMPUTERNAME% > systeminfo.txt\nsysteminfo >> systeminfo.txt",
+        expected: "System details saved in text file.",
+        viva: []
+      },
+      {
+        number: 32,
+        title: "Network Details Report",
+        aim: "To save network details using ipconfig.",
+        requirements: [],
+        steps: ["Run the command in a batch file or terminal.", "Save the output to a text file."],
+        code: "ipconfig /all > network.txt",
+        expected: "IP, MAC, DNS details saved.",
+        viva: []
+      },
+      {
+        number: 33,
+        title: "Installed Software List",
+        aim: "To export installed programs list.",
+        requirements: [],
+        steps: ["Open Command Prompt.", "Run the command to export installed programs.", "Check the generated text file."],
+        code: "wmic product get name,version > software.txt",
+        expected: "Software list created.",
+        viva: []
+      },
+      {
+        number: 34,
+        title: "Disk Usage Report",
+        aim: "To generate drive usage report.",
+        requirements: [],
+        steps: ["Open Command Prompt.", "Run the disk usage command.", "Save the report to a file."],
+        code: "wmic logicaldisk get name,size,freespace > disk.txt",
+        expected: "Disk details shown.",
+        viva: []
+      },
+      {
+        number: 35,
+        title: "Running Process Report",
+        aim: "To list running processes.",
+        requirements: [],
+        steps: ["Open Command Prompt.", "Run the process listing command.", "Store the output in a text file."],
+        code: "tasklist > process.txt",
+        expected: "Process list saved.",
+        viva: []
+      },
+      {
+        number: 36,
+        title: "Battery Health Check",
+        aim: "To generate battery report.",
+        requirements: [],
+        steps: ["Open Command Prompt as administrator.", "Run the battery report command.", "Open the generated report file."],
+        code: "powercfg /batteryreport",
+        expected: "Battery report generated.",
+        viva: []
+      },
+      {
+        number: 37,
+        title: "Wi-Fi Profiles Export",
+        aim: "To export Wi-Fi profile names.",
+        requirements: [],
+        steps: ["Open Command Prompt.", "Run the Wi-Fi profiles command.", "Save the output in a text file."],
+        code: "netsh wlan show profiles > wifi.txt",
+        expected: "Wi-Fi names saved.",
+        viva: []
+      },
+      {
+        number: 38,
+        title: "Auto Folder Backup",
+        aim: "To backup files automatically.",
+        requirements: [],
+        steps: ["Create source and backup folders.", "Run the copy command.", "Verify files are copied."],
+        code: "xcopy C:\\Source C:\\Backup /E /I /Y",
+        expected: "Files copied to backup.",
+        viva: []
+      },
+      {
+        number: 39,
+        title: "Shutdown Timer Tool",
+        aim: "To schedule shutdown and cancel it.",
+        requirements: [],
+        steps: ["Open Command Prompt.", "Run the shutdown timer command.", "Use cancel command if needed."],
+        code: "shutdown /s /t 60\nshutdown /a",
+        expected: "Shutdown scheduled/cancelled.",
+        viva: []
+      },
+      {
+        number: 40,
+        title: "PC Health Dashboard",
+        aim: "To generate complete PC report.",
+        requirements: [],
+        steps: ["Open Command Prompt.", "Run system and network commands.", "Append all output into one report."],
+        code: "systeminfo > report.txt\nipconfig >> report.txt",
+        expected: "Full report created.",
+        viva: []
+      },
+      {
+        number: 41,
+        title: "Git Repository Setup",
+        aim: "To create a local Git repository and make the first commit.",
+        requirements: ["Git installed", "Command Prompt / Terminal"],
+        steps: ["Create a project folder.", "Open terminal inside the folder.", "Initialize repository.", "Create a file.", "Add and commit files.", "View commit log."],
+        code: "mkdir project\ncd project\ngit init\necho Hello > file.txt\ngit add .\ngit commit -m \"First commit\"\ngit log",
+        expected: "Repository created and commit history displayed.",
+        viva: ["What is Git?", "What is a commit?"]
+      },
+      {
+        number: 42,
+        title: "GitHub Push Task",
+        aim: "To connect a local project to GitHub and push code.",
+        requirements: ["GitHub account", "Git installed"],
+        steps: ["Create repository on GitHub.", "Initialize local repo.", "Add files.", "Commit changes.", "Add remote URL.", "Push code."],
+        code: "git init\ngit add .\ngit commit -m \"Initial commit\"\ngit remote add origin REPO_URL\ngit push -u origin main",
+        expected: "Project uploaded to GitHub.",
+        viva: ["What is remote repository?", "What does push do?"]
+      },
+      {
+        number: 43,
+        title: "Branch Management Task",
+        aim: "To create a branch, make changes, and merge into main branch.",
+        requirements: [],
+        steps: ["Create new branch.", "Switch to branch.", "Make changes.", "Switch to main.", "Merge branch.", "Check status."],
+        code: "git checkout -b feature\ngit checkout main\ngit merge feature\ngit status",
+        expected: "Branch merged successfully.",
+        viva: ["Why are branches useful?"]
+      },
+      {
+        number: 44,
+        title: "Folder Automation using CMD",
+        aim: "To create a student project folder structure using Command Prompt.",
+        requirements: [],
+        steps: ["Open CMD.", "Create main folder.", "Create subfolders Docs, Code, Images, Output."],
+        code: "mkdir Project\ncd Project\nmkdir Docs Code Images Output",
+        expected: "Folder structure created successfully.",
+        viva: ["What does mkdir mean?"]
+      },
+      {
+        number: 45,
+        title: "Windows Command Report",
+        aim: "To collect basic system details and save them in a text file.",
+        requirements: [],
+        steps: ["Open CMD.", "Display username, path, date, time, IP address.", "Save output into file."],
+        code: "echo Username: %USERNAME% > cmdreport.txt\necho Path: %CD% >> cmdreport.txt\ndate /t >> cmdreport.txt\ntime /t >> cmdreport.txt\nipconfig >> cmdreport.txt",
+        expected: "Command report file created with system details.",
+        viva: ["What is %CD% variable?"]
+      }
+    ];
+
+    const accordion = document.getElementById('handbookAccordion');
+    const codeLibrary = document.getElementById('codeLibrary');
+
+    const codeSections = [
+      {
+        group: 'Web Design / Frontend',
+        items: [
+          {
+            number: 1,
+            title: 'Smart Bakery Website',
+            code: `<!DOCTYPE html>
+<html>
+<head>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<style>
+body{font-family:Arial;margin:0}
+.hero{background:#f8b400;color:white;padding:50px;text-align:center}
+.products{display:flex;flex-wrap:wrap;justify-content:center}
+.card{border:1px solid #ddd;margin:10px;padding:10px;width:200px;text-align:center}
+button{background:#ff5722;color:white;border:none;padding:10px}
+@media(max-width:600px){.products{flex-direction:column;align-items:center}}
+</style>
+</head>
+<body>
+
+<div class="hero">
+<h1>Smart Bakery</h1>
+<p>Fresh & Delicious</p>
+</div>
+
+<div class="products">
+<div class="card"><h3>Cake</h3><button>Order</button></div>
+<div class="card"><h3>Bread</h3><button>Order</button></div>
+<div class="card"><h3>Cookies</h3><button>Order</button></div>
+</div>
+
+<footer style="text-align:center;padding:20px">
+Contact: bakery@email.com
+</footer>
+
+</body>
+</html>`
+          },
+          {
+            number: 2,
+            title: 'Study Timer (Pomodoro)',
+            code: `<!DOCTYPE html>
+<html>
+<body>
+<h2 id="time">25:00</h2>
+<button onclick="start()">Start</button>
+<button onclick="pause()">Pause</button>
+<button onclick="reset()">Reset</button>
+
+<script>
+let t=1500,interval;
+function update(){
+let m=Math.floor(t/60),s=t%60;
+document.getElementById("time").innerText=m+":"+(s<10?"0":"")+s;
+}
+function start(){interval=setInterval(()=>{t--;update();},1000);}
+function pause(){clearInterval(interval);}
+function reset(){t=1500;update();}
+update();
+<\/script>
+</body>
+</html>`
+          },
+          {
+            number: 3,
+            title: 'Emergency Contact Page',
+            code: `<html><body>
+<h2>Emergency Contacts</h2>
+<ul>
+<li>Police <button>Call</button></li>
+<li>Ambulance <button>Call</button></li>
+<li>Fire <button>Call</button></li>
+<li>Hospital <button>Call</button></li>
+<li>Family <button>Call</button></li>
+</ul>
+</body></html>`
+          },
+          {
+            number: 4,
+            title: 'Mood Color Generator',
+            code: `<html><body>
+<button onclick="setMood('yellow','Happy 😊')">Happy</button>
+<button onclick="setMood('blue','Calm 😌')">Calm</button>
+<button onclick="setMood('red','Angry 😡')">Angry</button>
+<h2 id="msg"></h2>
+
+<script>
+function setMood(color,msg){
+document.body.style.background=color;
+document.getElementById("msg").innerText=msg;
+}
+<\/script>
+</body></html>`
+          },
+          {
+            number: 5,
+            title: 'Student Portfolio',
+            code: `<html><body>
+<h1>My Portfolio</h1>
+<h2>Skills</h2><p>HTML, CSS, JS</p>
+<h2>Projects</h2><p>Web App, IoT</p>
+<h2>Contact</h2><p>Email: me@email.com</p>
+</body></html>`
+          },
+          {
+            number: 6,
+            title: 'Smart Calculator',
+            code: `<html><body>
+<input id="res">
+<button onclick="calc('+')">+</button>
+<button onclick="calc('-')">-</button>
+<button onclick="calc('*')">*</button>
+<button onclick="calc('/')">/</button>
+<button onclick="dark()">Dark</button>
+
+<script>
+let darkMode=false;
+function calc(op){
+let a=prompt("Enter A"),b=prompt("Enter B");
+document.getElementById("res").value=eval(a+op+b);
+}
+function dark(){
+darkMode=!darkMode;
+document.body.style.background=darkMode?"black":"white";
+document.body.style.color=darkMode?"white":"black";
+}
+<\/script>
+</body></html>`
+          },
+          {
+            number: 7,
+            title: 'Daily Expense Tracker',
+            code: `<html><body>
+<input id="amt" placeholder="Amount">
+<button onclick="add()">Add</button>
+<h3 id="total">Total: 0</h3>
+
+<script>
+let total=0;
+function add(){
+total+=Number(document.getElementById("amt").value);
+document.getElementById("total").innerText="Total: "+total;
+}
+<\/script>
+</body></html>`
+          },
+          {
+            number: 8,
+            title: 'Quiz Challenge App',
+            code: `<html><body>
+<h3 id="q"></h3>
+<button onclick="ans(1)">A</button>
+<button onclick="ans(2)">B</button>
+
+<script>
+let q=["2+2?","3+3?"],a=[1,2],i=0,score=0;
+function show(){document.getElementById("q").innerText=q[i];}
+function ans(x){
+if(x==a[i])score++;
+i++;
+if(i<q.length)show();
+else alert("Score: "+score);
+}
+show();
+<\/script>
+</body></html>`
+          },
+          {
+            number: 9,
+            title: 'Weather Dashboard UI',
+            code: `<html><body>
+<h2>City: Jodhpur</h2>
+<p>Temp: 35°C</p>
+<p>Condition: Sunny</p>
+</body></html>`
+          },
+          {
+            number: 10,
+            title: 'Lost & Found Portal',
+            code: `<html><body>
+<input placeholder="Item">
+<button>Add</button>
+<div>
+<p>Lost: Wallet</p>
+<p>Found: Keys</p>
+</div>
+</body></html>`
+          }
+        ]
+      },
+      {
+        group: 'Linux / System Tasks',
+        items: [
+          { number: 11, title: 'Secret File Hunt', code: `find / -name ".*secret*" 2>/dev/null` },
+          { number: 12, title: 'Auto Backup Script', code: `#!/bin/bash
+cp -r folder backup_$(date +%Y%m%d_%H%M%S)` },
+          { number: 13, title: 'User Security Task', code: `sudo useradd user1
+sudo mkdir /home/user1/private
+sudo chown user1:user1 /home/user1/private
+chmod 700 /home/user1/private` },
+          { number: 14, title: 'Process Detective', code: `ps aux --sort=-%mem | head -n 6 > report.txt` },
+          { number: 15, title: 'Linux Calculator Script', code: `#!/bin/bash
+echo "1.Add 2.Sub"
+read ch
+echo "Enter a b"
+read a b
+if [ $ch -eq 1 ]; then echo $((a+b))
+else echo $((a-b)); fi` },
+          { number: 16, title: 'Permission Repair', code: `chmod 600 file.txt` },
+          { number: 17, title: 'Network Check Tool', code: `ping -c 1 google.com && echo "Online" || echo "Offline"` },
+          { number: 18, title: 'Package Install Report', code: `sudo apt install git
+git --version` }
+        ]
+      },
+      {
+        group: 'Arduino / ESP32 Projects',
+        items: [
+          { number: 19, title: 'Smart Traffic Signal', code: `int r=2,y=3,g=4;
+void setup(){pinMode(r,1);pinMode(y,1);pinMode(g,1);}
+void loop(){
+digitalWrite(r,1);delay(3000);
+digitalWrite(r,0);digitalWrite(y,1);delay(1000);
+digitalWrite(y,0);digitalWrite(g,1);delay(3000);
+digitalWrite(g,0);
+}` },
+          { number: 20, title: 'Clap Switch (Button)', code: `int led=2,btn=4;
+void setup(){pinMode(led,1);pinMode(btn,0);}
+void loop(){
+if(digitalRead(btn))digitalWrite(led,!digitalRead(led));
+}` },
+          { number: 21, title: 'Night Lamp (LDR)', code: `int ldr=A0,led=2;
+void setup(){pinMode(led,1);}
+void loop(){
+int v=analogRead(ldr);
+digitalWrite(led,v<500);
+}` },
+          { number: 22, title: 'Temperature Alert', code: `int temp=A0,buz=2;
+void setup(){pinMode(buz,1);}
+void loop(){
+int t=analogRead(temp);
+if(t>600)digitalWrite(buz,1);
+else digitalWrite(buz,0);
+}` },
+          { number: 23, title: 'Push Button Counter', code: `int btn=2,count=0;
+void setup(){Serial.begin(9600);pinMode(btn,0);}
+void loop(){
+if(digitalRead(btn)){count++;Serial.println(count);delay(300);}
+}` },
+          { number: 24, title: 'Servo Gate', code: `#include <Servo.h>
+Servo s;
+void setup(){s.attach(2);}
+void loop(){
+s.write(90);delay(2000);
+s.write(0);delay(2000);
+}` },
+          { number: 25, title: 'ESP32 Wi-Fi LED Control', meta: 'Uses Espressif Systems ESP32', code: `#include <WiFi.h>
+WiFiServer server(80);
+void setup(){
+WiFi.begin("SSID","PASS");
+server.begin();
+pinMode(2,1);
+}
+void loop(){
+WiFiClient client=server.available();
+if(client){
+String req=client.readStringUntil('\r');
+if(req.indexOf("/ON")!=-1)digitalWrite(2,1);
+if(req.indexOf("/OFF")!=-1)digitalWrite(2,0);
+client.println("HTTP/1.1 200 OK");
+client.println("Content-Type:text/html");
+client.println("<a href='/ON'>ON</a><a href='/OFF'>OFF</a>");
+}
+}` }
+        ]
+      },
+      {
+        group: 'Raspberry Pi Projects',
+        items: [
+          { number: 26, title: 'Pi Health Dashboard', meta: 'Using Raspberry Pi Foundation', code: `top
+free -h
+df -h` },
+          { number: 27, title: 'Smart Camera Trigger', code: `#!/bin/bash
+read -p "Press Enter to capture"
+fswebcam image_$(date +%s).jpg` }
+        ]
+      },
+      {
+        group: 'Extra Practical',
+        items: [
+          { number: 28, title: 'Bus Tracker UI', code: `<html><body>
+<h2>Bus Timings</h2>
+<p>Bus 1 - 8:00 AM</p>
+<p>Bus 2 - 9:00 AM</p>
+</body></html>` },
+          { number: 29, title: 'Attendance System UI', code: `<html><body>
+<input placeholder="Name">
+<input placeholder="Roll No">
+<button>Submit</button>
+</body></html>` },
+          { number: 30, title: 'Countdown Timer', code: `<html><body>
+<h2 id="t">10</h2>
+<button onclick="start()">Start</button>
+<button onclick="reset()">Reset</button>
+
+<script>
+let x=10,i;
+function start(){i=setInterval(()=>{x--;t.innerText=x;if(x==0)clearInterval(i)},1000);}
+function reset(){x=10;t.innerText=x;}
+<\/script>
+</body></html>` }
+        ]
+      },
+      {
+        group: 'Batch / System Reports',
+        items: [
+          { number: 31, title: 'System Information Script', code: `@echo off
+echo ===== SYSTEM INFORMATION ===== > system_info.txt
+echo Computer Name: %COMPUTERNAME% >> system_info.txt
+echo Username: %USERNAME% >> system_info.txt
+
+echo. >> system_info.txt
+systeminfo | findstr /B /C:"OS Name" /C:"OS Version" >> system_info.txt
+wmic cpu get name >> system_info.txt
+wmic computersystem get totalphysicalmemory >> system_info.txt
+
+echo Report saved as system_info.txt
+pause` },
+          { number: 32, title: 'Network Details Report', code: `@echo off
+echo ===== NETWORK DETAILS ===== > network_report.txt
+ipconfig /all >> network_report.txt
+echo Report saved as network_report.txt
+pause` },
+          { number: 33, title: 'Installed Software List', code: `@echo off
+echo ===== INSTALLED SOFTWARE ===== > software_list.txt
+wmic product get name,version >> software_list.txt
+echo Saved as software_list.txt
+pause` },
+          { number: 34, title: 'Disk Usage Report', code: `@echo off
+echo ===== DISK USAGE ===== > disk_report.txt
+wmic logicaldisk get name,size,freespace >> disk_report.txt
+echo Saved as disk_report.txt
+pause` },
+          { number: 35, title: 'Running Process Report', code: `@echo off
+echo ===== RUNNING PROCESSES ===== > process_report.txt
+tasklist >> process_report.txt
+echo Saved as process_report.txt
+pause` },
+          { number: 36, title: 'Battery Health Check', code: `@echo off
+powercfg /batteryreport /output battery_report.html
+echo Battery report generated (battery_report.html)
+pause` },
+          { number: 37, title: 'Wi-Fi Profiles Export', code: `@echo off
+echo ===== WIFI PROFILES ===== > wifi_profiles.txt
+netsh wlan show profiles >> wifi_profiles.txt
+echo Saved as wifi_profiles.txt
+pause` },
+          { number: 38, title: 'Auto Folder Backup', code: `@echo off
+set source=C:\SourceFolder
+set backup=C:\BackupFolder
+
+xcopy "%source%" "%backup%" /E /I /Y
+
+echo Backup completed successfully
+pause` },
+          { number: 39, title: 'Shutdown Timer Tool', code: `🔴 Shutdown after 60 seconds
+shutdown -s -t 60
+🟢 Cancel shutdown
+shutdown -a` },
+          { number: 40, title: 'PC Health Dashboard', code: `@echo off
+echo ===== PC HEALTH REPORT ===== > pc_health.txt
+
+echo --- SYSTEM INFO --- >> pc_health.txt
+systeminfo >> pc_health.txt
+
+echo --- CPU --- >> pc_health.txt
+wmic cpu get name >> pc_health.txt
+
+echo --- RAM --- >> pc_health.txt
+wmic computersystem get totalphysicalmemory >> pc_health.txt
+
+echo --- DISK --- >> pc_health.txt
+wmic logicaldisk get name,size,freespace >> pc_health.txt
+
+echo --- NETWORK --- >> pc_health.txt
+ipconfig >> pc_health.txt
+
+echo Report saved as pc_health.txt
+pause` }
+        ]
+      },
+      {
+        group: 'Git / GitHub Tasks',
+        items: [
+          { number: 41, title: 'Git Repository Setup', code: `mkdir myproject
+cd myproject
+git init
+echo Hello > file.txt
+git add file.txt
+git commit -m "Initial commit"
+git log` },
+          { number: 42, title: 'GitHub Push Task', code: `git init
+git add .
+git commit -m "First commit"
+git branch -M main
+git remote add origin https://github.com/username/repo.git
+git push -u origin main` },
+          { number: 43, title: 'Branch Management Task', code: `git checkout -b feature-branch
+echo Updated >> file.txt
+git add .
+git commit -m "Update in branch"
+
+git checkout main
+git merge feature-branch
+git status` }
+        ]
+      },
+      {
+        group: 'Windows CMD Tasks',
+        items: [
+          { number: 44, title: 'Folder Automation using CMD', code: `mkdir StudentProject
+cd StudentProject
+mkdir Docs
+mkdir Code
+mkdir Images
+mkdir Output
+echo Folder structure created successfully` },
+          { number: 45, title: 'Windows Command Report', code: `@echo off
+echo ===== WINDOWS REPORT ===== > report.txt
+echo Username: %USERNAME% >> report.txt
+echo Current Path: %CD% >> report.txt
+echo Date: %DATE% >> report.txt
+echo Time: %TIME% >> report.txt
+
+echo --- NETWORK INFO --- >> report.txt
+ipconfig >> report.txt
+
+echo Report saved as report.txt
+pause` }
+        ]
+      }
+    ];
+
+    function renderCodeLibrary() {
+      codeLibrary.innerHTML = '';
+
+      codeSections.forEach((section) => {
+        const group = document.createElement('div');
+        group.className = 'code-group';
+
+        const heading = document.createElement('h3');
+        heading.textContent = section.group;
+        group.appendChild(heading);
+
+        section.items.forEach((item) => {
+          const details = document.createElement('details');
+          details.className = 'practical code-card';
+
+          const summary = document.createElement('summary');
+          summary.innerHTML = `
+            <span class="title-wrap">
+              <span class="badge">${String(item.number).padStart(2, '0')}</span>
+              <span class="summary-text">
+                <span>${item.title}</span>
+                <small>${item.meta || 'Code snippet from the handbook'}</small>
+              </span>
+            </span>
+            <span class="summary-caret">+</span>
+          `;
+
+          summary.addEventListener('click', () => {
+            setTimeout(() => {
+              const caret = summary.querySelector('.summary-caret');
+              caret.textContent = details.open ? '−' : '+';
+            }, 0);
+          });
+
+          const content = document.createElement('div');
+          content.className = 'content';
+
+          if (item.meta) {
+            const meta = document.createElement('p');
+            meta.className = 'code-meta';
+            meta.textContent = item.meta;
+            content.appendChild(meta);
+          }
+
+          const pre = document.createElement('pre');
+          pre.className = 'code-block';
+          pre.textContent = item.code;
+          content.appendChild(pre);
+
+          details.appendChild(summary);
+          details.appendChild(content);
+          group.appendChild(details);
+        });
+
+        codeLibrary.appendChild(group);
+      });
+    }
+
+    renderCodeLibrary();
+
+    function createList(items, ordered = false) {
+      const list = document.createElement(ordered ? 'ol' : 'ul');
+      items.forEach((item) => {
+        const li = document.createElement('li');
+        li.textContent = item;
+        list.appendChild(li);
+      });
+      return list;
+    }
+
+    handbook.forEach((item) => {
+      const details = document.createElement('details');
+      details.className = 'practical';
+
+      const summary = document.createElement('summary');
+      summary.innerHTML = `
+        <span class="title-wrap">
+          <span class="badge">${String(item.number).padStart(2, '0')}</span>
+          <span class="summary-text">
+            <span>${item.title}</span>
+            <small>${item.aim}</small>
+          </span>
+        </span>
+        <span class="summary-caret">+</span>
+      `;
+
+      summary.addEventListener('click', () => {
+        setTimeout(() => {
+          const caret = summary.querySelector('.summary-caret');
+          caret.textContent = details.open ? '−' : '+';
+        }, 0);
+      });
+
+      const content = document.createElement('div');
+      content.className = 'content';
+
+      const grid = document.createElement('div');
+      grid.className = 'grid-2';
+
+      const aimBox = document.createElement('div');
+      aimBox.className = 'section-box';
+      aimBox.innerHTML = `<h3>Aim</h3><p>${item.aim}</p>`;
+      grid.appendChild(aimBox);
+
+      if (item.requirements && item.requirements.length) {
+        const reqBox = document.createElement('div');
+        reqBox.className = 'section-box';
+        reqBox.innerHTML = '<h3>Requirements</h3>';
+        reqBox.appendChild(createList(item.requirements));
+        grid.appendChild(reqBox);
+      }
+
+      const stepsBox = document.createElement('div');
+      stepsBox.className = 'section-box';
+      stepsBox.innerHTML = '<h3>Steps</h3>';
+      stepsBox.appendChild(createList(item.steps, true));
+      grid.appendChild(stepsBox);
+
+      const outputBox = document.createElement('div');
+      outputBox.className = 'section-box';
+      outputBox.innerHTML = `<h3>Expected Output</h3><p>${item.expected}</p>`;
+      grid.appendChild(outputBox);
+
+      content.appendChild(grid);
+
+      if (item.code && item.code.trim()) {
+        const codeBox = document.createElement('div');
+        codeBox.className = 'section-box';
+        codeBox.innerHTML = '<h3>Sample Code / Logic</h3>';
+        const pre = document.createElement('pre');
+        pre.className = 'code-block';
+        pre.textContent = item.code;
+        codeBox.appendChild(pre);
+        content.appendChild(codeBox);
+      }
+
+      details.appendChild(summary);
+      details.appendChild(content);
+      accordion.appendChild(details);
+    });
+
+    const tabButtons = document.querySelectorAll('.tab-btn');
+    const tabPanels = document.querySelectorAll('.tab-panel');
+
+    tabButtons.forEach((button) => {
+      button.addEventListener('click', () => {
+        const targetId = button.dataset.target;
+
+        tabButtons.forEach((item) => {
+          const isActive = item === button;
+          item.classList.toggle('active', isActive);
+          item.setAttribute('aria-selected', String(isActive));
+        });
+
+        tabPanels.forEach((panel) => {
+          panel.classList.toggle('active', panel.id === targetId);
+        });
+      });
+    });
+  </script>
+</body>
+</html>

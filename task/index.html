@@ -1,0 +1,573 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Weather API - React Project Tutorial</title>
+  <link rel="stylesheet" href="style.css" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=Fira+Code:wght@400;500&display=swap" rel="stylesheet" />
+</head>
+<body>
+
+  <!-- Hero Section -->
+  <header class="hero">
+    <div class="hero-overlay"></div>
+    <div class="hero-content">
+      <span class="hero-badge">Full Stack Tutorial</span>
+      <h1>🌦 Build a Weather App<br/><span>with React + WeatherAPI</span></h1>
+      <p class="hero-desc">A complete step-by-step guide — from creating an API account to deploying your app live on Netlify.</p>
+      <div class="hero-stats">
+        <div class="stat"><strong>10</strong> Parts</div>
+        <div class="stat"><strong>React</strong> + Vite</div>
+        <div class="stat"><strong>Live</strong> Deploy</div>
+      </div>
+      <a href="#part1" class="btn-start">Get Started &darr;</a>
+    </div>
+  </header>
+
+  <!-- Progress Bar -->
+  <div class="progress-bar-container">
+    <div class="progress-bar" id="progressBar"></div>
+  </div>
+
+  <!-- Table of Contents -->
+  <nav class="toc" id="toc">
+    <div class="container">
+      <h2>📑 Table of Contents</h2>
+      <div class="toc-grid">
+        <a href="#part1" class="toc-item" data-part="1"><span class="toc-num">01</span> Create Weather API Account</a>
+        <a href="#part2" class="toc-item" data-part="2"><span class="toc-num">02</span> What is API Key?</a>
+        <a href="#part3" class="toc-item" data-part="3"><span class="toc-num">03</span> Test API in Browser</a>
+        <a href="#part4" class="toc-item" data-part="4"><span class="toc-num">04</span> Create React Project (Vite)</a>
+        <a href="#part5" class="toc-item" data-part="5"><span class="toc-num">05</span> Install Required Packages</a>
+        <a href="#part6" class="toc-item" data-part="6"><span class="toc-num">06</span> Create .env File</a>
+        <a href="#part7" class="toc-item" data-part="7"><span class="toc-num">07</span> Connect API in React</a>
+        <a href="#part8" class="toc-item" data-part="8"><span class="toc-num">08</span> Improve UI (Optional)</a>
+        <a href="#part9" class="toc-item" data-part="9"><span class="toc-num">09</span> Push to GitHub</a>
+        <a href="#part10" class="toc-item" data-part="10"><span class="toc-num">10</span> Deploy on Netlify</a>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Main Content -->
+  <main class="main-content">
+    <div class="container">
+
+      <!-- PART 1 -->
+      <section class="part" id="part1">
+        <div class="part-header">
+          <span class="part-number">Part 1</span>
+          <h2>🌦 Create Weather API Account</h2>
+        </div>
+        <div class="part-body">
+          <div class="info-card accent-blue">
+            <div class="info-card-icon">🌤</div>
+            <div>
+              <strong>We will use: WeatherAPI.com</strong><br/>
+              Website: <a href="https://www.weatherapi.com/" target="_blank" rel="noopener">https://www.weatherapi.com/</a>
+            </div>
+          </div>
+
+          <div class="step-block">
+            <h3>🔹 Step 1 — Create Account</h3>
+            <ol class="step-list">
+              <li>Open <a href="https://www.weatherapi.com/" target="_blank" rel="noopener">https://www.weatherapi.com</a></li>
+              <li>Click <strong>Sign Up</strong></li>
+              <li>Register using <strong>Gmail</strong></li>
+              <li>Verify your email</li>
+              <li>Go to <strong>Dashboard</strong></li>
+            </ol>
+          </div>
+
+          <div class="step-block">
+            <h3>🔹 Step 2 — Copy API Key</h3>
+            <p>Inside the dashboard you will see:</p>
+            <div class="highlight-box">
+              👉 <strong>Your API Key</strong>
+            </div>
+            <p>Copy it.</p>
+            <p><strong>Example (not real):</strong></p>
+            <div class="code-block">
+              <div class="code-header">
+                <span>API Key Example</span>
+                <button class="copy-btn" onclick="copyCode(this)">📋 Copy</button>
+              </div>
+              <pre><code>1234567890abcdef</code></pre>
+            </div>
+            <div class="warning-card">
+              <span class="warning-icon">⚠</span>
+              <span><strong>Keep it secret.</strong> Never share your API key publicly.</span>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- PART 2 -->
+      <section class="part" id="part2">
+        <div class="part-header">
+          <span class="part-number">Part 2</span>
+          <h2>🔐 What is API Key?</h2>
+        </div>
+        <div class="part-body">
+          <div class="definition-card">
+            <h3>API Key = Secret Code</h3>
+            <p>It tells WeatherAPI:</p>
+          </div>
+          <div class="feature-grid">
+            <div class="feature-card">
+              <div class="feature-icon">👤</div>
+              <h4>Who is requesting data</h4>
+              <p>Identifies you as the user making the API call.</p>
+            </div>
+            <div class="feature-card">
+              <div class="feature-icon">📊</div>
+              <h4>How many requests used</h4>
+              <p>Tracks your usage against the free tier limit.</p>
+            </div>
+            <div class="feature-card">
+              <div class="feature-icon">✅</div>
+              <h4>Whether access is allowed</h4>
+              <p>Validates your permission to access the API.</p>
+            </div>
+          </div>
+          <div class="warning-card">
+            <span class="warning-icon">🚫</span>
+            <span><strong>Without API key → API will not work.</strong></span>
+          </div>
+        </div>
+      </section>
+
+      <!-- PART 3 -->
+      <section class="part" id="part3">
+        <div class="part-header">
+          <span class="part-number">Part 3</span>
+          <h2>🌍 Test API in Browser</h2>
+        </div>
+        <div class="part-body">
+          <p>Use this format in your browser address bar:</p>
+          <div class="code-block">
+            <div class="code-header">
+              <span>Browser URL</span>
+              <button class="copy-btn" onclick="copyCode(this)">📋 Copy</button>
+            </div>
+            <pre><code>https://api.weatherapi.com/v1/current.json?key=YOUR_API_KEY&q=Chennai</code></pre>
+          </div>
+          <div class="info-card accent-orange">
+            <div class="info-card-icon">🔄</div>
+            <div>Replace <code>YOUR_API_KEY</code> with your actual API key, then press <strong>Enter</strong>.</div>
+          </div>
+          <p>You will see a JSON response like this:</p>
+          <div class="code-block">
+            <div class="code-header">
+              <span>JSON Response</span>
+              <button class="copy-btn" onclick="copyCode(this)">📋 Copy</button>
+            </div>
+            <pre><code>{
+  "location": {
+    "name": "Chennai"
+  },
+  "current": {
+    "temp_c": 32,
+    "humidity": 60
+  }
+}</code></pre>
+          </div>
+          <div class="success-card">
+            <span>✅</span>
+            <span>If you see the JSON response, that means your <strong>API works correctly!</strong></span>
+          </div>
+        </div>
+      </section>
+
+      <!-- PART 4 -->
+      <section class="part" id="part4">
+        <div class="part-header">
+          <span class="part-number">Part 4</span>
+          <h2>⚛ Create React Project (Using Vite)</h2>
+        </div>
+        <div class="part-body">
+          <p>Open your terminal and run:</p>
+          <div class="code-block">
+            <div class="code-header">
+              <span>Terminal</span>
+              <button class="copy-btn" onclick="copyCode(this)">📋 Copy</button>
+            </div>
+            <pre><code>npm create vite@latest weather-project</code></pre>
+          </div>
+          <div class="info-card accent-purple">
+            <div class="info-card-icon">📝</div>
+            <div>
+              <strong>When prompted, select:</strong><br/>
+              ▸ Framework: <strong>React</strong><br/>
+              ▸ Variant: <strong>JavaScript</strong>
+            </div>
+          </div>
+          <p>Then run the following commands:</p>
+          <div class="code-block">
+            <div class="code-header">
+              <span>Terminal</span>
+              <button class="copy-btn" onclick="copyCode(this)">📋 Copy</button>
+            </div>
+            <pre><code>cd weather-project
+npm install
+npm run dev</code></pre>
+          </div>
+          <div class="success-card">
+            <span>🚀</span>
+            <span>Project runs at: <strong><a href="http://localhost:5173" target="_blank" rel="noopener">http://localhost:5173</a></strong></span>
+          </div>
+        </div>
+      </section>
+
+      <!-- PART 5 -->
+      <section class="part" id="part5">
+        <div class="part-header">
+          <span class="part-number">Part 5</span>
+          <h2>📦 Install Required Packages</h2>
+        </div>
+        <div class="part-body">
+          <p>Inside the project folder, run:</p>
+          <div class="code-block">
+            <div class="code-header">
+              <span>Terminal</span>
+              <button class="copy-btn" onclick="copyCode(this)">📋 Copy</button>
+            </div>
+            <pre><code>npm install axios</code></pre>
+          </div>
+          <div class="info-card accent-green">
+            <div class="info-card-icon">📡</div>
+            <div><strong>Axios</strong> is a popular HTTP client library used to make API calls from your React application.</div>
+          </div>
+        </div>
+      </section>
+
+      <!-- PART 6 -->
+      <section class="part" id="part6">
+        <div class="part-header">
+          <span class="part-number">Part 6</span>
+          <h2>📁 Create .env File (Important)</h2>
+        </div>
+        <div class="part-body">
+          <p>Inside the <strong>project root</strong> directory, create a new file named:</p>
+          <div class="highlight-box">.env</div>
+          <p>Add the following content:</p>
+          <div class="code-block">
+            <div class="code-header">
+              <span>.env</span>
+              <button class="copy-btn" onclick="copyCode(this)">📋 Copy</button>
+            </div>
+            <pre><code>VITE_WEATHER_API_KEY=your_api_key_here</code></pre>
+          </div>
+          <div class="warning-card">
+            <span class="warning-icon">⚠</span>
+            <span>Replace <code>your_api_key_here</code> with your actual API key from WeatherAPI.com. <strong>Save the file.</strong></span>
+          </div>
+          <div class="info-card accent-blue">
+            <div class="info-card-icon">💡</div>
+            <div>The <code>VITE_</code> prefix is required for Vite to expose environment variables to your app. Without it, the variable will not be accessible.</div>
+          </div>
+        </div>
+      </section>
+
+      <!-- PART 7 -->
+      <section class="part" id="part7">
+        <div class="part-header">
+          <span class="part-number">Part 7</span>
+          <h2>🔌 Connect API in React</h2>
+        </div>
+        <div class="part-body">
+          <p>Open the file:</p>
+          <div class="highlight-box">src/App.jsx</div>
+          <p>Replace its entire content with:</p>
+          <div class="code-block large-code">
+            <div class="code-header">
+              <span>src/App.jsx</span>
+              <button class="copy-btn" onclick="copyCode(this)">📋 Copy</button>
+            </div>
+            <pre><code>import { useState } from "react";
+import axios from "axios";
+
+function App() {
+  const [city, setCity] = useState("");
+  const [weather, setWeather] = useState(null);
+
+  const API_KEY = import.meta.env.VITE_WEATHER_API_KEY;
+
+  const getWeather = async () => {
+    const response = await axios.get(
+      `https://api.weatherapi.com/v1/current.json?key=${API_KEY}&q=${city}`
+    );
+    setWeather(response.data);
+  };
+
+  return (
+    &lt;div style={{ textAlign: "center", marginTop: "50px" }}&gt;
+      &lt;h1&gt;Weather App&lt;/h1&gt;
+
+      &lt;input
+        type="text"
+        placeholder="Enter city"
+        onChange={(e) =&gt; setCity(e.target.value)}
+      /&gt;
+      &lt;button onClick={getWeather}&gt;Search&lt;/button&gt;
+
+      {weather && (
+        &lt;div&gt;
+          &lt;h2&gt;{weather.location.name}&lt;/h2&gt;
+          &lt;p&gt;Temperature: {weather.current.temp_c}°C&lt;/p&gt;
+          &lt;p&gt;Humidity: {weather.current.humidity}%&lt;/p&gt;
+          &lt;p&gt;Wind Speed: {weather.current.wind_kph} km/h&lt;/p&gt;
+        &lt;/div&gt;
+      )}
+    &lt;/div&gt;
+  );
+}
+
+export default App;</code></pre>
+          </div>
+
+          <div class="explanation-block">
+            <h3>🧠 What does this code do?</h3>
+            <table class="explain-table">
+              <thead>
+                <tr><th>Code</th><th>Explanation</th></tr>
+              </thead>
+              <tbody>
+                <tr><td><code>useState("")</code></td><td>Stores the city name the user types</td></tr>
+                <tr><td><code>useState(null)</code></td><td>Stores the weather data from API</td></tr>
+                <tr><td><code>import.meta.env</code></td><td>Reads the API key from <code>.env</code> file</td></tr>
+                <tr><td><code>axios.get(...)</code></td><td>Sends a GET request to WeatherAPI</td></tr>
+                <tr><td><code>setWeather(response.data)</code></td><td>Stores the response in state</td></tr>
+                <tr><td><code>{weather && (...)}</code></td><td>Shows weather info only when data exists</td></tr>
+              </tbody>
+            </table>
+          </div>
+
+          <p><strong>Save</strong> the file and restart your dev server:</p>
+          <div class="code-block">
+            <div class="code-header">
+              <span>Terminal</span>
+              <button class="copy-btn" onclick="copyCode(this)">📋 Copy</button>
+            </div>
+            <pre><code>npm run dev</code></pre>
+          </div>
+          <div class="success-card">
+            <span>🎉</span>
+            <span>Now search any city → <strong>Weather data will display!</strong></span>
+          </div>
+        </div>
+      </section>
+
+      <!-- PART 8 -->
+      <section class="part" id="part8">
+        <div class="part-header">
+          <span class="part-number">Part 8</span>
+          <h2>🎨 Improve UI (Optional)</h2>
+        </div>
+        <div class="part-body">
+          <p>To enhance the look and feel, install these optional packages:</p>
+          <div class="code-block">
+            <div class="code-header">
+              <span>Terminal</span>
+              <button class="copy-btn" onclick="copyCode(this)">📋 Copy</button>
+            </div>
+            <pre><code>npm install framer-motion recharts react-icons</code></pre>
+          </div>
+          <div class="feature-grid">
+            <div class="feature-card">
+              <div class="feature-icon">✨</div>
+              <h4>framer-motion</h4>
+              <p>Adds smooth animations and transitions to your components.</p>
+            </div>
+            <div class="feature-card">
+              <div class="feature-icon">📈</div>
+              <h4>recharts</h4>
+              <p>Create beautiful, responsive charts to visualize weather data.</p>
+            </div>
+            <div class="feature-card">
+              <div class="feature-icon">🎯</div>
+              <h4>react-icons</h4>
+              <p>Thousands of icons to make your UI more expressive.</p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- PART 9 -->
+      <section class="part" id="part9">
+        <div class="part-header">
+          <span class="part-number">Part 9</span>
+          <h2>🐙 Push to GitHub</h2>
+        </div>
+        <div class="part-body">
+          <div class="info-card accent-blue">
+            <div class="info-card-icon">📌</div>
+            <div><strong>Prerequisite:</strong> Create a new GitHub repository first at <a href="https://github.com/new" target="_blank" rel="noopener">github.com/new</a></div>
+          </div>
+          <p>Then run these commands in your terminal:</p>
+          <div class="code-block">
+            <div class="code-header">
+              <span>Terminal</span>
+              <button class="copy-btn" onclick="copyCode(this)">📋 Copy</button>
+            </div>
+            <pre><code>git init
+git add .
+git commit -m "Initial weather project"
+git branch -M main
+git remote add origin https://github.com/yourusername/weather-project.git
+git push -u origin main</code></pre>
+          </div>
+          <div class="warning-card">
+            <span class="warning-icon">⚠</span>
+            <span>Replace <code>yourusername</code> with your actual GitHub username.</span>
+          </div>
+          <div class="info-card accent-green">
+            <div class="info-card-icon">💡</div>
+            <div>Make sure your <code>.env</code> file is listed in <code>.gitignore</code> so your API key is <strong>never pushed</strong> to GitHub!</div>
+          </div>
+        </div>
+      </section>
+
+      <!-- PART 10 -->
+      <section class="part" id="part10">
+        <div class="part-header">
+          <span class="part-number">Part 10</span>
+          <h2>🌐 Deploy on Netlify</h2>
+        </div>
+        <div class="part-body">
+          <div class="info-card accent-purple">
+            <div class="info-card-icon">🚀</div>
+            <div>Go to: <a href="https://netlify.com" target="_blank" rel="noopener"><strong>https://netlify.com</strong></a></div>
+          </div>
+
+          <div class="step-block">
+            <h3>🔹 Deployment Steps</h3>
+            <ol class="step-list numbered-steps">
+              <li><strong>Login</strong> with your GitHub account</li>
+              <li>Click <strong>"Add new site"</strong></li>
+              <li>Select <strong>"Import from GitHub"</strong></li>
+              <li>Select your <strong>weather-project</strong> repository</li>
+            </ol>
+          </div>
+
+          <div class="step-block">
+            <h3>🔹 Build Settings</h3>
+            <table class="settings-table">
+              <tr>
+                <td><strong>Build command:</strong></td>
+                <td><code>npm run build</code></td>
+              </tr>
+              <tr>
+                <td><strong>Publish directory:</strong></td>
+                <td><code>dist</code></td>
+              </tr>
+            </table>
+          </div>
+
+          <div class="step-block">
+            <h3>🔹 Add Environment Variable</h3>
+            <table class="settings-table">
+              <tr>
+                <td><strong>Key:</strong></td>
+                <td><code>VITE_WEATHER_API_KEY</code></td>
+              </tr>
+              <tr>
+                <td><strong>Value:</strong></td>
+                <td>Your actual API key</td>
+              </tr>
+            </table>
+          </div>
+
+          <p>Click <strong>Deploy</strong>.</p>
+
+          <div class="success-card final-success">
+            <span>🎉</span>
+            <div>
+              <strong>Your weather project is LIVE!</strong><br/>
+              You will get a URL like: <code>https://random-name.netlify.app</code>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Final Summary -->
+      <section class="summary-section">
+        <h2>🏁 Quick Summary</h2>
+        <div class="summary-timeline">
+          <div class="timeline-item">
+            <div class="timeline-dot"></div>
+            <div class="timeline-content">
+              <strong>Part 1</strong> — Created WeatherAPI account &amp; got API key
+            </div>
+          </div>
+          <div class="timeline-item">
+            <div class="timeline-dot"></div>
+            <div class="timeline-content">
+              <strong>Part 2</strong> — Understood what an API Key is
+            </div>
+          </div>
+          <div class="timeline-item">
+            <div class="timeline-dot"></div>
+            <div class="timeline-content">
+              <strong>Part 3</strong> — Tested the API directly in browser
+            </div>
+          </div>
+          <div class="timeline-item">
+            <div class="timeline-dot"></div>
+            <div class="timeline-content">
+              <strong>Part 4</strong> — Created React project using Vite
+            </div>
+          </div>
+          <div class="timeline-item">
+            <div class="timeline-dot"></div>
+            <div class="timeline-content">
+              <strong>Part 5</strong> — Installed Axios for API calls
+            </div>
+          </div>
+          <div class="timeline-item">
+            <div class="timeline-dot"></div>
+            <div class="timeline-content">
+              <strong>Part 6</strong> — Created .env file to store API key
+            </div>
+          </div>
+          <div class="timeline-item">
+            <div class="timeline-dot"></div>
+            <div class="timeline-content">
+              <strong>Part 7</strong> — Connected API in React App
+            </div>
+          </div>
+          <div class="timeline-item">
+            <div class="timeline-dot"></div>
+            <div class="timeline-content">
+              <strong>Part 8</strong> — Installed optional UI packages
+            </div>
+          </div>
+          <div class="timeline-item">
+            <div class="timeline-dot"></div>
+            <div class="timeline-content">
+              <strong>Part 9</strong> — Pushed code to GitHub
+            </div>
+          </div>
+          <div class="timeline-item">
+            <div class="timeline-dot last"></div>
+            <div class="timeline-content">
+              <strong>Part 10</strong> — Deployed live on Netlify 🚀
+            </div>
+          </div>
+        </div>
+      </section>
+
+    </div>
+  </main>
+
+  <!-- Footer -->
+  <footer class="footer">
+    <p>🌦 Weather App Tutorial — Built with ❤️ for learning</p>
+  </footer>
+
+  <!-- Back to Top -->
+  <button class="back-to-top" id="backToTop" title="Back to top">↑</button>
+
+  <script src="script.js"></script>
+</body>
+</html>

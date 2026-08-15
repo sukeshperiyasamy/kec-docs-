@@ -1,0 +1,1424 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Antigravity — AI Code Editor | Interactive Guide</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700;800&family=Fira+Code:wght@400;500&display=swap"
+        rel="stylesheet">
+    <style>
+        *,
+        *::before,
+        *::after {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        :root {
+            --bg: #07091a;
+            --surface: #0f1629;
+            --card: #161f35;
+            --card2: #1c253e;
+            --accent: #6366f1;
+            --accent2: #a855f7;
+            --accent3: #22d3ee;
+            --green: #10b981;
+            --orange: #f59e0b;
+            --red: #ef4444;
+            --text: #e2e8f0;
+            --muted: #64748b;
+            --muted2: #94a3b8;
+            --border: rgba(99, 102, 241, 0.2);
+            --glow: 0 0 40px rgba(99, 102, 241, 0.25);
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            font-family: 'Outfit', sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            font-size: 15px;
+            overflow-x: hidden;
+        }
+
+        /* ── Reading progress ── */
+        #rbar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            height: 3px;
+            z-index: 999;
+            width: 0%;
+            background: linear-gradient(90deg, var(--accent3), var(--accent), var(--accent2));
+        }
+
+        /* ── Blobs ── */
+        .blobs {
+            position: fixed;
+            inset: 0;
+            pointer-events: none;
+            z-index: 0;
+            overflow: hidden;
+        }
+
+        .blob {
+            position: absolute;
+            border-radius: 50%;
+            filter: blur(90px);
+            opacity: .15;
+            animation: bf 14s ease-in-out infinite alternate;
+        }
+
+        .b1 {
+            width: 450px;
+            height: 450px;
+            background: var(--accent);
+            top: -120px;
+            left: -80px;
+        }
+
+        .b2 {
+            width: 350px;
+            height: 350px;
+            background: var(--accent2);
+            bottom: -80px;
+            right: -50px;
+            animation-delay: 5s;
+        }
+
+        .b3 {
+            width: 260px;
+            height: 260px;
+            background: var(--accent3);
+            top: 45%;
+            left: 55%;
+            animation-delay: 2.5s;
+        }
+
+        @keyframes bf {
+            from {
+                transform: scale(1) translate(0, 0);
+            }
+
+            to {
+                transform: scale(1.1) translate(25px, 15px);
+            }
+        }
+
+        /* ── NAV ── */
+        nav {
+            position: sticky;
+            top: 0;
+            z-index: 200;
+            background: rgba(7, 9, 26, .88);
+            backdrop-filter: blur(16px);
+            border-bottom: 1px solid var(--border);
+            padding: .65rem 1rem;
+            display: flex;
+            align-items: center;
+            gap: .4rem;
+            overflow-x: auto;
+        }
+
+        .nav-logo {
+            font-weight: 800;
+            font-size: .95rem;
+            background: linear-gradient(90deg, var(--accent), var(--accent2));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            white-space: nowrap;
+            margin-right: .4rem;
+            display: flex;
+            align-items: center;
+            gap: .4rem;
+        }
+
+        .nb {
+            font-family: 'Outfit', sans-serif;
+            font-size: .75rem;
+            font-weight: 600;
+            padding: .35rem .85rem;
+            border: 1px solid var(--border);
+            border-radius: 999px;
+            background: transparent;
+            color: var(--muted2);
+            cursor: pointer;
+            white-space: nowrap;
+            transition: all .22s;
+        }
+
+        .nb:hover,
+        .nb.active {
+            background: var(--accent);
+            border-color: var(--accent);
+            color: #fff;
+        }
+
+        /* ══════════════════════════
+   SECTIONS
+══════════════════════════ */
+        section {
+            position: relative;
+            z-index: 10;
+            padding: 3.5rem 1.8rem;
+            max-width: 860px;
+            margin: 0 auto;
+        }
+
+        .eyebrow {
+            font-family: 'Fira Code', monospace;
+            font-size: .7rem;
+            color: var(--accent3);
+            letter-spacing: .14em;
+            text-transform: uppercase;
+            margin-bottom: .55rem;
+        }
+
+        .sec-title {
+            font-size: clamp(1.6rem, 3.5vw, 2.3rem);
+            font-weight: 800;
+            line-height: 1.2;
+            background: linear-gradient(135deg, #fff 25%, var(--accent2) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: .8rem;
+        }
+
+        .sec-lead {
+            font-size: .93rem;
+            color: var(--muted2);
+            line-height: 1.8;
+            max-width: 620px;
+            margin-bottom: 2rem;
+        }
+
+        /* reveal */
+        .rv {
+            opacity: 0;
+            transform: translateY(28px);
+            transition: opacity .65s ease, transform .65s ease;
+        }
+
+        .rv.vis {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* ══════════════════════════
+   HERO
+══════════════════════════ */
+        #hero {
+            min-height: 88vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            gap: 1.4rem;
+            padding: 4rem 1.8rem;
+            max-width: 860px;
+            margin: 0 auto;
+        }
+
+        .hero-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: .45rem;
+            font-family: 'Fira Code', monospace;
+            font-size: .72rem;
+            padding: .3rem .9rem;
+            border-radius: 999px;
+            border: 1px solid rgba(34, 211, 238, .4);
+            color: var(--accent3);
+            background: rgba(34, 211, 238, .07);
+            animation: fu .6s ease both;
+            width: fit-content;
+        }
+
+        .hero-h1 {
+            font-size: clamp(2rem, 6vw, 3.6rem);
+            font-weight: 800;
+            line-height: 1.1;
+            background: linear-gradient(135deg, #fff 15%, var(--accent) 55%, var(--accent2) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            animation: fu .6s .08s ease both;
+        }
+
+        .hero-sub {
+            font-size: 1rem;
+            color: var(--muted2);
+            max-width: 540px;
+            line-height: 1.8;
+            animation: fu .6s .16s ease both;
+        }
+
+        /* AI chat bubble */
+        .chat-bubble {
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: 0 14px 14px 14px;
+            padding: .9rem 1.2rem;
+            max-width: 480px;
+            font-size: .85rem;
+            color: var(--muted2);
+            line-height: 1.65;
+            position: relative;
+            animation: fu .6s .24s ease both;
+        }
+
+        .chat-bubble::before {
+            content: '🤖';
+            position: absolute;
+            left: .8rem;
+            top: -1.6rem;
+            font-size: 1.2rem;
+        }
+
+        .chat-label {
+            font-family: 'Fira Code', monospace;
+            font-size: .65rem;
+            color: var(--accent);
+            margin-bottom: .4rem;
+            display: block;
+        }
+
+        /* highlight */
+        .hl {
+            color: var(--accent3);
+        }
+
+        .hl2 {
+            color: var(--accent2);
+        }
+
+        /* Stats */
+        .stats-row {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 1rem;
+            animation: fu .6s .32s ease both;
+        }
+
+        .stat {
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: .7rem 1.1rem;
+            display: flex;
+            flex-direction: column;
+            min-width: 100px;
+        }
+
+        .stat-num {
+            font-size: 1.5rem;
+            font-weight: 800;
+            color: var(--accent2);
+        }
+
+        .stat-lbl {
+            font-size: .68rem;
+            color: var(--muted);
+            margin-top: .1rem;
+        }
+
+        .scroll-hint {
+            font-size: .75rem;
+            color: var(--muted);
+            display: flex;
+            align-items: center;
+            gap: .4rem;
+            animation: fu .6s .4s ease both, bob 2s 1.5s ease-in-out infinite;
+        }
+
+        @keyframes bob {
+
+            0%,
+            100% {
+                transform: translateY(0);
+            }
+
+            50% {
+                transform: translateY(5px);
+            }
+        }
+
+        @keyframes fu {
+            from {
+                opacity: 0;
+                transform: translateY(24px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* ══════════════════════════
+   WHAT IS ANTIGRAVITY — feature grid
+══════════════════════════ */
+        .feat-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(195px, 1fr));
+            gap: 1.1rem;
+        }
+
+        .feat-card {
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            padding: 1.3rem;
+            transition: transform .3s, box-shadow .3s, border-color .3s;
+            cursor: default;
+        }
+
+        .feat-card:hover {
+            transform: translateY(-5px);
+            box-shadow: var(--glow);
+            border-color: var(--accent);
+        }
+
+        .feat-card .fi {
+            font-size: 1.9rem;
+            margin-bottom: .6rem;
+        }
+
+        .feat-card h3 {
+            font-size: .9rem;
+            font-weight: 700;
+            margin-bottom: .35rem;
+        }
+
+        .feat-card p {
+            font-size: .78rem;
+            color: var(--muted2);
+            line-height: 1.65;
+        }
+
+        /* ══════════════════════════
+   DOWNLOAD — TIMELINE STEPS
+══════════════════════════ */
+        .tl {
+            display: flex;
+            flex-direction: column;
+            gap: 0;
+        }
+
+        .tl-step {
+            display: flex;
+            gap: 1.1rem;
+            align-items: flex-start;
+            position: relative;
+        }
+
+        .tl-step:not(:last-child)::after {
+            content: '';
+            position: absolute;
+            left: 22px;
+            top: 46px;
+            width: 2px;
+            height: calc(100% - 14px);
+            background: linear-gradient(180deg, var(--accent2), transparent);
+        }
+
+        .tl-num {
+            min-width: 44px;
+            height: 44px;
+            border-radius: 50%;
+            border: 2px solid var(--accent2);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 800;
+            font-size: .9rem;
+            color: var(--accent2);
+            background: rgba(168, 85, 247, .1);
+            flex-shrink: 0;
+            position: relative;
+            z-index: 2;
+            margin-top: 8px;
+            transition: all .3s;
+        }
+
+        .tl-step:hover .tl-num {
+            background: var(--accent2);
+            color: #fff;
+            box-shadow: 0 0 18px rgba(168, 85, 247, .6);
+        }
+
+        .tl-body {
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: 14px;
+            padding: 1rem 1.25rem;
+            margin-bottom: 1rem;
+            flex: 1;
+            transition: border-color .3s, transform .3s;
+        }
+
+        .tl-step:hover .tl-body {
+            border-color: var(--accent2);
+            transform: translateX(4px);
+        }
+
+        .tl-body h4 {
+            font-size: .92rem;
+            font-weight: 700;
+            margin-bottom: .3rem;
+        }
+
+        .tl-body p {
+            font-size: .8rem;
+            color: var(--muted2);
+            line-height: 1.65;
+        }
+
+        .os-chips {
+            display: flex;
+            gap: .4rem;
+            margin-top: .5rem;
+            flex-wrap: wrap;
+        }
+
+        .os-chip {
+            font-size: .7rem;
+            padding: .2rem .6rem;
+            border-radius: 6px;
+        }
+
+        .os-chip.win {
+            background: rgba(34, 211, 238, .1);
+            color: var(--accent3);
+            border: 1px solid rgba(34, 211, 238, .25);
+        }
+
+        .os-chip.mac {
+            background: rgba(168, 85, 247, .1);
+            color: var(--accent2);
+            border: 1px solid rgba(168, 85, 247, .25);
+        }
+
+        /* ══════════════════════════
+   TEMPLATE + EDITING — 2-col
+══════════════════════════ */
+        .two-col {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1.2rem;
+        }
+
+        @media(max-width:580px) {
+            .two-col {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .info-box {
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            padding: 1.4rem;
+        }
+
+        .info-box h3 {
+            font-size: .95rem;
+            font-weight: 700;
+            margin-bottom: .5rem;
+            display: flex;
+            align-items: center;
+            gap: .4rem;
+        }
+
+        .info-box ul {
+            padding-left: 1.1rem;
+        }
+
+        .info-box li {
+            font-size: .8rem;
+            color: var(--muted2);
+            margin: .25rem 0;
+            line-height: 1.6;
+        }
+
+        .info-box li::marker {
+            color: var(--accent);
+        }
+
+        /* ── Prompt cards ── */
+        .prompts {
+            display: flex;
+            flex-direction: column;
+            gap: .9rem;
+        }
+
+        .prompt-card {
+            background: var(--card2);
+            border: 1px solid rgba(34, 211, 238, .18);
+            border-radius: 14px;
+            padding: 1rem 1.2rem;
+            transition: border-color .25s, transform .25s;
+            cursor: default;
+        }
+
+        .prompt-card:hover {
+            border-color: var(--accent3);
+            transform: translateX(4px);
+        }
+
+        .prompt-step {
+            font-family: 'Fira Code', monospace;
+            font-size: .65rem;
+            color: var(--accent3);
+            letter-spacing: .1em;
+            text-transform: uppercase;
+            margin-bottom: .35rem;
+            display: flex;
+            align-items: center;
+            gap: .35rem;
+        }
+
+        .prompt-step::before {
+            content: '>';
+            color: var(--accent);
+        }
+
+        .prompt-code {
+            font-family: 'Fira Code', monospace;
+            font-size: .8rem;
+            color: var(--text);
+            line-height: 1.6;
+            background: rgba(0, 0, 0, .3);
+            border-radius: 8px;
+            padding: .6rem .9rem;
+            margin: .4rem 0;
+            border-left: 3px solid var(--accent);
+            white-space: pre-line;
+        }
+
+        .prompt-result {
+            font-size: .78rem;
+            color: var(--muted2);
+            margin-top: .3rem;
+        }
+
+        /* ══════════════════════════
+   DEPLOY — platform cards
+══════════════════════════ */
+        .deploy-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+            gap: 1.1rem;
+        }
+
+        .deploy-card {
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            padding: 1.4rem;
+            transition: transform .3s, border-color .3s, box-shadow .3s;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .deploy-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+        }
+
+        .deploy-card.netlify::before {
+            background: linear-gradient(90deg, #00c7b7, #00ad9f);
+        }
+
+        .deploy-card.vercel::before {
+            background: linear-gradient(90deg, #fff, #aaa);
+        }
+
+        .deploy-card.github::before {
+            background: linear-gradient(90deg, #6e40c9, #9c6ef7);
+        }
+
+        .deploy-card.render::before {
+            background: linear-gradient(90deg, #46e3b7, #1a6b61);
+        }
+
+        .deploy-card.railway::before {
+            background: linear-gradient(90deg, #b534ff, #7f00ff);
+        }
+
+        .deploy-card:hover {
+            transform: translateY(-5px);
+            box-shadow: var(--glow);
+            border-color: var(--accent);
+        }
+
+        .deploy-card h3 {
+            font-size: .95rem;
+            font-weight: 700;
+            margin: .4rem 0;
+        }
+
+        .deploy-card p {
+            font-size: .78rem;
+            color: var(--muted2);
+            line-height: 1.6;
+        }
+
+        .deploy-badge {
+            display: inline-block;
+            font-family: 'Fira Code', monospace;
+            font-size: .65rem;
+            padding: .15rem .55rem;
+            border-radius: 999px;
+            margin-top: .5rem;
+        }
+
+        .deploy-badge.free {
+            background: rgba(16, 185, 129, .1);
+            color: var(--green);
+            border: 1px solid rgba(16, 185, 129, .25);
+        }
+
+        .deploy-badge.backend {
+            background: rgba(99, 102, 241, .1);
+            color: var(--accent);
+            border: 1px solid rgba(99, 102, 241, .25);
+        }
+
+        .dc-icon {
+            font-size: 1.8rem;
+            margin-bottom: .3rem;
+        }
+
+        /* ══════════════════════════
+   NETLIFY STEPS — Fancy
+══════════════════════════ */
+        .netlify-steps {
+            display: flex;
+            flex-direction: column;
+            gap: .75rem;
+        }
+
+        .ns {
+            display: flex;
+            align-items: flex-start;
+            gap: 1rem;
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: 14px;
+            padding: 1rem 1.2rem;
+            transition: border-color .25s, transform .25s;
+        }
+
+        .ns:hover {
+            border-color: var(--green);
+            transform: translateX(4px);
+        }
+
+        .ns-num {
+            min-width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--green), #059669);
+            color: #fff;
+            font-weight: 800;
+            font-size: .82rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+        }
+
+        .ns-body h4 {
+            font-size: .88rem;
+            font-weight: 700;
+            margin-bottom: .2rem;
+        }
+
+        .ns-body p {
+            font-size: .78rem;
+            color: var(--muted2);
+            line-height: 1.6;
+        }
+
+        .ns-body code {
+            font-family: 'Fira Code', monospace;
+            font-size: .78rem;
+            background: rgba(0, 0, 0, .35);
+            padding: .15rem .45rem;
+            border-radius: 5px;
+            color: var(--accent3);
+        }
+
+        /* ══════════════════════════
+   URL SHOWCASE
+══════════════════════════ */
+        .url-showcase {
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            padding: 1.4rem;
+            margin-top: 1.2rem;
+        }
+
+        .url-bar {
+            background: rgba(0, 0, 0, .4);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: .65rem 1rem;
+            font-family: 'Fira Code', monospace;
+            font-size: .88rem;
+            display: flex;
+            align-items: center;
+            gap: .6rem;
+            margin-bottom: .7rem;
+        }
+
+        .url-green {
+            color: var(--green);
+        }
+
+        .url-muted {
+            color: var(--muted);
+        }
+
+        .url-main {
+            color: var(--accent3);
+        }
+
+        .url-features {
+            display: flex;
+            flex-wrap: wrap;
+            gap: .5rem;
+            margin-top: .6rem;
+        }
+
+        .uf {
+            font-family: 'Fira Code', monospace;
+            font-size: .7rem;
+            padding: .2rem .65rem;
+            border-radius: 999px;
+            background: rgba(16, 185, 129, .08);
+            color: var(--green);
+            border: 1px solid rgba(16, 185, 129, .2);
+        }
+
+        /* ══════════════════════════
+   DOMAIN STEPS
+══════════════════════════ */
+        .domain-flow {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(170px, 1fr));
+            gap: 1rem;
+            margin-top: 1.2rem;
+        }
+
+        .df-card {
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: 14px;
+            padding: 1.1rem;
+            text-align: center;
+            transition: border-color .3s, transform .3s;
+        }
+
+        .df-card:hover {
+            border-color: var(--orange);
+            transform: translateY(-4px);
+        }
+
+        .df-card .di {
+            font-size: 1.8rem;
+            margin-bottom: .5rem;
+        }
+
+        .df-card h4 {
+            font-size: .85rem;
+            font-weight: 700;
+            margin-bottom: .3rem;
+        }
+
+        .df-card p {
+            font-size: .75rem;
+            color: var(--muted2);
+            line-height: 1.55;
+        }
+
+        /* ══════════════════════════
+   CODE BLOCK
+══════════════════════════ */
+        .code-block {
+            background: rgba(0, 0, 0, .55);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 1rem 1.2rem;
+            font-family: 'Fira Code', monospace;
+            font-size: .8rem;
+            line-height: 1.75;
+            margin: 1rem 0;
+            overflow-x: auto;
+            position: relative;
+        }
+
+        .code-block .cb-label {
+            font-size: .65rem;
+            color: var(--muted);
+            position: absolute;
+            top: .5rem;
+            right: .8rem;
+            text-transform: uppercase;
+            letter-spacing: .08em;
+        }
+
+        .k {
+            color: #c792ea;
+        }
+
+        .s {
+            color: #80cbc4;
+        }
+
+        .c {
+            color: #f78c6c;
+        }
+
+        /* ══════════════════════════
+   DIVIDER
+══════════════════════════ */
+        .div {
+            height: 1px;
+            background: linear-gradient(90deg, transparent, var(--border), transparent);
+            margin: .5rem auto;
+            max-width: 860px;
+        }
+
+        /* ══════════════════════════
+   FOOTER
+══════════════════════════ */
+        .sfoot {
+            position: relative;
+            z-index: 10;
+            padding: 1.5rem;
+            text-align: center;
+            border-top: 1px solid var(--border);
+            color: var(--muted);
+            font-size: .77rem;
+        }
+
+        .sfoot span {
+            color: var(--accent2);
+        }
+    </style>
+</head>
+
+<body>
+
+    <div id="rbar"></div>
+    <div class="blobs">
+        <div class="blob b1"></div>
+        <div class="blob b2"></div>
+        <div class="blob b3"></div>
+    </div>
+
+    <!-- NAVBAR -->
+    <!-- Back to Home -->
+    <a href="index.html"
+        style="position:fixed;top:1rem;left:1rem;z-index:9999;display:inline-flex;align-items:center;gap:.45rem;padding:.45rem 1rem;background:rgba(7,9,26,.9);border:1px solid rgba(99,102,241,.4);border-radius:999px;color:#a78bfa;font-family:'Outfit',sans-serif;font-size:.8rem;font-weight:700;text-decoration:none;backdrop-filter:blur(10px);transition:all .2s;"
+        onmouseover="this.style.background='rgba(99,102,241,.25)';this.style.borderColor='#6366f1'"
+        onmouseout="this.style.background='rgba(7,9,26,.9)';this.style.borderColor='rgba(99,102,241,.4)'">← Home</a>
+
+    <nav style="padding-left:6rem;">
+        <div class="nav-logo">🤖 Antigravity</div>
+        <button class="nb active" onclick="goTo('hero')">Intro</button>
+        <button class="nb" onclick="goTo('whatisit')">What Is It</button>
+        <button class="nb" onclick="goTo('download')">Download</button>
+        <button class="nb" onclick="goTo('template')">Templates</button>
+        <button class="nb" onclick="goTo('editing')">AI Editing</button>
+        <button class="nb" onclick="goTo('deploy-fe')">Frontend Deploy</button>
+        <button class="nb" onclick="goTo('deploy-be')">Backend Deploy</button>
+    </nav>
+
+
+    <!-- ══════════════ HERO ══════════════ -->
+    <section id="hero" style="max-width:860px">
+        <div class="hero-badge">🤖 &nbsp; AI-Powered Coding Assistant</div>
+        <h1 class="hero-h1">Meet Antigravity —<br>Your AI Code Editor</h1>
+        <p class="hero-sub">
+            Antigravity is an AI-powered coding assistant that helps you generate HTML/CSS/JS,
+            edit templates, fix errors, convert static to dynamic, and improve UI — all from a
+            single powerful editor.
+        </p>
+
+        <div class="chat-bubble">
+            <span class="chat-label">// Antigravity AI says</span>
+            <span id="aiTyped"></span><span style="color:var(--accent3);animation:blink .7s step-end infinite;">|</span>
+            <style>
+                @keyframes blink {
+
+                    0%,
+                    100% {
+                        opacity: 1;
+                    }
+
+                    50% {
+                        opacity: 0;
+                    }
+                }
+            </style>
+        </div>
+
+        <div class="stats-row">
+            <div class="stat"><span class="stat-num">4</span><span class="stat-lbl">AI Superpowers</span></div>
+            <div class="stat"><span class="stat-num">3+</span><span class="stat-lbl">Deploy Platforms</span></div>
+            <div class="stat"><span class="stat-num">∞</span><span class="stat-lbl">Templates</span></div>
+            <div class="stat"><span class="stat-num">0</span><span class="stat-lbl">Coding blocks</span></div>
+        </div>
+        <div class="scroll-hint">↓ &nbsp; Scroll to explore the full guide</div>
+    </section>
+
+
+    <!-- ══════════════ WHAT IS IT ══════════════ -->
+    <section id="whatisit">
+        <div class="rv">
+            <p class="eyebrow">01 · What Is Antigravity?</p>
+            <h2 class="sec-title">🤖 AI-powered Coding Assistant</h2>
+            <p class="sec-lead">Antigravity acts like an AI pair-programmer embedded in your code editor. It understands
+                your project, suggests code, and rewrites content — just by describing what you want in plain English.
+            </p>
+        </div>
+        <div class="feat-grid rv">
+            <div class="feat-card">
+                <div class="fi">⚡</div>
+                <h3>Generate Code</h3>
+                <p>Describe a UI component or page and Antigravity writes the HTML, CSS, and JS for you instantly.</p>
+            </div>
+            <div class="feat-card">
+                <div class="fi">🛠</div>
+                <h3>Edit Templates</h3>
+                <p>Open any downloaded template and ask AI to replace placeholder text, update sections, and restyle.
+                </p>
+            </div>
+            <div class="feat-card">
+                <div class="fi">🐛</div>
+                <h3>Fix Errors</h3>
+                <p>Paste broken code, ask "What's wrong?", and get an instant explanation and corrected version.</p>
+            </div>
+            <div class="feat-card">
+                <div class="fi">🔄</div>
+                <h3>Static → Dynamic</h3>
+                <p>Convert plain HTML pages into dynamic sites with Node.js/PHP backends and database connectivity.</p>
+            </div>
+            <div class="feat-card">
+                <div class="fi">🎨</div>
+                <h3>Improve UI</h3>
+                <p>Ask AI to "make this modern dark blue with gradients" and watch the CSS transform live.</p>
+            </div>
+            <div class="feat-card">
+                <div class="fi">💬</div>
+                <h3>Plain English</h3>
+                <p>No complex commands — just type what you want and Antigravity handles the rest.</p>
+            </div>
+        </div>
+    </section>
+
+    <div class="div"></div>
+
+    <!-- ══════════════ DOWNLOAD ══════════════ -->
+    <section id="download">
+        <div class="rv">
+            <p class="eyebrow">02 · Download</p>
+            <h2 class="sec-title">📥 How to Download Antigravity</h2>
+            <p class="sec-lead">Getting started takes less than 5 minutes. Follow these three steps to have Antigravity
+                up and running on your machine.</p>
+        </div>
+        <div class="tl rv">
+            <div class="tl-step">
+                <div class="tl-num">1</div>
+                <div class="tl-body">
+                    <h4>Go to the Official Website</h4>
+                    <p>Visit the Antigravity website by searching <strong style="color:var(--accent3)">Antigravity AI
+                            code editor</strong> on Google, or navigate directly to their official site.</p>
+                </div>
+            </div>
+            <div class="tl-step">
+                <div class="tl-num">2</div>
+                <div class="tl-body">
+                    <h4>Download the Installer</h4>
+                    <p>Choose the installer that matches your operating system and run it like normal software.</p>
+                    <div class="os-chips">
+                        <span class="os-chip win">🪟 Windows</span>
+                        <span class="os-chip mac">🍎 macOS</span>
+                    </div>
+                </div>
+            </div>
+            <div class="tl-step">
+                <div class="tl-num">3</div>
+                <div class="tl-body">
+                    <h4>Login or Create Account</h4>
+                    <p>Launch the app and sign in with your Google account or create a new Antigravity account to get
+                        started with AI assistance.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <div class="div"></div>
+
+    <!-- ══════════════ TEMPLATES ══════════════ -->
+    <section id="template">
+        <div class="rv">
+            <p class="eyebrow">03 · Portfolio Templates</p>
+            <h2 class="sec-title">🛠 Download Portfolio Templates</h2>
+            <p class="sec-lead">You don't need to build from scratch. Use free, professionally designed HTML templates
+                and personalise them using Antigravity AI.</p>
+        </div>
+        <div class="two-col rv">
+            <div class="info-box">
+                <h3>🌐 Free Template Sites</h3>
+                <ul>
+                    <li><strong>ThemeWagon</strong> — large library of HTML templates</li>
+                    <li><strong>BootstrapMade</strong> — Bootstrap-based responsive templates</li>
+                    <li><strong>Colorlib</strong> — modern, clean portfolio templates</li>
+                    <li><strong>HTML5 UP</strong> — creative, open-source HTML5 templates</li>
+                </ul>
+            </div>
+            <div class="info-box">
+                <h3>📁 Project Structure</h3>
+                <ul>
+                    <li><code style="font-family:'Fira Code';color:var(--accent3)">index.html</code> — main HTML file
+                    </li>
+                    <li><code style="font-family:'Fira Code';color:var(--accent3)">css/</code> — stylesheets</li>
+                    <li><code style="font-family:'Fira Code';color:var(--accent3)">js/</code> — JavaScript files</li>
+                    <li><code style="font-family:'Fira Code';color:var(--accent3)">images/</code> — media assets</li>
+                    <li>Open the folder in Antigravity to start editing</li>
+                </ul>
+            </div>
+        </div>
+    </section>
+
+    <div class="div"></div>
+
+    <!-- ══════════════ AI EDITING ══════════════ -->
+    <section id="editing">
+        <div class="rv">
+            <p class="eyebrow">04 · AI Editing</p>
+            <h2 class="sec-title">🤖 Editing Your Portfolio Using AI</h2>
+            <p class="sec-lead">Open your template in Antigravity and use these AI prompts to transform it into a
+                personalised, professional portfolio in minutes.</p>
+        </div>
+        <div class="prompts rv">
+            <div class="prompt-card">
+                <div class="prompt-step">Step 1 · Replace Personal Details</div>
+                <div class="prompt-code">Replace this content with a portfolio for a web developer named Sukesh,
+                    specialized in full-stack development and AI projects.</div>
+                <div class="prompt-result">✅ AI edits text, improves bio, adjusts headings automatically</div>
+            </div>
+            <div class="prompt-card">
+                <div class="prompt-step">Step 2 · Update Skills Section</div>
+                <div class="prompt-code">Update skills to include:
+                    Java, Node.js, MongoDB, AWS, AI/ML, Medical Technology</div>
+                <div class="prompt-result">✅ AI rewrites the skills section with the new stack</div>
+            </div>
+            <div class="prompt-card">
+                <div class="prompt-step">Step 3 · Change Color Theme</div>
+                <div class="prompt-code">Make the website theme modern dark blue with smooth gradients.</div>
+                <div class="prompt-result">✅ AI edits CSS variables and gradient definitions automatically</div>
+            </div>
+            <div class="prompt-card">
+                <div class="prompt-step">Step 4 · Add New Section</div>
+                <div class="prompt-code">Add a Projects section with 3 cards layout including image,
+                    title, description, and a GitHub button.</div>
+                <div class="prompt-result">✅ AI inserts a fully styled project cards section into the HTML</div>
+            </div>
+        </div>
+    </section>
+
+    <div class="div"></div>
+
+    <!-- ══════════════ FRONTEND DEPLOY ══════════════ -->
+    <section id="deploy-fe">
+        <div class="rv">
+            <p class="eyebrow">05 · Frontend Deployment</p>
+            <h2 class="sec-title">🚀 Deploying Frontend (Static Site)</h2>
+            <p class="sec-lead">Static websites (HTML, CSS, JS) can be deployed for free in seconds. These platforms
+                offer generous free tiers and global CDN performance.</p>
+        </div>
+
+        <div class="deploy-grid rv">
+            <div class="deploy-card netlify">
+                <div class="dc-icon">🟩</div>
+                <h3>Netlify</h3>
+                <p>Easiest drag-and-drop deploy. Perfect for static sites and portfolios. Instant live URL.</p>
+                <span class="deploy-badge free">Free Tier</span>
+            </div>
+            <div class="deploy-card vercel">
+                <div class="dc-icon">▲</div>
+                <h3>Vercel</h3>
+                <p>Git-based deployments. Great for frontend frameworks (React, Next.js). Auto-deploy on push.</p>
+                <span class="deploy-badge free">Free Tier</span>
+            </div>
+            <div class="deploy-card github">
+                <div class="dc-icon">🐙</div>
+                <h3>GitHub Pages</h3>
+                <p>Host directly from your repository. Ideal for simple portfolio and project showcase sites.</p>
+                <span class="deploy-badge free">100% Free</span>
+            </div>
+        </div>
+
+        <div class="rv" style="margin-top:2rem;">
+            <h3 style="font-size:1.1rem;font-weight:700;margin-bottom:1rem;display:flex;align-items:center;gap:.5rem;">
+                🟩 Deploy Using Netlify (Easiest Method)</h3>
+            <div class="netlify-steps">
+                <div class="ns">
+                    <div class="ns-num">1</div>
+                    <div class="ns-body">
+                        <h4>Go to Netlify</h4>
+                        <p>Open <code>netlify.com</code> in your browser and create a free account.</p>
+                    </div>
+                </div>
+                <div class="ns">
+                    <div class="ns-num">2</div>
+                    <div class="ns-body">
+                        <h4>Add New Site</h4>
+                        <p>Click <strong>"Add new site"</strong> after logging in to your dashboard.</p>
+                    </div>
+                </div>
+                <div class="ns">
+                    <div class="ns-num">3</div>
+                    <div class="ns-body">
+                        <h4>Drag & Drop Your Folder</h4>
+                        <p>Drag your entire project folder into the Netlify deploy area and drop. It instantly uploads
+                            and deploys!</p>
+                    </div>
+                </div>
+                <div class="ns">
+                    <div class="ns-num">4</div>
+                    <div class="ns-body">
+                        <h4>Get Your Live URL ✅</h4>
+                        <p>Netlify generates a live URL immediately:<br><code
+                                style="color:var(--green)">https://yourname.netlify.app</code></p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Custom Domain -->
+        <div class="rv" style="margin-top:2rem;">
+            <h3 style="font-size:1.05rem;font-weight:700;margin-bottom:.5rem;">🔗 Connecting a Custom Domain</h3>
+            <p style="font-size:.85rem;color:var(--muted2);margin-bottom:1rem;">Own a domain like <code
+                    style="font-family:'Fira Code';color:var(--accent3)">yourname.com</code>? Connect it to Netlify in
+                minutes.</p>
+            <div class="domain-flow">
+                <div class="df-card">
+                    <div class="di">🛒</div>
+                    <h4>Buy Domain</h4>
+                    <p>Purchase from GoDaddy, Namecheap, or Google Domains.</p>
+                </div>
+                <div class="df-card">
+                    <div class="di">🟩</div>
+                    <h4>Netlify Settings</h4>
+                    <p>Go to Netlify → Site Settings → Domain Management → Add domain.</p>
+                </div>
+                <div class="df-card">
+                    <div class="di">🔧</div>
+                    <h4>Update DNS</h4>
+                    <p>Update NS/CNAME records in your domain provider's dashboard.</p>
+                </div>
+                <div class="df-card">
+                    <div class="di">✅</div>
+                    <h4>Live!</h4>
+                    <p>After DNS propagation (up to 48h), your domain is connected.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <div class="div"></div>
+
+    <!-- ══════════════ BACKEND DEPLOY ══════════════ -->
+    <section id="deploy-be">
+        <div class="rv">
+            <p class="eyebrow">06 · Backend Deployment</p>
+            <h2 class="sec-title">🖥 Deploying Backend (Node.js)</h2>
+            <p class="sec-lead">If your site has login, a database, contact form, or an API — you need a backend server.
+                Here's how to deploy Node.js backends for free.</p>
+        </div>
+
+        <div class="two-col rv">
+            <div class="info-box">
+                <h3>🔥 When You Need Backend</h3>
+                <ul>
+                    <li>User login / authentication system</li>
+                    <li>Database-connected features</li>
+                    <li>REST API for your frontend</li>
+                    <li>Contact forms with DB storage</li>
+                    <li>E-commerce / order management</li>
+                </ul>
+            </div>
+            <div class="info-box">
+                <h3>🚀 Backend Hosting Platforms</h3>
+                <ul>
+                    <li><strong>Render</strong> — easiest, free tier, auto-deploy</li>
+                    <li><strong>Railway</strong> — fast, generous free credits</li>
+                    <li><strong>Heroku</strong> — classic PaaS, no longer free tier</li>
+                    <li><strong>Fly.io</strong> — container-based, great performance</li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="rv" style="margin-top:1.8rem;">
+            <h3 style="font-size:1.05rem;font-weight:700;margin-bottom:1rem;display:flex;align-items:center;gap:.5rem;">
+                🟣 Deploy Node.js on Render</h3>
+            <div class="netlify-steps">
+                <div class="ns" style="border-color:rgba(70,227,183,.2);">
+                    <div class="ns-num" style="background:linear-gradient(135deg,var(--accent),var(--accent2))">1</div>
+                    <div class="ns-body">
+                        <h4>Push to GitHub</h4>
+                        <p>Upload your backend code to a GitHub repository first.</p>
+                    </div>
+                </div>
+                <div class="ns" style="border-color:rgba(70,227,183,.2);">
+                    <div class="ns-num" style="background:linear-gradient(135deg,var(--accent),var(--accent2))">2</div>
+                    <div class="ns-body">
+                        <h4>Create Render Account</h4>
+                        <p>Go to <code>render.com</code> and sign up with GitHub for instant access.</p>
+                    </div>
+                </div>
+                <div class="ns" style="border-color:rgba(70,227,183,.2);">
+                    <div class="ns-num" style="background:linear-gradient(135deg,var(--accent),var(--accent2))">3</div>
+                    <div class="ns-body">
+                        <h4>New Web Service</h4>
+                        <p>Click <strong>"New Web Service"</strong> and connect your GitHub repository.</p>
+                    </div>
+                </div>
+                <div class="ns" style="border-color:rgba(70,227,183,.2);">
+                    <div class="ns-num" style="background:linear-gradient(135deg,var(--accent),var(--accent2))">4</div>
+                    <div class="ns-body">
+                        <h4>Configure & Deploy</h4>
+                        <p>Set Environment to <code>Node</code>, Start Command to <code>node server.js</code>, then
+                            click Deploy.</p>
+                    </div>
+                </div>
+                <div class="ns" style="border-color:rgba(70,227,183,.2);">
+                    <div class="ns-num" style="background:linear-gradient(135deg,var(--green),#059669)">✓</div>
+                    <div class="ns-body">
+                        <h4>Backend is Live! 🎉</h4>
+                        <p>Your backend URL: <code style="color:var(--green)">https://yourbackend.onrender.com</code>
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Connect frontend to backend -->
+        <div class="rv" style="margin-top:2rem;">
+            <h3 style="font-size:1.05rem;font-weight:700;margin-bottom:.5rem;">🔗 Connecting Frontend to Backend</h3>
+            <p style="font-size:.83rem;color:var(--muted2);margin-bottom:.5rem;">In your frontend JavaScript, use <code
+                    style="font-family:'Fira Code';color:var(--accent3)">fetch()</code> to call your deployed backend
+                API:</p>
+            <div class="code-block">
+                <span class="cb-label">JavaScript</span>
+                <span class="k">fetch</span>(<span class="s">"https://yourbackend.onrender.com/api/data"</span>)
+                .<span class="k">then</span>(res => res.<span class="k">json</span>())
+                .<span class="k">then</span>(data => console.<span class="k">log</span>(data));
+            </div>
+        </div>
+
+        <!-- Database -->
+        <div class="rv" style="margin-top:1.5rem;">
+            <h3 style="font-size:1.05rem;font-weight:700;margin-bottom:.7rem;">💾 Deploy Database</h3>
+            <div class="two-col">
+                <div class="info-box">
+                    <h3>🍃 MongoDB Atlas</h3>
+                    <ul>
+                        <li>Free cloud MongoDB cluster</li>
+                        <li>512 MB free storage</li>
+                        <li>Connect via connection string</li>
+                        <li>Works with Node.js / Mongoose</li>
+                    </ul>
+                </div>
+                <div class="info-box">
+                    <h3>🐘 PostgreSQL</h3>
+                    <ul>
+                        <li>Available on Render / Railway</li>
+                        <li>Free tier included</li>
+                        <li>Powerful relational database</li>
+                        <li>Works with Prisma / Sequelize</li>
+                    </ul>
+                </div>
+            </div>
+            <div class="code-block" style="margin-top:1rem;">
+                <span class="cb-label">.env file</span>
+                <span class="c">MONGO_URI</span>=<span class="s">mongodb+srv://user:pass@cluster.mongodb.net/mydb</span>
+                <span class="c">PORT</span>=<span class="s">3000</span>
+            </div>
+            <p style="font-size:.78rem;color:var(--muted2);margin-top:.4rem;">⚠️ Store all secrets in <code
+                    style="font-family:'Fira Code';color:var(--accent3)">.env</code> files — never commit them to
+                GitHub.</p>
+        </div>
+    </section>
+
+    <div class="div"></div>
+
+    <footer class="sfoot">
+        KEC Workshop · Day 3 &nbsp;|&nbsp; <span>Antigravity — AI Code Editor Guide</span>
+    </footer>
+
+    <script>
+        /* Reading progress */
+        window.addEventListener('scroll', () => {
+            const s = document.documentElement;
+            document.getElementById('rbar').style.width =
+                (s.scrollTop / (s.scrollHeight - s.clientHeight) * 100) + '%';
+        });
+
+        /* ScrollTo nav */
+        function goTo(id) {
+            document.getElementById(id).scrollIntoView({ behavior: 'smooth' });
+            document.querySelectorAll('.nb').forEach(b => b.classList.remove('active'));
+            event.target.classList.add('active');
+        }
+
+        /* Reveal on scroll */
+        const obs = new IntersectionObserver(es => {
+            es.forEach(e => { if (e.isIntersecting) e.target.classList.add('vis'); });
+        }, { threshold: 0.09 });
+        document.querySelectorAll('.rv').forEach(el => obs.observe(el));
+
+        /* AI typing */
+        const lines = [
+            'Generate complete portfolio HTML in seconds...',
+            'Replace all placeholder text with your real info...',
+            'Make the theme dark blue with smooth gradients...',
+            'Add a Projects section with 3 cards and GitHub buttons...',
+            'Fix this error: Uncaught ReferenceError...',
+            'Convert this static site to dynamic with Node.js...',
+        ];
+        let li = 0, ci = 0, del = false;
+        const el = document.getElementById('aiTyped');
+        function type() {
+            const line = lines[li];
+            if (!del) {
+                el.textContent = line.slice(0, ci + 1); ci++;
+                if (ci === line.length) { del = true; setTimeout(type, 1600); return; }
+                setTimeout(type, 50);
+            } else {
+                el.textContent = line.slice(0, ci - 1); ci--;
+                if (ci === 0) { del = false; li = (li + 1) % lines.length; setTimeout(type, 350); return; }
+                setTimeout(type, 25);
+            }
+        }
+        type();
+    </script>
+</body>
+
+</html>

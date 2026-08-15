@@ -1,0 +1,1698 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Git & Version Control — Complete Guide</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700;800&family=Fira+Code:wght@400;500&display=swap"
+        rel="stylesheet">
+    <style>
+        *,
+        *::before,
+        *::after {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        :root {
+            --bg: #07091a;
+            --card: #161f35;
+            --card2: #1c253e;
+            --accent: #f97316;
+            --accent2: #fb923c;
+            --accent3: #22d3ee;
+            --violet: #6366f1;
+            --purple: #a855f7;
+            --green: #10b981;
+            --red: #ef4444;
+            --text: #e2e8f0;
+            --muted: #64748b;
+            --muted2: #94a3b8;
+            --border: rgba(249, 115, 22, 0.2);
+            --glow: 0 0 36px rgba(249, 115, 22, 0.22);
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            font-family: 'Outfit', sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            font-size: 15px;
+            overflow-x: hidden;
+        }
+
+        #rbar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            height: 3px;
+            z-index: 999;
+            width: 0%;
+            background: linear-gradient(90deg, var(--accent), var(--accent2), var(--accent3));
+        }
+
+        .blobs {
+            position: fixed;
+            inset: 0;
+            pointer-events: none;
+            z-index: 0;
+            overflow: hidden;
+        }
+
+        .blob {
+            position: absolute;
+            border-radius: 50%;
+            filter: blur(90px);
+            opacity: .13;
+            animation: bf 14s ease-in-out infinite alternate;
+        }
+
+        .b1 {
+            width: 420px;
+            height: 420px;
+            background: var(--accent);
+            top: -100px;
+            left: -80px;
+        }
+
+        .b2 {
+            width: 320px;
+            height: 320px;
+            background: var(--violet);
+            bottom: -80px;
+            right: -50px;
+            animation-delay: 5s;
+        }
+
+        .b3 {
+            width: 240px;
+            height: 240px;
+            background: var(--accent3);
+            top: 40%;
+            left: 58%;
+            animation-delay: 2.5s;
+        }
+
+        @keyframes bf {
+            from {
+                transform: scale(1) translate(0, 0);
+            }
+
+            to {
+                transform: scale(1.1) translate(22px, 14px);
+            }
+        }
+
+        /* NAV */
+        nav {
+            position: sticky;
+            top: 0;
+            z-index: 200;
+            background: rgba(7, 9, 26, .9);
+            backdrop-filter: blur(16px);
+            border-bottom: 1px solid var(--border);
+            padding: .65rem 1rem;
+            display: flex;
+            align-items: center;
+            gap: .4rem;
+            overflow-x: auto;
+        }
+
+        .nav-logo {
+            font-weight: 800;
+            font-size: .95rem;
+            background: linear-gradient(90deg, var(--accent), var(--accent2));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            white-space: nowrap;
+            margin-right: .4rem;
+            display: flex;
+            align-items: center;
+            gap: .35rem;
+        }
+
+        .nb {
+            font-family: 'Outfit', sans-serif;
+            font-size: .72rem;
+            font-weight: 600;
+            padding: .32rem .8rem;
+            border: 1px solid var(--border);
+            border-radius: 999px;
+            background: transparent;
+            color: var(--muted2);
+            cursor: pointer;
+            white-space: nowrap;
+            transition: all .2s;
+        }
+
+        .nb:hover,
+        .nb.active {
+            background: var(--accent);
+            border-color: var(--accent);
+            color: #fff;
+        }
+
+        /* SECTIONS */
+        section {
+            position: relative;
+            z-index: 10;
+            padding: 3.5rem 1.8rem;
+            max-width: 880px;
+            margin: 0 auto;
+        }
+
+        .eyebrow {
+            font-family: 'Fira Code', monospace;
+            font-size: .68rem;
+            color: var(--accent3);
+            letter-spacing: .14em;
+            text-transform: uppercase;
+            margin-bottom: .5rem;
+        }
+
+        .sec-title {
+            font-size: clamp(1.5rem, 3.5vw, 2.2rem);
+            font-weight: 800;
+            line-height: 1.2;
+            background: linear-gradient(135deg, #fff 25%, var(--accent2) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: .75rem;
+        }
+
+        .sec-lead {
+            font-size: .9rem;
+            color: var(--muted2);
+            line-height: 1.8;
+            max-width: 640px;
+            margin-bottom: 1.8rem;
+        }
+
+        .rv {
+            opacity: 0;
+            transform: translateY(26px);
+            transition: opacity .65s ease, transform .65s ease;
+        }
+
+        .rv.vis {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* HERO */
+        #hero {
+            min-height: 86vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            gap: 1.3rem;
+            padding: 4rem 1.8rem;
+            max-width: 880px;
+            margin: 0 auto;
+        }
+
+        .hero-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: .45rem;
+            font-family: 'Fira Code', monospace;
+            font-size: .7rem;
+            padding: .3rem .9rem;
+            border-radius: 999px;
+            border: 1px solid rgba(249, 115, 22, .4);
+            color: var(--accent2);
+            background: rgba(249, 115, 22, .07);
+            animation: fu .6s ease both;
+            width: fit-content;
+        }
+
+        .hero-h1 {
+            font-size: clamp(2rem, 6vw, 3.5rem);
+            font-weight: 800;
+            line-height: 1.1;
+            background: linear-gradient(135deg, #fff 15%, var(--accent) 55%, var(--accent2) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            animation: fu .6s .08s ease both;
+        }
+
+        .hero-sub {
+            font-size: 1rem;
+            color: var(--muted2);
+            max-width: 520px;
+            line-height: 1.8;
+            animation: fu .6s .16s ease both;
+        }
+
+        .hero-code {
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: .8rem 1.2rem;
+            font-family: 'Fira Code', monospace;
+            font-size: .82rem;
+            color: var(--accent3);
+            animation: fu .6s .24s ease both;
+            max-width: 480px;
+        }
+
+        .hero-stats {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 1rem;
+            animation: fu .6s .32s ease both;
+        }
+
+        .hstat {
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: .65rem 1rem;
+            display: flex;
+            flex-direction: column;
+            min-width: 90px;
+        }
+
+        .hstat-n {
+            font-size: 1.4rem;
+            font-weight: 800;
+            color: var(--accent2);
+        }
+
+        .hstat-l {
+            font-size: .65rem;
+            color: var(--muted);
+            margin-top: .1rem;
+        }
+
+        .scroll-hint {
+            font-size: .75rem;
+            color: var(--muted);
+            display: flex;
+            align-items: center;
+            gap: .4rem;
+            animation: fu .6s .4s ease both, bob 2s 1.5s ease-in-out infinite;
+        }
+
+        @keyframes bob {
+
+            0%,
+            100% {
+                transform: translateY(0);
+            }
+
+            50% {
+                transform: translateY(5px);
+            }
+        }
+
+        @keyframes fu {
+            from {
+                opacity: 0;
+                transform: translateY(22px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* CARDS GRID */
+        .cards-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(195px, 1fr));
+            gap: 1.1rem;
+        }
+
+        .card {
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            padding: 1.2rem;
+            transition: transform .3s, box-shadow .3s, border-color .3s;
+            cursor: default;
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: var(--glow);
+            border-color: var(--accent);
+        }
+
+        .card .ci {
+            font-size: 1.8rem;
+            margin-bottom: .6rem;
+        }
+
+        .card h3 {
+            font-size: .88rem;
+            font-weight: 700;
+            margin-bottom: .35rem;
+        }
+
+        .card p {
+            font-size: .78rem;
+            color: var(--muted2);
+            line-height: 1.65;
+        }
+
+        /* GIT ARCHITECTURE DIAGRAM */
+        .arch {
+            display: flex;
+            flex-direction: column;
+            gap: .5rem;
+            max-width: 460px;
+            margin: 1.5rem 0;
+        }
+
+        .arch-box {
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: .9rem 1.3rem;
+            display: flex;
+            align-items: center;
+            gap: .9rem;
+            transition: border-color .3s;
+        }
+
+        .arch-box:hover {
+            border-color: var(--accent);
+        }
+
+        .arch-num {
+            font-family: 'Fira Code', monospace;
+            font-size: .72rem;
+            color: var(--accent);
+            background: rgba(249, 115, 22, .1);
+            border: 1px solid rgba(249, 115, 22, .25);
+            border-radius: 6px;
+            padding: .15rem .55rem;
+        }
+
+        .arch-body h4 {
+            font-size: .88rem;
+            font-weight: 700;
+        }
+
+        .arch-body p {
+            font-size: .75rem;
+            color: var(--muted2);
+        }
+
+        .arch-arrow {
+            font-size: 1.2rem;
+            color: var(--accent);
+            text-align: center;
+            padding-left: 1.3rem;
+        }
+
+        /* COMMAND CARDS */
+        .cmd-list {
+            display: flex;
+            flex-direction: column;
+            gap: 1.1rem;
+        }
+
+        .cmd-card {
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            overflow: hidden;
+            transition: border-color .25s, transform .25s;
+        }
+
+        .cmd-card:hover {
+            border-color: var(--accent);
+            transform: translateX(4px);
+        }
+
+        .cmd-header {
+            display: flex;
+            align-items: center;
+            gap: .75rem;
+            padding: .9rem 1.2rem;
+            background: rgba(249, 115, 22, .06);
+            border-bottom: 1px solid var(--border);
+            cursor: pointer;
+            user-select: none;
+        }
+
+        .cmd-name {
+            font-family: 'Fira Code', monospace;
+            font-size: .9rem;
+            font-weight: 500;
+            color: var(--accent2);
+        }
+
+        .cmd-badge {
+            font-family: 'Fira Code', monospace;
+            font-size: .65rem;
+            padding: .15rem .55rem;
+            border-radius: 999px;
+            background: rgba(16, 185, 129, .1);
+            color: var(--green);
+            border: 1px solid rgba(16, 185, 129, .25);
+            margin-left: auto;
+        }
+
+        .cmd-body {
+            padding: 1rem 1.2rem;
+            display: none;
+        }
+
+        .cmd-body.open {
+            display: block;
+            animation: fadeIn .3s ease;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(6px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .cmd-desc {
+            font-size: .83rem;
+            color: var(--muted2);
+            line-height: 1.7;
+            margin-bottom: .8rem;
+        }
+
+        .code-block {
+            background: rgba(0, 0, 0, .5);
+            border: 1px solid rgba(249, 115, 22, .15);
+            border-radius: 10px;
+            padding: .8rem 1rem;
+            font-family: 'Fira Code', monospace;
+            font-size: .78rem;
+            line-height: 1.75;
+            overflow-x: auto;
+            margin: .5rem 0;
+        }
+
+        .code-block .k {
+            color: #c792ea;
+        }
+
+        .code-block .s {
+            color: var(--accent3);
+        }
+
+        .code-block .c {
+            color: var(--accent2);
+        }
+
+        .code-block .g {
+            color: var(--green);
+        }
+
+        .cmd-analogy {
+            font-size: .78rem;
+            color: var(--muted2);
+            background: rgba(34, 211, 238, .05);
+            border: 1px solid rgba(34, 211, 238, .15);
+            border-radius: 8px;
+            padding: .6rem .9rem;
+            margin-top: .6rem;
+        }
+
+        .cmd-analogy strong {
+            color: var(--accent3);
+        }
+
+        /* WORKFLOW */
+        .wf {
+            display: flex;
+            flex-direction: column;
+            gap: 0;
+        }
+
+        .wf-step {
+            display: flex;
+            align-items: flex-start;
+            gap: 1rem;
+            position: relative;
+        }
+
+        .wf-step:not(:last-child)::after {
+            content: '';
+            position: absolute;
+            left: 21px;
+            top: 44px;
+            width: 2px;
+            height: calc(100% - 12px);
+            background: linear-gradient(180deg, var(--accent), transparent);
+        }
+
+        .wf-num {
+            min-width: 42px;
+            height: 42px;
+            border-radius: 50%;
+            border: 2px solid var(--accent);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 800;
+            font-size: .85rem;
+            color: var(--accent);
+            background: rgba(249, 115, 22, .1);
+            flex-shrink: 0;
+            position: relative;
+            z-index: 2;
+            margin-top: 8px;
+            transition: all .3s;
+        }
+
+        .wf-step:hover .wf-num {
+            background: var(--accent);
+            color: #fff;
+            box-shadow: 0 0 18px rgba(249, 115, 22, .6);
+        }
+
+        .wf-body {
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: 14px;
+            padding: .9rem 1.2rem;
+            margin-bottom: 1rem;
+            flex: 1;
+            transition: border-color .3s, transform .3s;
+        }
+
+        .wf-step:hover .wf-body {
+            border-color: var(--accent);
+            transform: translateX(4px);
+        }
+
+        .wf-body h4 {
+            font-size: .88rem;
+            font-weight: 700;
+            margin-bottom: .25rem;
+        }
+
+        .wf-body p {
+            font-size: .78rem;
+            color: var(--muted2);
+            line-height: 1.6;
+        }
+
+        /* CHEAT SHEET TABLE */
+        .cheat-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: .82rem;
+        }
+
+        .cheat-table th {
+            background: rgba(249, 115, 22, .12);
+            color: var(--accent2);
+            font-weight: 700;
+            padding: .65rem 1rem;
+            text-align: left;
+            border-bottom: 2px solid var(--border);
+        }
+
+        .cheat-table td {
+            padding: .6rem 1rem;
+            border-bottom: 1px solid rgba(255, 255, 255, .05);
+            color: var(--muted2);
+        }
+
+        .cheat-table td:first-child {
+            font-family: 'Fira Code', monospace;
+            color: var(--accent3);
+            font-size: .78rem;
+        }
+
+        .cheat-table tr:hover td {
+            background: rgba(249, 115, 22, .04);
+        }
+
+        /* ASSIGNMENT */
+        .assign-part {
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: 18px;
+            padding: 1.5rem;
+            margin-bottom: 1.2rem;
+            transition: border-color .3s;
+        }
+
+        .assign-part:hover {
+            border-color: var(--accent);
+        }
+
+        .assign-part h3 {
+            font-size: 1rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            gap: .5rem;
+        }
+
+        .task-item {
+            display: flex;
+            align-items: flex-start;
+            gap: .75rem;
+            margin-bottom: .85rem;
+            padding: .75rem 1rem;
+            background: var(--card2);
+            border-radius: 12px;
+            border: 1px solid rgba(255, 255, 255, .06);
+        }
+
+        .task-num {
+            min-width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--accent), var(--accent2));
+            color: #fff;
+            font-weight: 800;
+            font-size: .75rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+        }
+
+        .task-info h4 {
+            font-size: .85rem;
+            font-weight: 700;
+            margin-bottom: .25rem;
+        }
+
+        .task-info p {
+            font-size: .77rem;
+            color: var(--muted2);
+            line-height: 1.6;
+        }
+
+        /* BEST PRACTICES */
+        .best-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 1rem;
+        }
+
+        .bp-card {
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: 14px;
+            padding: 1.1rem;
+            display: flex;
+            gap: .75rem;
+            align-items: flex-start;
+            transition: border-color .25s, transform .25s;
+        }
+
+        .bp-card:hover {
+            border-color: var(--green);
+            transform: translateY(-3px);
+        }
+
+        .bp-icon {
+            font-size: 1.4rem;
+            flex-shrink: 0;
+        }
+
+        .bp-text h4 {
+            font-size: .83rem;
+            font-weight: 700;
+            margin-bottom: .2rem;
+        }
+
+        .bp-text p {
+            font-size: .75rem;
+            color: var(--muted2);
+            line-height: 1.55;
+        }
+
+        /* DIVIDER & FOOTER */
+        .div {
+            height: 1px;
+            background: linear-gradient(90deg, transparent, var(--border), transparent);
+            margin: .5rem auto;
+            max-width: 880px;
+        }
+
+        .sfoot {
+            position: relative;
+            z-index: 10;
+            padding: 1.5rem;
+            text-align: center;
+            border-top: 1px solid var(--border);
+            color: var(--muted);
+            font-size: .77rem;
+        }
+
+        .sfoot span {
+            color: var(--accent2);
+        }
+
+        @media(max-width:580px) {
+            section {
+                padding: 2.5rem 1rem;
+            }
+
+            #hero {
+                padding: 3rem 1rem;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div id="rbar"></div>
+    <div class="blobs">
+        <div class="blob b1"></div>
+        <div class="blob b2"></div>
+        <div class="blob b3"></div>
+    </div>
+
+    <!-- Back to Home -->
+    <a href="index.html"
+        style="position:fixed;top:1rem;left:1rem;z-index:9999;display:inline-flex;align-items:center;gap:.45rem;padding:.45rem 1rem;background:rgba(7,9,26,.9);border:1px solid rgba(99,102,241,.4);border-radius:999px;color:#a78bfa;font-family:'Outfit',sans-serif;font-size:.8rem;font-weight:700;text-decoration:none;backdrop-filter:blur(10px);transition:all .2s;"
+        onmouseover="this.style.background='rgba(99,102,241,.25)';this.style.borderColor='#6366f1'"
+        onmouseout="this.style.background='rgba(7,9,26,.9)';this.style.borderColor='rgba(99,102,241,.4)'">← Home</a>
+
+    <!-- NAV -->
+    <nav style="padding-left:6rem;">
+        <div class="nav-logo">🔀 Git Guide</div>
+        <button class="nb active" onclick="goTo('hero')">Intro</button>
+        <button class="nb" onclick="goTo('vcs')">Version Control</button>
+        <button class="nb" onclick="goTo('whatgit')">What is Git</button>
+        <button class="nb" onclick="goTo('arch')">Architecture</button>
+        <button class="nb" onclick="goTo('commands')">Commands</button>
+        <button class="nb" onclick="goTo('workflow')">Workflow</button>
+        <button class="nb" onclick="goTo('cheatsheet')">Cheat Sheet</button>
+        <button class="nb" onclick="goTo('assignment')">Assignment</button>
+    </nav>
+
+    <!-- ══════════ HERO ══════════ -->
+    <section id="hero" style="max-width:880px">
+        <div class="hero-badge">🔀 &nbsp; Day 3 · Git &amp; Version Control</div>
+        <h1 class="hero-h1">Complete Git &amp;<br>Version Control Guide</h1>
+        <p class="hero-sub">From your first <code style="font-family:'Fira Code';color:var(--accent3)">git init</code>
+            to professional branching workflows — everything a developer needs to know about Git and GitHub.</p>
+        <div class="hero-code">$ git commit -m "Learn Git from scratch 🚀"<br><span style="color:var(--green)">✓ 1 file
+                changed, ∞ things learned</span></div>
+        <div class="hero-stats">
+            <div class="hstat"><span class="hstat-n">16</span><span class="hstat-l">Commands</span></div>
+            <div class="hstat"><span class="hstat-n">3</span><span class="hstat-l">Areas</span></div>
+            <div class="hstat"><span class="hstat-n">21</span><span class="hstat-l">Topics</span></div>
+            <div class="hstat"><span class="hstat-n">13</span><span class="hstat-l">Tasks</span></div>
+        </div>
+        <div class="scroll-hint">↓ &nbsp; Scroll to explore</div>
+    </section>
+
+    <!-- ══════════ VERSION CONTROL ══════════ -->
+    <section id="vcs">
+        <div class="rv">
+            <p class="eyebrow">01 · Foundation</p>
+            <h2 class="sec-title">📌 What is Version Control?</h2>
+            <p class="sec-lead">Version Control is a system that records changes to files over time so you can track
+                history, restore old versions, compare changes, and collaborate with others — without the chaos of <code
+                    style="font-family:'Fira Code';color:var(--accent3)">project_final_FINAL_v3.zip</code>.</p>
+        </div>
+        <div class="cards-grid rv">
+            <div class="card">
+                <div class="ci">📁</div>
+                <h3>Local VCS</h3>
+                <p>Stored only on your system. Simple, but no collaboration or backup.</p>
+            </div>
+            <div class="card">
+                <div class="ci">🖥</div>
+                <h3>Centralized (CVCS)</h3>
+                <p>Single central server. Example: SVN. Team shares one repo but losing server = losing everything.</p>
+            </div>
+            <div class="card">
+                <div class="ci">🌐</div>
+                <h3>Distributed (DVCS)</h3>
+                <p>Every developer has full project history. Example: Git. Works offline, very fast, very safe.</p>
+            </div>
+            <div class="card">
+                <div class="ci">🔙</div>
+                <h3>Restore Old Versions</h3>
+                <p>Made a mistake? Roll back to any previous state instantly — like Ctrl+Z for your entire project.</p>
+            </div>
+            <div class="card">
+                <div class="ci">👥</div>
+                <h3>Team Collaboration</h3>
+                <p>Multiple developers work simultaneously without overwriting each other's code.</p>
+            </div>
+            <div class="card">
+                <div class="ci">🔍</div>
+                <h3>Track Every Change</h3>
+                <p>Who changed what, when, and why — full audit trail for every line of code.</p>
+            </div>
+        </div>
+    </section>
+
+    <div class="div"></div>
+
+    <!-- ══════════ WHAT IS GIT ══════════ -->
+    <section id="whatgit">
+        <div class="rv">
+            <p class="eyebrow">02 · The Tool</p>
+            <h2 class="sec-title">⚡ What is Git?</h2>
+            <p class="sec-lead">Git is a distributed version control system created by <strong>Linus Torvalds in
+                    2005</strong>. It is the industry standard for tracking source code changes. Git ≠ GitHub.</p>
+        </div>
+        <div class="rv" style="overflow-x:auto;">
+            <table class="cheat-table" style="margin-bottom:1.5rem;">
+                <thead>
+                    <tr>
+                        <th>Feature</th>
+                        <th>Git</th>
+                        <th>GitHub</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>Type</td>
+                        <td style="color:var(--text)">Software on your computer</td>
+                        <td style="color:var(--text)">Cloud hosting service</td>
+                    </tr>
+                    <tr>
+                        <td>Purpose</td>
+                        <td style="color:var(--text)">Version control tool</td>
+                        <td style="color:var(--text)">Git repository hosting</td>
+                    </tr>
+                    <tr>
+                        <td>Internet</td>
+                        <td style="color:var(--text)">Works offline ✅</td>
+                        <td style="color:var(--text)">Needs internet</td>
+                    </tr>
+                    <tr>
+                        <td>Interface</td>
+                        <td style="color:var(--text)">Command line</td>
+                        <td style="color:var(--text)">Web interface + CLI</td>
+                    </tr>
+                    <tr>
+                        <td>Analogy</td>
+                        <td style="color:var(--accent3)">🔧 The Engine</td>
+                        <td style="color:var(--accent3)">☁️ The Cloud Platform</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        <div class="rv">
+            <h3 style="font-size:1rem;font-weight:700;margin-bottom:.75rem;">🛠 Install Git</h3>
+            <div class="cards-grid">
+                <div class="card">
+                    <div class="ci">🪟</div>
+                    <h3>Windows</h3>
+                    <p>Download from <strong style="color:var(--accent3)">git-scm.com</strong>, run installer with
+                        default options, then verify:</p>
+                    <div class="code-block" style="margin-top:.5rem;">git --version</div>
+                </div>
+                <div class="card">
+                    <div class="ci">🐧</div>
+                    <h3>Linux</h3>
+                    <div class="code-block" style="margin-top:.5rem;">sudo apt update<br>sudo apt install git</div>
+                </div>
+                <div class="card">
+                    <div class="ci">🍎</div>
+                    <h3>macOS</h3>
+                    <div class="code-block" style="margin-top:.5rem;">brew install git</div>
+                </div>
+                <div class="card">
+                    <div class="ci">⚙️</div>
+                    <h3>First Config</h3>
+                    <p>After install, set your identity:</p>
+                    <div class="code-block" style="margin-top:.5rem;">git config --global user.name <span
+                            class="s">"Your Name"</span><br>git config --global user.email <span
+                            class="s">"you@email.com"</span></div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <div class="div"></div>
+
+    <!-- ══════════ ARCHITECTURE ══════════ -->
+    <section id="arch">
+        <div class="rv">
+            <p class="eyebrow">03 · Core Concept</p>
+            <h2 class="sec-title">🏗 Git Architecture</h2>
+            <p class="sec-lead">Git works in 3 areas. Understanding this is the most important concept — everything else
+                builds on it.</p>
+        </div>
+        <div class="arch rv">
+            <div class="arch-box">
+                <span class="arch-num">1</span>
+                <div class="arch-body">
+                    <h4>Working Directory</h4>
+                    <p>Where you create & edit files. Like writing in your notebook.</p>
+                </div>
+            </div>
+            <div class="arch-arrow">↓ git add</div>
+            <div class="arch-box">
+                <span class="arch-num">2</span>
+                <div class="arch-body">
+                    <h4>Staging Area (Index)</h4>
+                    <p>Where you prepare files before saving. Like selecting pages to submit.</p>
+                </div>
+            </div>
+            <div class="arch-arrow">↓ git commit</div>
+            <div class="arch-box">
+                <span class="arch-num">3</span>
+                <div class="arch-body">
+                    <h4>Repository (.git folder)</h4>
+                    <p>Where Git permanently stores all versions. Like the teacher storing final submissions.</p>
+                </div>
+            </div>
+        </div>
+        <div class="rv" style="margin-top:1.2rem;">
+            <div style="background:var(--card);border:1px solid var(--border);border-radius:14px;padding:1.2rem;">
+                <p style="font-size:.83rem;font-weight:700;margin-bottom:.5rem;color:var(--accent3)">🍽 Kitchen Analogy
+                </p>
+                <p style="font-size:.8rem;color:var(--muted2);line-height:1.7;">
+                    <strong style="color:var(--text)">Working Directory</strong> = Kitchen (where you cook)<br>
+                    <strong style="color:var(--text)">Staging Area</strong> = Plate (what you've selected to serve)<br>
+                    <strong style="color:var(--text)">Repository</strong> = Dining Table (where final dish is
+                    placed)<br>
+                    <strong style="color:var(--text)">git add</strong> = Put food on the plate 🍽<br>
+                    <strong style="color:var(--text)">git commit</strong> = Serve it to the table ✅
+                </p>
+            </div>
+        </div>
+    </section>
+
+    <div class="div"></div>
+
+    <!-- ══════════ COMMANDS ══════════ -->
+    <section id="commands">
+        <div class="rv">
+            <p class="eyebrow">04 · Core Commands</p>
+            <h2 class="sec-title">🔹 Git Commands with Examples</h2>
+            <p class="sec-lead">Click each command card to expand its explanation, examples, and teaching analogies.</p>
+        </div>
+        <div class="cmd-list rv" id="cmdList">
+
+            <!-- git init -->
+            <div class="cmd-card">
+                <div class="cmd-header" onclick="toggleCmd(this)">
+                    <span style="font-size:1.1rem">🏁</span>
+                    <span class="cmd-name">git init</span>
+                    <span class="cmd-badge">Start</span>
+                    <span style="color:var(--muted);font-size:.8rem;margin-left:.5rem;">▼</span>
+                </div>
+                <div class="cmd-body">
+                    <p class="cmd-desc">Creates a new Git repository in the current folder. It creates a hidden <code
+                            style="font-family:'Fira Code';color:var(--accent3)">.git</code> folder that stores all
+                        history, configuration, and metadata.</p>
+                    <div class="code-block">mkdir student_project<br>cd student_project<br>git init<br><span class="g">#
+                            Output: Initialized empty Git repository</span></div>
+                    <div class="cmd-analogy"><strong>Analogy:</strong> Like buying a new notebook and putting your name
+                        on it — you're setting up the place to record your work.</div>
+                </div>
+            </div>
+
+            <!-- git status -->
+            <div class="cmd-card">
+                <div class="cmd-header" onclick="toggleCmd(this)">
+                    <span style="font-size:1.1rem">👁</span>
+                    <span class="cmd-name">git status</span>
+                    <span class="cmd-badge">Check</span>
+                    <span style="color:var(--muted);font-size:.8rem;margin-left:.5rem;">▼</span>
+                </div>
+                <div class="cmd-body">
+                    <p class="cmd-desc">Shows the current state of your project — untracked files, staged files, and
+                        modified files. <strong>Always run this before committing.</strong></p>
+                    <div class="code-block">git status</div>
+                    <div class="cmd-analogy"><strong>Teaching Tip:</strong> Tell students — "Always check status before
+                        commit." It's like checking your bag before leaving the house.</div>
+                </div>
+            </div>
+
+            <!-- git add -->
+            <div class="cmd-card">
+                <div class="cmd-header" onclick="toggleCmd(this)">
+                    <span style="font-size:1.1rem">➕</span>
+                    <span class="cmd-name">git add</span>
+                    <span class="cmd-badge">Stage</span>
+                    <span style="color:var(--muted);font-size:.8rem;margin-left:.5rem;">▼</span>
+                </div>
+                <div class="cmd-body">
+                    <p class="cmd-desc">Moves files from the Working Directory to the Staging Area. You select which
+                        files you want to include in the next commit.</p>
+                    <div class="code-block"><span class="g"># Add a single file</span><br>git add
+                        index.html<br><br><span class="g"># Add all files</span><br>git add .</div>
+                    <div class="cmd-analogy"><strong>Analogy:</strong> Like putting food on the plate before serving it
+                        — you select what goes on it before it reaches the table.</div>
+                </div>
+            </div>
+
+            <!-- git commit -->
+            <div class="cmd-card">
+                <div class="cmd-header" onclick="toggleCmd(this)">
+                    <span style="font-size:1.1rem">💾</span>
+                    <span class="cmd-name">git commit</span>
+                    <span class="cmd-badge">Save</span>
+                    <span style="color:var(--muted);font-size:.8rem;margin-left:.5rem;">▼</span>
+                </div>
+                <div class="cmd-body">
+                    <p class="cmd-desc">Saves the staged changes permanently in the repository. Creates a "checkpoint"
+                        with a message describing what changed.</p>
+                    <div class="code-block">git commit -m <span class="s">"Added homepage layout"</span><br><br><span
+                            class="g"># -m means message. Always write meaningful messages!</span></div>
+                    <div class="cmd-analogy"><strong>Analogy:</strong> Like submitting an assignment to the teacher —
+                        it's officially recorded and timestamped.</div>
+                </div>
+            </div>
+
+            <!-- git log -->
+            <div class="cmd-card">
+                <div class="cmd-header" onclick="toggleCmd(this)">
+                    <span style="font-size:1.1rem">📜</span>
+                    <span class="cmd-name">git log</span>
+                    <span class="cmd-badge">History</span>
+                    <span style="color:var(--muted);font-size:.8rem;margin-left:.5rem;">▼</span>
+                </div>
+                <div class="cmd-body">
+                    <p class="cmd-desc">Shows the full commit history — commit ID, author, date, and message. Use it to
+                        see what was changed and by whom.</p>
+                    <div class="code-block">git log<br><br><span class="g"># Compact version:</span><br>git log
+                        --oneline</div>
+                    <div class="cmd-analogy"><strong>Use case:</strong> Like reading a diary — each entry tells you what
+                        happened at that moment in your project's life.</div>
+                </div>
+            </div>
+
+            <!-- git diff -->
+            <div class="cmd-card">
+                <div class="cmd-header" onclick="toggleCmd(this)">
+                    <span style="font-size:1.1rem">🔍</span>
+                    <span class="cmd-name">git diff</span>
+                    <span class="cmd-badge">Compare</span>
+                    <span style="color:var(--muted);font-size:.8rem;margin-left:.5rem;">▼</span>
+                </div>
+                <div class="cmd-body">
+                    <p class="cmd-desc">Shows what has changed in your files but hasn't been committed yet. Lines
+                        starting with <code style="font-family:'Fira Code';color:var(--green)">+</code> are added, <code
+                            style="font-family:'Fira Code';color:var(--red)">-</code> are removed.</p>
+                    <div class="code-block">git diff<br><br><span class="g"># Compare staged changes:</span><br>git diff
+                        --staged</div>
+                </div>
+            </div>
+
+            <!-- git branch -->
+            <div class="cmd-card">
+                <div class="cmd-header" onclick="toggleCmd(this)">
+                    <span style="font-size:1.1rem">🌿</span>
+                    <span class="cmd-name">git branch</span>
+                    <span class="cmd-badge">Branches</span>
+                    <span style="color:var(--muted);font-size:.8rem;margin-left:.5rem;">▼</span>
+                </div>
+                <div class="cmd-body">
+                    <p class="cmd-desc">Lists all branches. The current branch is marked with <code
+                            style="font-family:'Fira Code';color:var(--accent3)">*</code>. Use it to create new branches
+                        for new features.</p>
+                    <div class="code-block"><span class="g"># List branches</span><br>git branch<br><br><span
+                            class="g"># Create new branch</span><br>git branch feature-login</div>
+                    <div class="cmd-analogy"><strong>Analogy:</strong> Like creating a parallel universe — you can
+                        experiment without affecting the main story.</div>
+                </div>
+            </div>
+
+            <!-- git checkout -->
+            <div class="cmd-card">
+                <div class="cmd-header" onclick="toggleCmd(this)">
+                    <span style="font-size:1.1rem">🔄</span>
+                    <span class="cmd-name">git checkout</span>
+                    <span class="cmd-badge">Switch</span>
+                    <span style="color:var(--muted);font-size:.8rem;margin-left:.5rem;">▼</span>
+                </div>
+                <div class="cmd-body">
+                    <p class="cmd-desc">Switches between branches. You can also create and switch in one command using
+                        <code style="font-family:'Fira Code';color:var(--accent3)">-b</code>.
+                    </p>
+                    <div class="code-block"><span class="g"># Switch to branch</span><br>git checkout
+                        feature-login<br><br><span class="g"># Create + switch in one command</span><br>git checkout -b
+                        signup-feature</div>
+                </div>
+            </div>
+
+            <!-- git merge -->
+            <div class="cmd-card">
+                <div class="cmd-header" onclick="toggleCmd(this)">
+                    <span style="font-size:1.1rem">🔀</span>
+                    <span class="cmd-name">git merge</span>
+                    <span class="cmd-badge">Combine</span>
+                    <span style="color:var(--muted);font-size:.8rem;margin-left:.5rem;">▼</span>
+                </div>
+                <div class="cmd-body">
+                    <p class="cmd-desc">Combines two branches together. Usually you switch to <code
+                            style="font-family:'Fira Code';color:var(--accent3)">main</code> first, then merge a feature
+                        branch into it.</p>
+                    <div class="code-block">git checkout main<br>git merge feature-login<br><span class="g">#
+                            feature-login is now merged into main</span></div>
+                </div>
+            </div>
+
+            <!-- git clone -->
+            <div class="cmd-card">
+                <div class="cmd-header" onclick="toggleCmd(this)">
+                    <span style="font-size:1.1rem">📥</span>
+                    <span class="cmd-name">git clone</span>
+                    <span class="cmd-badge">Download</span>
+                    <span style="color:var(--muted);font-size:.8rem;margin-left:.5rem;">▼</span>
+                </div>
+                <div class="cmd-body">
+                    <p class="cmd-desc">Downloads a complete repository from GitHub (or any remote) to your local
+                        machine, including full history.</p>
+                    <div class="code-block">git clone https://github.com/user/project.git</div>
+                    <div class="cmd-analogy"><strong>Use case:</strong> Like getting a copy of a teammate's notebook —
+                        you get everything they have.</div>
+                </div>
+            </div>
+
+            <!-- git remote add -->
+            <div class="cmd-card">
+                <div class="cmd-header" onclick="toggleCmd(this)">
+                    <span style="font-size:1.1rem">🔗</span>
+                    <span class="cmd-name">git remote add</span>
+                    <span class="cmd-badge">Connect</span>
+                    <span style="color:var(--muted);font-size:.8rem;margin-left:.5rem;">▼</span>
+                </div>
+                <div class="cmd-body">
+                    <p class="cmd-desc">Links your local repository to a remote GitHub repository so you can push and
+                        pull code.</p>
+                    <div class="code-block">git remote add origin https://github.com/user/project.git<br><br><span
+                            class="g"># Verify connection:</span><br>git remote -v</div>
+                </div>
+            </div>
+
+            <!-- git push -->
+            <div class="cmd-card">
+                <div class="cmd-header" onclick="toggleCmd(this)">
+                    <span style="font-size:1.1rem">⬆️</span>
+                    <span class="cmd-name">git push</span>
+                    <span class="cmd-badge">Upload</span>
+                    <span style="color:var(--muted);font-size:.8rem;margin-left:.5rem;">▼</span>
+                </div>
+                <div class="cmd-body">
+                    <p class="cmd-desc">Uploads your local commits to the remote repository on GitHub.</p>
+                    <div class="code-block"><span class="g"># First push (sets upstream):</span><br>git push -u origin
+                        main<br><br><span class="g"># Subsequent pushes:</span><br>git push</div>
+                </div>
+            </div>
+
+            <!-- git pull -->
+            <div class="cmd-card">
+                <div class="cmd-header" onclick="toggleCmd(this)">
+                    <span style="font-size:1.1rem">⬇️</span>
+                    <span class="cmd-name">git pull</span>
+                    <span class="cmd-badge">Download</span>
+                    <span style="color:var(--muted);font-size:.8rem;margin-left:.5rem;">▼</span>
+                </div>
+                <div class="cmd-body">
+                    <p class="cmd-desc">Downloads and merges the latest changes from the remote repository. Always pull
+                        before you start working!</p>
+                    <div class="code-block">git pull origin main<br><br><span class="g"># Best practice: pull first,
+                            then work</span></div>
+                </div>
+            </div>
+
+            <!-- git reset -->
+            <div class="cmd-card">
+                <div class="cmd-header" onclick="toggleCmd(this)">
+                    <span style="font-size:1.1rem">↩️</span>
+                    <span class="cmd-name">git reset</span>
+                    <span class="cmd-badge">Undo</span>
+                    <span style="color:var(--muted);font-size:.8rem;margin-left:.5rem;">▼</span>
+                </div>
+                <div class="cmd-body">
+                    <p class="cmd-desc">Undoes commits. Soft keeps your changes in working directory; hard deletes them
+                        permanently.</p>
+                    <div class="code-block"><span class="g"># Undo last commit, keep changes:</span><br>git reset --soft
+                        HEAD~1<br><br><span class="g"># ⚠ Delete commit AND changes:</span><br>git reset --hard HEAD~1
+                    </div>
+                    <div class="cmd-analogy"
+                        style="border-color:rgba(239,68,68,.3);color:var(--red);background:rgba(239,68,68,.05)">
+                        <strong>⚠ Warning:</strong> <code style="font-family:'Fira Code'">--hard</code> is destructive.
+                        Teach students with extreme caution.
+                    </div>
+                </div>
+            </div>
+
+            <!-- git restore -->
+            <div class="cmd-card">
+                <div class="cmd-header" onclick="toggleCmd(this)">
+                    <span style="font-size:1.1rem">🔃</span>
+                    <span class="cmd-name">git restore</span>
+                    <span class="cmd-badge">Undo</span>
+                    <span style="color:var(--muted);font-size:.8rem;margin-left:.5rem;">▼</span>
+                </div>
+                <div class="cmd-body">
+                    <p class="cmd-desc">Discards changes in a file (before staging) or unstages a file from the staging
+                        area.</p>
+                    <div class="code-block"><span class="g"># Discard file changes:</span><br>git restore
+                        filename<br><br><span class="g"># Unstage a file:</span><br>git restore --staged filename</div>
+                </div>
+            </div>
+
+            <!-- .gitignore -->
+            <div class="cmd-card">
+                <div class="cmd-header" onclick="toggleCmd(this)">
+                    <span style="font-size:1.1rem">🚫</span>
+                    <span class="cmd-name">.gitignore</span>
+                    <span class="cmd-badge">Ignore</span>
+                    <span style="color:var(--muted);font-size:.8rem;margin-left:.5rem;">▼</span>
+                </div>
+                <div class="cmd-body">
+                    <p class="cmd-desc">A file that tells Git which files and folders to ignore — never track passwords,
+                        secrets, or large dependency folders.</p>
+                    <div class="code-block"><span class="g"># .gitignore
+                            example:</span><br>node_modules/<br>.env<br>*.log<br>dist/<br>.DS_Store</div>
+                    <div class="cmd-analogy"><strong>Rule:</strong> Never commit <code
+                            style="font-family:'Fira Code';color:var(--accent3)">.env</code> files — they contain
+                        secrets like passwords and API keys.</div>
+                </div>
+            </div>
+
+        </div>
+    </section>
+
+    <div class="div"></div>
+
+    <!-- ══════════ PRACTICAL WORKFLOW ══════════ -->
+    <section id="workflow">
+        <div class="rv">
+            <p class="eyebrow">05 · Daily Workflow</p>
+            <h2 class="sec-title">👨‍💻 Real Developer Git Workflow</h2>
+            <p class="sec-lead">This is the professional workflow used by developers every day. Teach students this as
+                the "golden path" to follow on every project.</p>
+        </div>
+        <div class="wf rv">
+            <div class="wf-step">
+                <div class="wf-num">1</div>
+                <div class="wf-body">
+                    <h4>Pull Latest Changes</h4>
+                    <p>Always start by syncing with the remote repository to get the latest code from teammates.</p>
+                    <div class="code-block" style="margin-top:.4rem;">git pull origin main</div>
+                </div>
+            </div>
+            <div class="wf-step">
+                <div class="wf-num">2</div>
+                <div class="wf-body">
+                    <h4>Create Feature Branch</h4>
+                    <p>Never code directly on <code style="font-family:'Fira Code';color:var(--accent3)">main</code>.
+                        Create a new branch for each feature or fix.</p>
+                    <div class="code-block" style="margin-top:.4rem;">git checkout -b feature-payment</div>
+                </div>
+            </div>
+            <div class="wf-step">
+                <div class="wf-num">3</div>
+                <div class="wf-body">
+                    <h4>Write Code</h4>
+                    <p>Work on your feature in the new branch. Edit files, add functionality, test locally.</p>
+                </div>
+            </div>
+            <div class="wf-step">
+                <div class="wf-num">4</div>
+                <div class="wf-body">
+                    <h4>Stage &amp; Commit</h4>
+                    <p>Add your changes and commit with a clear, descriptive message.</p>
+                    <div class="code-block" style="margin-top:.4rem;">git add .<br>git commit -m <span class="s">"Added
+                            payment integration"</span></div>
+                </div>
+            </div>
+            <div class="wf-step">
+                <div class="wf-num">5</div>
+                <div class="wf-body">
+                    <h4>Push to GitHub</h4>
+                    <p>Upload your branch to GitHub so teammates can review it.</p>
+                    <div class="code-block" style="margin-top:.4rem;">git push origin feature-payment</div>
+                </div>
+            </div>
+            <div class="wf-step">
+                <div class="wf-num">6</div>
+                <div class="wf-body">
+                    <h4>Create Pull Request</h4>
+                    <p>On GitHub, open a Pull Request to merge your branch into <code
+                            style="font-family:'Fira Code';color:var(--accent3)">main</code>. Get code review from
+                        teammates before merging.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <div class="div"></div>
+
+    <!-- ══════════ BEST PRACTICES ══════════ -->
+    <section id="bestpractices">
+        <div class="rv">
+            <p class="eyebrow">06 · Best Practices</p>
+            <h2 class="sec-title">✅ Git Best Practices</h2>
+        </div>
+        <div class="best-grid rv">
+            <div class="bp-card">
+                <div class="bp-icon">✍️</div>
+                <div class="bp-text">
+                    <h4>Meaningful Commit Messages</h4>
+                    <p>Write what changed, not "fixed stuff". Example: <em>"Added login validation"</em></p>
+                </div>
+            </div>
+            <div class="bp-card">
+                <div class="bp-icon">🔬</div>
+                <div class="bp-text">
+                    <h4>Commit Small Changes</h4>
+                    <p>One feature or fix per commit — makes reverting easy and history clean.</p>
+                </div>
+            </div>
+            <div class="bp-card">
+                <div class="bp-icon">⬇️</div>
+                <div class="bp-text">
+                    <h4>Pull Before Push</h4>
+                    <p>Always pull the latest changes before pushing to avoid conflicts.</p>
+                </div>
+            </div>
+            <div class="bp-card">
+                <div class="bp-icon">🌿</div>
+                <div class="bp-text">
+                    <h4>Use Branches</h4>
+                    <p>Never code directly on <code style="font-family:'Fira Code'">main</code>. Use feature branches
+                        for every change.</p>
+                </div>
+            </div>
+            <div class="bp-card">
+                <div class="bp-icon">🚫</div>
+                <div class="bp-text">
+                    <h4>Use .gitignore</h4>
+                    <p>Ignore <code style="font-family:'Fira Code'">node_modules</code>, <code
+                            style="font-family:'Fira Code'">.env</code>, log files, and build artifacts.</p>
+                </div>
+            </div>
+            <div class="bp-card">
+                <div class="bp-icon">🔒</div>
+                <div class="bp-text">
+                    <h4>Never Commit Secrets</h4>
+                    <p>API keys, passwords, and tokens must NEVER go into Git history.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <div class="div"></div>
+
+    <!-- ══════════ CHEAT SHEET ══════════ -->
+    <section id="cheatsheet">
+        <div class="rv">
+            <p class="eyebrow">07 · Quick Reference</p>
+            <h2 class="sec-title">📋 Git Cheat Sheet</h2>
+        </div>
+        <div style="overflow-x:auto;" class="rv">
+            <table class="cheat-table">
+                <thead>
+                    <tr>
+                        <th>Command</th>
+                        <th>Use</th>
+                        <th>When to Use</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>git init</td>
+                        <td>Start repository</td>
+                        <td>Starting a new project</td>
+                    </tr>
+                    <tr>
+                        <td>git status</td>
+                        <td>Check changes</td>
+                        <td>Before every commit</td>
+                    </tr>
+                    <tr>
+                        <td>git add .</td>
+                        <td>Stage all files</td>
+                        <td>Before committing</td>
+                    </tr>
+                    <tr>
+                        <td>git commit -m ""</td>
+                        <td>Save version</td>
+                        <td>After completing a feature</td>
+                    </tr>
+                    <tr>
+                        <td>git log</td>
+                        <td>View history</td>
+                        <td>To review previous commits</td>
+                    </tr>
+                    <tr>
+                        <td>git diff</td>
+                        <td>See changes</td>
+                        <td>Before staging</td>
+                    </tr>
+                    <tr>
+                        <td>git branch</td>
+                        <td>List branches</td>
+                        <td>To see all branches</td>
+                    </tr>
+                    <tr>
+                        <td>git checkout -b</td>
+                        <td>Create + switch branch</td>
+                        <td>Starting new feature</td>
+                    </tr>
+                    <tr>
+                        <td>git merge</td>
+                        <td>Combine branches</td>
+                        <td>Merging completed feature</td>
+                    </tr>
+                    <tr>
+                        <td>git clone</td>
+                        <td>Download repo</td>
+                        <td>Getting a project from GitHub</td>
+                    </tr>
+                    <tr>
+                        <td>git remote add</td>
+                        <td>Connect to GitHub</td>
+                        <td>Linking local → remote</td>
+                    </tr>
+                    <tr>
+                        <td>git push</td>
+                        <td>Upload commits</td>
+                        <td>After committing locally</td>
+                    </tr>
+                    <tr>
+                        <td>git pull</td>
+                        <td>Download changes</td>
+                        <td>Start of every work session</td>
+                    </tr>
+                    <tr>
+                        <td>git reset --soft</td>
+                        <td>Undo commit</td>
+                        <td>Remove last commit safely</td>
+                    </tr>
+                    <tr>
+                        <td>git restore</td>
+                        <td>Discard file change</td>
+                        <td>Undo edits before staging</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </section>
+
+    <div class="div"></div>
+
+    <!-- ══════════ ASSIGNMENT ══════════ -->
+    <section id="assignment">
+        <div class="rv">
+            <p class="eyebrow">08 · Lab Assignment</p>
+            <h2 class="sec-title">📝 Git Practical Assignment</h2>
+            <p class="sec-lead"><strong>"Build, Track &amp; Manage a Project Using Git"</strong> — Beginner to
+                Intermediate. Estimated time: 2–3 hours. Take screenshots after each step.</p>
+        </div>
+
+        <div class="assign-part rv">
+            <h3>🧩 Part 1 — Basic Git Operations</h3>
+            <div class="task-item">
+                <div class="task-num">1</div>
+                <div class="task-info">
+                    <h4>Create Project Folder</h4>
+                    <p>Create folder <code style="font-family:'Fira Code';color:var(--accent3)">git_assignment</code>,
+                        navigate into it, and run <code
+                            style="font-family:'Fira Code';color:var(--accent3)">git init</code>. 📸 Screenshot the
+                        output.</p>
+                </div>
+            </div>
+            <div class="task-item">
+                <div class="task-num">2</div>
+                <div class="task-info">
+                    <h4>Create 3 Files</h4>
+                    <p>Create <code style="font-family:'Fira Code';color:var(--accent3)">index.html</code>, <code
+                            style="font-family:'Fira Code';color:var(--accent3)">style.css</code>, <code
+                            style="font-family:'Fira Code';color:var(--accent3)">script.js</code> and add some content
+                        inside each.</p>
+                </div>
+            </div>
+            <div class="task-item">
+                <div class="task-num">3</div>
+                <div class="task-info">
+                    <h4>Check Status</h4>
+                    <p>Run <code style="font-family:'Fira Code';color:var(--accent3)">git status</code>. ❓ Question:
+                        What is the status of files <em>before</em> <code
+                            style="font-family:'Fira Code';color:var(--accent3)">git add</code>?</p>
+                </div>
+            </div>
+            <div class="task-item">
+                <div class="task-num">4</div>
+                <div class="task-info">
+                    <h4>Stage Files</h4>
+                    <p>Add only <code style="font-family:'Fira Code';color:var(--accent3)">index.html</code> first,
+                        check status, then add all remaining files with <code
+                            style="font-family:'Fira Code';color:var(--accent3)">git add .</code></p>
+                </div>
+            </div>
+            <div class="task-item">
+                <div class="task-num">5</div>
+                <div class="task-info">
+                    <h4>First Commit</h4>
+                    <p>Run <code
+                            style="font-family:'Fira Code';color:var(--accent3)">git commit -m "Initial project structure added"</code>
+                    </p>
+                </div>
+            </div>
+            <div class="task-item">
+                <div class="task-num">6</div>
+                <div class="task-info">
+                    <h4>Modify &amp; Commit Again</h4>
+                    <p>Add a new line to <code style="font-family:'Fira Code';color:var(--accent3)">index.html</code>,
+                        run <code style="font-family:'Fira Code';color:var(--accent3)">git diff</code>, then stage and
+                        commit with a clear message.</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="assign-part rv">
+            <h3>🌿 Part 2 — Branching</h3>
+            <div class="task-item">
+                <div class="task-num">7</div>
+                <div class="task-info">
+                    <h4>Create New Branch</h4>
+                    <p>Run: <code
+                            style="font-family:'Fira Code';color:var(--accent3)">git checkout -b feature-navbar</code>.
+                        Verify the switch with <code
+                            style="font-family:'Fira Code';color:var(--accent3)">git branch</code>.</p>
+                </div>
+            </div>
+            <div class="task-item">
+                <div class="task-num">8</div>
+                <div class="task-info">
+                    <h4>Add Feature &amp; Commit</h4>
+                    <p>Add HTML code for a navbar in <code
+                            style="font-family:'Fira Code';color:var(--accent3)">index.html</code>, then stage and
+                        commit it.</p>
+                </div>
+            </div>
+            <div class="task-item">
+                <div class="task-num">9</div>
+                <div class="task-info">
+                    <h4>Merge Branch</h4>
+                    <p>Switch to <code style="font-family:'Fira Code';color:var(--accent3)">main</code> then run <code
+                            style="font-family:'Fira Code';color:var(--accent3)">git merge feature-navbar</code>. Verify
+                        with <code style="font-family:'Fira Code';color:var(--accent3)">git log</code>.</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="assign-part rv">
+            <h3>☁️ Part 3 — GitHub Integration</h3>
+            <div class="task-item">
+                <div class="task-num">10</div>
+                <div class="task-info">
+                    <h4>Create GitHub Repository</h4>
+                    <p>Go to GitHub → New Repository → Name: <code
+                            style="font-family:'Fira Code';color:var(--accent3)">git-assignment-project</code></p>
+                </div>
+            </div>
+            <div class="task-item">
+                <div class="task-num">11</div>
+                <div class="task-info">
+                    <h4>Connect &amp; Verify Remote</h4>
+                    <p>Run <code
+                            style="font-family:'Fira Code';color:var(--accent3)">git remote add origin &lt;URL&gt;</code>,
+                        then verify with <code
+                            style="font-family:'Fira Code';color:var(--accent3)">git remote -v</code>.</p>
+                </div>
+            </div>
+            <div class="task-item">
+                <div class="task-num">12</div>
+                <div class="task-info">
+                    <h4>Push to GitHub</h4>
+                    <p>Run <code style="font-family:'Fira Code';color:var(--accent3)">git push -u origin main</code>. 📸
+                        Screenshot your GitHub repository after push.</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="assign-part rv">
+            <h3>🔍 Part 4 — History &amp; Undo</h3>
+            <div class="task-item">
+                <div class="task-num">13</div>
+                <div class="task-info">
+                    <h4>View Full Commit History</h4>
+                    <p>Run <code style="font-family:'Fira Code';color:var(--accent3)">git log</code>. ❓ Write: (a) total
+                        number of commits, (b) latest commit message, (c) your commit author name.</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="rv"
+            style="background:var(--card);border:1px solid rgba(16,185,129,.3);border-radius:16px;padding:1.4rem;margin-top:1rem;">
+            <h3 style="font-size:.95rem;font-weight:700;color:var(--green);margin-bottom:.7rem;">📸 Submission Checklist
+            </h3>
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:.5rem;font-size:.8rem;color:var(--muted2);">
+                <div>☐ Screenshot of git init output</div>
+                <div>☐ Screenshot of git status (before &amp; after add)</div>
+                <div>☐ Screenshot of git log</div>
+                <div>☐ Screenshot of branch list</div>
+                <div>☐ Screenshot of GitHub repo after push</div>
+                <div>☐ Answers to ❓ questions written in notes</div>
+            </div>
+        </div>
+    </section>
+
+    <div class="div"></div>
+    <footer class="sfoot">KEC Workshop · Day 3 &nbsp;|&nbsp; <span>Git &amp; Version Control — Complete Guide</span>
+    </footer>
+
+    <script>
+        /* Reading progress */
+        window.addEventListener('scroll', () => {
+            const s = document.documentElement;
+            document.getElementById('rbar').style.width = (s.scrollTop / (s.scrollHeight - s.clientHeight) * 100) + '%';
+        });
+        /* Nav */
+        function goTo(id) { document.getElementById(id).scrollIntoView({ behavior: 'smooth' }); document.querySelectorAll('.nb').forEach(b => b.classList.remove('active')); event.target.classList.add('active'); }
+        /* Reveal */
+        const obs = new IntersectionObserver(es => { es.forEach(e => { if (e.isIntersecting) e.target.classList.add('vis'); }); }, { threshold: 0.08 });
+        document.querySelectorAll('.rv').forEach(el => obs.observe(el));
+        /* Toggle command cards */
+        function toggleCmd(header) {
+            const body = header.nextElementSibling;
+            const arr = header.querySelector('span:last-child');
+            const isOpen = body.classList.contains('open');
+            document.querySelectorAll('.cmd-body.open').forEach(b => { b.classList.remove('open'); b.previousElementSibling.querySelector('span:last-child').textContent = '▼'; });
+            if (!isOpen) { body.classList.add('open'); arr.textContent = '▲'; }
+        }
+    </script>
+</body>
+
+</html>

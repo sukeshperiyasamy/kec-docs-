@@ -1,0 +1,1189 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Raspberry Pi IoT Project – DHT11 + ThingSpeak + GitHub Pages</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: #f5f7fa;
+      color: #333;
+      line-height: 1.75;
+    }
+
+    /* ═══════ HERO ═══════ */
+    .hero {
+      background: linear-gradient(135deg, #e3f2fd, #bbdefb, #e8eaf6);
+      text-align: center;
+      padding: 70px 20px 50px;
+      position: relative;
+      overflow: hidden;
+      border-bottom: 3px solid #1976d2;
+    }
+    .hero::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(circle at 25% 60%, rgba(25,118,210,.06) 0%, transparent 55%),
+                  radial-gradient(circle at 75% 40%, rgba(25,118,210,.04) 0%, transparent 55%);
+      animation: heroPulse 10s ease-in-out infinite alternate;
+    }
+    @keyframes heroPulse { 0%{transform:scale(1)} 100%{transform:scale(1.04) rotate(1deg)} }
+    .hero::after {
+      content: '';
+      position: absolute;
+      bottom: 0; left: 0; right: 0;
+      height: 4px;
+      background: linear-gradient(90deg, #e91e63, #9c27b0, #1976d2, #4caf50, #e91e63);
+      background-size: 300% 100%;
+      animation: rainbowBar 4s linear infinite;
+    }
+    @keyframes rainbowBar { 0%{background-position:0% 0} 100%{background-position:300% 0} }
+    .hero h1 { font-size: 2.8rem; color: #0d47a1; position: relative; z-index: 1; }
+    .hero .sub { font-size: 1.15rem; color: #1565c0; margin-top: 8px; position: relative; z-index: 1; }
+    .hero .desc {
+      font-size: 1rem; color: #555; margin: 16px auto 0; max-width: 780px;
+      position: relative; z-index: 1;
+    }
+    .hero .tech-badge {
+      display: inline-block; margin-top: 20px; padding: 8px 24px;
+      background: rgba(25,118,210,.08);
+      border: 1px solid #90caf9; border-radius: 30px;
+      color: #1565c0; font-weight: 700; font-size: .95rem;
+      position: relative; z-index: 1;
+    }
+
+    /* ═══════ PAGE LINKS ═══════ */
+    .page-links {
+      display: flex; gap: 8px; justify-content: center; flex-wrap: wrap;
+      padding: 14px; background: #ffffff; border-bottom: 1px solid #e0e0e0;
+    }
+    .page-links a {
+      padding: 6px 18px; border-radius: 8px; text-decoration: none;
+      font-size: .9rem; color: #1976d2; border: 1px solid #90caf9; transition: .2s;
+    }
+    .page-links a:hover { background: #e3f2fd; color: #0d47a1; }
+    .page-links a.active { color: #fff; border-color: #1976d2; background: #1976d2; }
+
+    /* ═══════ NAV ═══════ */
+    .topnav {
+      background: #ffffff; border-bottom: 1px solid #e0e0e0;
+      padding: 10px 16px; display: flex; flex-wrap: wrap; gap: 6px;
+      justify-content: center; position: sticky; top: 0; z-index: 100;
+      box-shadow: 0 2px 8px rgba(0,0,0,.04);
+    }
+    .topnav a {
+      color: #666; text-decoration: none; padding: 6px 14px; border-radius: 8px;
+      font-size: .85rem; border: 1px solid transparent; transition: .2s;
+    }
+    .topnav a:hover, .topnav a.active { color: #1976d2; border-color: #90caf9; background: #e3f2fd; }
+
+    /* ═══════ CONTAINER ═══════ */
+    .container { max-width: 1100px; margin: auto; padding: 30px 20px 60px; }
+
+    /* ═══════ SECTION ═══════ */
+    .section {
+      margin-top: 50px; padding: 30px; background: #ffffff;
+      border: 1px solid #e0e0e0; border-radius: 16px; position: relative;
+      box-shadow: 0 2px 8px rgba(0,0,0,.04);
+    }
+    .section::before {
+      content: ''; position: absolute; top: 0; left: 0; width: 5px; height: 100%;
+      border-radius: 16px 0 0 16px;
+    }
+    .section.purple::before { background: linear-gradient(180deg, #9c27b0, #ce93d8); }
+    .section.blue::before   { background: linear-gradient(180deg, #1976d2, #64b5f6); }
+    .section.green::before  { background: linear-gradient(180deg, #4caf50, #81c784); }
+    .section.orange::before { background: linear-gradient(180deg, #ff9800, #ffb74d); }
+    .section.teal::before   { background: linear-gradient(180deg, #009688, #80cbc4); }
+    .section.red::before    { background: linear-gradient(180deg, #f44336, #ef9a9a); }
+    .section.pink::before   { background: linear-gradient(180deg, #e91e63, #f48fb1); }
+    .section h2 {
+      font-size: 1.7rem; color: #0d47a1; margin-bottom: 6px;
+      padding-bottom: 10px; border-bottom: 1px solid #e0e0e0;
+    }
+    .section h3 { font-size: 1.2rem; color: #1565c0; margin: 22px 0 8px; }
+    .section h4 { font-size: 1.05rem; color: #0277bd; margin: 14px 0 6px; }
+    .section p  { margin: 6px 0; color: #555; }
+
+    /* ═══════ TABLES ═══════ */
+    table { width: 100%; border-collapse: collapse; margin: 14px 0 18px; }
+    th, td { padding: 10px 14px; text-align: left; border: 1px solid #e0e0e0; }
+    th { background: #e3f2fd; color: #0d47a1; font-weight: 700; }
+    tr:nth-child(even) { background: #f5f7fa; }
+    tr:hover { background: #e8f0fe; }
+
+    /* ═══════ INFO BOXES ═══════ */
+    .info { padding: 14px 18px; border-radius: 10px; margin: 14px 0; border-left: 4px solid; }
+    .info.warn  { background: #fff8e1; border-color: #ff9800; color: #e65100; }
+    .info.tip   { background: #e8f5e9; border-color: #4caf50; color: #2e7d32; }
+    .info.note  { background: #e3f2fd; border-color: #2196f3; color: #1565c0; }
+    .info.alert { background: #ffebee; border-color: #f44336; color: #c62828; }
+    .info.purple-note { background: #f3e5f5; border-color: #9c27b0; color: #6a1b9a; }
+
+    /* ═══════ CODE BLOCK ═══════ */
+    .code {
+      background: #1e293b; border: 1px solid #334155; border-radius: 10px;
+      padding: 18px 20px; overflow-x: auto; font-family: 'Consolas','Courier New',monospace;
+      font-size: .9rem; line-height: 1.6; color: #a5d6a7; margin: 12px 0 18px;
+      position: relative;
+    }
+    .code .cp {
+      position: absolute; top: 10px; right: 10px; background: rgba(144,202,249,.15);
+      border: 1px solid #64b5f6; color: #90caf9; padding: 4px 14px;
+      border-radius: 6px; cursor: pointer; font-size: .78rem;
+    }
+    .code .cp:hover { background: rgba(144,202,249,.25); }
+    .code .label {
+      position: absolute; top: 10px; left: 14px;
+      font-size: .72rem; color: #94a3b8; text-transform: uppercase; letter-spacing: 1px;
+    }
+    .hl-b { color: #b39ddb; } .hl-g { color: #81c784; } .hl-o { color: #ffb74d; }
+    .hl-s { color: #ce93d8; } .hl-c { color: #616161; font-style: italic; }
+    .hl-k { color: #4fc3f7; } .hl-f { color: #f48fb1; }
+
+    /* ═══════ FLOW DIAGRAM ═══════ */
+    .flow-diagram {
+      display: flex; flex-wrap: wrap; align-items: center; justify-content: center;
+      gap: 10px; margin: 20px 0; padding: 24px; background: #f0f4f8;
+      border: 1px solid #e0e0e0; border-radius: 14px;
+    }
+    .flow-box {
+      padding: 12px 20px; background: #ffffff;
+      border: 1px solid #bbdefb; border-radius: 10px;
+      color: #333; font-weight: 600; font-size: .92rem; text-align: center;
+      min-width: 140px; box-shadow: 0 2px 6px rgba(0,0,0,.05);
+    }
+    .flow-box .flow-icon { font-size: 1.5rem; display: block; margin-bottom: 4px; }
+    .flow-box.highlight { border-color: #1976d2; background: #e3f2fd; }
+    .flow-arrow { color: #1976d2; font-size: 1.6rem; font-weight: 800; }
+
+    /* ═══════ STEPS ═══════ */
+    .steps { counter-reset: st; margin: 14px 0; }
+    .step {
+      display: flex; gap: 14px; align-items: flex-start; padding: 14px 0;
+      border-bottom: 1px solid #e0e0e0;
+    }
+    .step:last-child { border: none; }
+    .step::before {
+      counter-increment: st; content: counter(st);
+      flex-shrink: 0; width: 36px; height: 36px; display: flex;
+      align-items: center; justify-content: center;
+      background: #e3f2fd; border: 2px solid #1976d2; border-radius: 50%;
+      color: #1976d2; font-weight: 800; font-size: .95rem;
+    }
+
+    /* ═══════ TECH STACK GRID ═══════ */
+    .stack-grid {
+      display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 14px; margin: 16px 0;
+    }
+    .stack-item {
+      background: #ffffff; border: 1px solid #e0e0e0; border-radius: 10px;
+      padding: 16px; text-align: center; box-shadow: 0 2px 6px rgba(0,0,0,.04);
+    }
+    .stack-item .st-icon { font-size: 2rem; display: block; margin-bottom: 6px; }
+    .stack-item .st-label { color: #1565c0; font-weight: 700; font-size: 1rem; }
+    .stack-item .st-desc { color: #777; font-size: .88rem; margin-top: 4px; }
+
+    /* ═══════ FOLDER TREE ═══════ */
+    .tree {
+      background: #1e293b; border: 1px solid #334155; border-radius: 10px;
+      padding: 18px 22px; font-family: 'Consolas',monospace; font-size: .92rem;
+      color: #b39ddb; margin: 12px 0; line-height: 1.8;
+    }
+    .tree .folder { color: #ffb74d; font-weight: 700; }
+    .tree .file { color: #81c784; }
+    .tree .comment { color: #616161; }
+
+    /* ═══════ OUTCOME CHIPS ═══════ */
+    .outcome { display: flex; flex-wrap: wrap; gap: 10px; margin: 14px 0; }
+    .out-chip {
+      padding: 6px 16px; background: #e3f2fd; border: 1px solid #90caf9;
+      border-radius: 20px; color: #1565c0; font-size: .9rem; font-weight: 600;
+    }
+
+    /* ═══════ COMP CHIPS ═══════ */
+    .comp-chips { display: flex; flex-wrap: wrap; gap: 8px; margin: 8px 0 14px; }
+    .comp-chip {
+      padding: 4px 14px; background: #e3f2fd; border: 1px solid #90caf9;
+      border-radius: 20px; font-size: .82rem; color: #1565c0;
+    }
+
+    /* ═══════ WIRING DIAGRAM ═══════ */
+    .wiring {
+      background: #1e293b; border: 1px solid #334155; border-radius: 10px;
+      padding: 20px; font-family: monospace; white-space: pre; color: #b39ddb;
+      overflow-x: auto; margin: 12px 0; font-size: .88rem; line-height: 1.6;
+    }
+
+    /* ═══════ BIG NUMBER ═══════ */
+    .step-header {
+      display: flex; align-items: center; gap: 16px; margin-bottom: 10px;
+    }
+    .step-num {
+      flex-shrink: 0; width: 52px; height: 52px; border-radius: 14px;
+      background: #e3f2fd;
+      border: 2px solid #1976d2; display: flex; align-items: center;
+      justify-content: center; font-size: 1.4rem; font-weight: 900; color: #1976d2;
+    }
+
+    /* ═══════ HTML PREVIEW ═══════ */
+    .preview-frame {
+      background: #fff; border-radius: 10px; overflow: hidden; margin: 14px 0;
+      border: 2px solid #e0e0e0;
+    }
+    .preview-bar {
+      background: #e0e0e0; padding: 8px 14px; display: flex; align-items: center; gap: 8px;
+    }
+    .preview-dot { width: 10px; height: 10px; border-radius: 50%; }
+    .preview-dot.r { background: #f44336; } .preview-dot.y { background: #ff9800; } .preview-dot.g { background: #4caf50; }
+    .preview-url { color: #888; font-size: .8rem; margin-left: 10px; font-family: monospace; }
+    .preview-body { padding: 30px; text-align: center; color: #333; font-family: Arial, sans-serif; }
+    .preview-body h2 { color: #222; font-size: 1.3rem; margin-bottom: 16px; }
+    .preview-cards { display: flex; justify-content: center; gap: 20px; flex-wrap: wrap; }
+    .preview-card {
+      display: inline-block; padding: 20px; width: 200px; border-radius: 10px;
+      box-shadow: 0 0 10px #ccc; background: #fff;
+    }
+    .preview-card h3 { font-size: 1.1rem; color: #333; margin-bottom: 8px; }
+    .preview-card p { font-size: 1.8rem; font-weight: 700; color: #e91e63; }
+
+    /* ═══════ CHECKLIST ═══════ */
+    .checklist { list-style: none; padding: 0; margin: 14px 0; }
+    .checklist li {
+      padding: 10px 14px; border-bottom: 1px solid #e0e0e0;
+      display: flex; align-items: center; gap: 10px;
+    }
+    .checklist li:last-child { border: none; }
+    .check-icon { color: #4caf50; font-size: 1.2rem; flex-shrink: 0; }
+    .checklist li span { color: #555; }
+
+    /* ═══════ SCROLL TOP ═══════ */
+    /* ═══════ DOWNLOAD BTN ═══════ */
+    .download-btn {
+      display: inline-flex; align-items: center; gap: 10px;
+      margin-top: 20px; padding: 14px 32px;
+      background: linear-gradient(135deg, #1565c0, #1976d2);
+      color: #fff; border: none; border-radius: 12px;
+      font-size: 1.05rem; font-weight: 700; cursor: pointer;
+      text-decoration: none; position: relative; z-index: 1;
+      box-shadow: 0 4px 16px rgba(21,101,192,.35);
+      transition: transform .2s, box-shadow .2s;
+    }
+    .download-btn:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 8px 24px rgba(21,101,192,.45);
+      background: linear-gradient(135deg, #0d47a1, #1565c0);
+    }
+    .download-btn:active { transform: translateY(0); }
+    .download-btn i { font-size: 1.2rem; }
+
+    .scroll-top {
+      position: fixed; bottom: 30px; right: 30px; width: 48px; height: 48px;
+      background: #1976d2; color: #fff; border: none; border-radius: 50%;
+      font-size: 1.5rem; cursor: pointer; display: none; z-index: 999;
+      box-shadow: 0 4px 16px rgba(25,118,210,.3); transition: transform .2s;
+    }
+    .scroll-top:hover { transform: scale(1.15); }
+
+    /* ═══════ FOOTER ═══════ */
+    footer { text-align: center; padding: 30px; color: #888; border-top: 1px solid #e0e0e0; }
+
+    /* ═══════ RESPONSIVE ═══════ */
+    @media (max-width: 640px) {
+      .hero h1 { font-size: 1.9rem; }
+      .section { padding: 18px 14px; }
+      .topnav a { font-size: .76rem; padding: 5px 8px; }
+      .flow-diagram { flex-direction: column; }
+      .flow-arrow { transform: rotate(90deg); }
+      .stack-grid { grid-template-columns: 1fr 1fr; }
+      .preview-cards { flex-direction: column; align-items: center; }
+    }
+  </style>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/FileSaver.js/2.0.5/FileSaver.min.js"></script>
+</head>
+<body>
+
+<!-- ═══════════ HERO ═══════════ -->
+<header class="hero">
+  <h1>🍇 Raspberry Pi IoT Project</h1>
+  <p class="sub">DHT11 + Raspberry Pi + ThingSpeak + GitHub Pages</p>
+  <p class="desc">A fully standalone IoT project — sensor reads temperature &amp; humidity, Raspberry Pi sends data to the cloud, and a live dashboard on GitHub Pages lets you monitor from <strong>anywhere in the world</strong>.</p>
+  <div class="tech-badge">Sensor → Raspberry Pi → ThingSpeak → GitHub Pages → Any Device</div>
+  <button class="download-btn" onclick="downloadProjectFiles()">
+    <i class="fa-solid fa-download"></i> Download Project Code
+  </button>
+</header>
+
+<!-- ═══════════ PAGE LINKS ═══════════ -->
+<div class="page-links">
+  <a href="iot.html">🌐 IoT</a>
+  <a href="sensor.html">📡 Sensors</a>
+  <a href="esp32.html">⚡ ESP32</a>
+  <a href="arduino.html">📟 Arduino</a>
+  <a href="project.html">🛠️ Projects</a>
+  <a href="raspproject.html" class="active">🍇 Raspberry Pi Project</a>
+  <a href="Raspberrypi.html">🖥️ Raspberry Pi</a>
+  <a href="kalilinux.html">💀 Kali Linux</a>
+</div>
+
+<!-- ═══════════ NAV ═══════════ -->
+<nav class="topnav">
+  <a href="#sec-overview">Overview</a>
+  <a href="#sec-stack">Tech Stack</a>
+  <a href="#sec-step1">Step 1: Hardware</a>
+  <a href="#sec-step2">Step 2: Software</a>
+  <a href="#sec-step3">Step 3: Folders</a>
+  <a href="#sec-step4">Step 4: ThingSpeak</a>
+  <a href="#sec-step5">Step 5: Python</a>
+  <a href="#sec-step6">Step 6: Run</a>
+  <a href="#sec-step7">Step 7: Dashboard</a>
+  <a href="#sec-step8">Step 8: GitHub Pages</a>
+  <a href="#sec-step9">Step 9: Connect</a>
+  <a href="#sec-step10">Step 10: Data Flow</a>
+  <a href="#sec-final">Final</a>
+</nav>
+
+<div class="container">
+
+<!-- ════════════════════════════════════════════════════════ -->
+<!-- OVERVIEW                                               -->
+<!-- ════════════════════════════════════════════════════════ -->
+<div class="section purple" id="sec-overview">
+  <h2>📋 Project Overview</h2>
+  <p>This is a <strong>fully standalone IoT project</strong> where:</p>
+  <ul style="list-style:none;padding:0;margin:12px 0;">
+    <li style="padding:4px 0;">✅ <strong>DHT11 sensor</strong> is connected to Raspberry Pi</li>
+    <li style="padding:4px 0;">✅ <strong>Raspberry Pi</strong> sends data to ThingSpeak (cloud)</li>
+    <li style="padding:4px 0;">✅ A <strong>GitHub Pages website</strong> shows live temperature &amp; humidity</li>
+    <li style="padding:4px 0;">✅ You can <strong>access data from anywhere</strong> using a link</li>
+  </ul>
+
+  <h3>🔄 Complete Data Flow</h3>
+  <div class="flow-diagram">
+    <div class="flow-box">
+      <span class="flow-icon">🌡️</span>
+      DHT11 Sensor
+    </div>
+    <span class="flow-arrow">→</span>
+    <div class="flow-box highlight">
+      <span class="flow-icon">🍇</span>
+      Raspberry Pi<br><small style="color:#777;">(Python Script)</small>
+    </div>
+    <span class="flow-arrow">→</span>
+    <div class="flow-box">
+      <span class="flow-icon">☁️</span>
+      ThingSpeak<br><small style="color:#777;">(Write API Key)</small>
+    </div>
+    <span class="flow-arrow">→</span>
+    <div class="flow-box">
+      <span class="flow-icon">🌐</span>
+      GitHub Pages<br><small style="color:#777;">(Read API Key)</small>
+    </div>
+    <span class="flow-arrow">→</span>
+    <div class="flow-box">
+      <span class="flow-icon">📱</span>
+      Any Device<br><small style="color:#777;">(Phone/PC/Tablet)</small>
+    </div>
+  </div>
+</div>
+
+<!-- ════════════════════════════════════════════════════════ -->
+<!-- TECHNOLOGY STACK                                        -->
+<!-- ════════════════════════════════════════════════════════ -->
+<div class="section blue" id="sec-stack">
+  <h2>🧠 Technology Stack (Keep This in Mind)</h2>
+  <div class="stack-grid">
+    <div class="stack-item">
+      <span class="st-icon">🔧</span>
+      <span class="st-label">Hardware</span>
+      <span class="st-desc">Raspberry Pi + DHT11</span>
+    </div>
+    <div class="stack-item">
+      <span class="st-icon">🐍</span>
+      <span class="st-label">Backend (Device Side)</span>
+      <span class="st-desc">Python</span>
+    </div>
+    <div class="stack-item">
+      <span class="st-icon">☁️</span>
+      <span class="st-label">Cloud</span>
+      <span class="st-desc">ThingSpeak</span>
+    </div>
+    <div class="stack-item">
+      <span class="st-icon">🌐</span>
+      <span class="st-label">Frontend Hosting</span>
+      <span class="st-desc">GitHub Pages</span>
+    </div>
+    <div class="stack-item">
+      <span class="st-icon">📡</span>
+      <span class="st-label">Protocol</span>
+      <span class="st-desc">HTTP + REST API</span>
+    </div>
+  </div>
+</div>
+
+<!-- ════════════════════════════════════════════════════════ -->
+<!-- STEP 1: HARDWARE CONNECTION                            -->
+<!-- ════════════════════════════════════════════════════════ -->
+<div class="section orange" id="sec-step1">
+  <div class="step-header">
+    <div class="step-num">1</div>
+    <h2>🔌 Hardware Connection (VERY IMPORTANT)</h2>
+  </div>
+
+  <h3>1️⃣ DHT11 Pin Details</h3>
+  <table>
+    <tr><th>DHT11 Pin</th><th>Meaning</th></tr>
+    <tr><td><strong>VCC</strong></td><td>Power (3.3V or 5V)</td></tr>
+    <tr><td><strong>DATA</strong></td><td>Data output</td></tr>
+    <tr><td><strong>GND</strong></td><td>Ground</td></tr>
+  </table>
+  <div class="info tip">
+    <strong>👍 Tip:</strong> If you're using a <strong>DHT11 module</strong> (the one on a small PCB), the pull-up resistor is already present — no need to add one externally.
+  </div>
+
+  <h3>2️⃣ Raspberry Pi Pins to Use</h3>
+  <table>
+    <tr><th>DHT11 Pin</th><th>Raspberry Pi Pin</th><th>Physical Pin #</th></tr>
+    <tr><td><strong>VCC</strong></td><td>3.3V</td><td>Pin 1</td></tr>
+    <tr><td><strong>DATA</strong></td><td>GPIO4</td><td>Pin 7</td></tr>
+    <tr><td><strong>GND</strong></td><td>GND</td><td>Pin 6</td></tr>
+  </table>
+  <div class="info purple-note">
+    📌 We use <strong>GPIO4</strong> because it's stable and commonly supported by sensor libraries.
+  </div>
+
+  <h3>🔌 Wiring Diagram</h3>
+  <div class="wiring">
+  Raspberry Pi                       DHT11 Module
+  ┌──────────────────┐              ┌─────────┐
+  │                  │              │         │
+  │  Pin 1 (3.3V) ──┼──────────────┤  VCC    │
+  │                  │              │         │
+  │  Pin 7 (GPIO4) ─┼──────────────┤  DATA   │
+  │                  │              │         │
+  │  Pin 6 (GND) ───┼──────────────┤  GND    │
+  │                  │              │         │
+  └──────────────────┘              └─────────┘
+
+  📌 If bare DHT11 (4-pin): Add 10kΩ pull-up between VCC and DATA
+  📌 If DHT11 module (3-pin): No resistor needed
+  </div>
+
+  <h3>🔧 Components Required</h3>
+  <div class="comp-chips">
+    <span class="comp-chip">Raspberry Pi (any model with GPIO)</span>
+    <span class="comp-chip">DHT11 Sensor / Module</span>
+    <span class="comp-chip">Jumper Wires (Female-to-Female)</span>
+    <span class="comp-chip">Breadboard (optional)</span>
+    <span class="comp-chip">MicroSD Card (with Raspberry Pi OS)</span>
+    <span class="comp-chip">Power Supply (5V/3A for Pi)</span>
+    <span class="comp-chip">WiFi Connection</span>
+  </div>
+</div>
+
+<!-- ════════════════════════════════════════════════════════ -->
+<!-- STEP 2: SOFTWARE SETUP                                 -->
+<!-- ════════════════════════════════════════════════════════ -->
+<div class="section green" id="sec-step2">
+  <div class="step-header">
+    <div class="step-num">2</div>
+    <h2>💻 Prepare Raspberry Pi (Software Setup)</h2>
+  </div>
+
+  <p>Open the <strong>terminal</strong> on your Raspberry Pi and run these commands:</p>
+
+  <h3>Update System Packages</h3>
+  <div class="code"><button class="cp" onclick="copyCode(this)">📋 Copy</button><span class="label">Terminal</span><pre>
+<span class="hl-g">sudo</span> apt update
+<span class="hl-g">sudo</span> apt install python3-pip -y</pre></div>
+
+  <h3>Install Required Python Libraries</h3>
+  <div class="code"><button class="cp" onclick="copyCode(this)">📋 Copy</button><span class="label">Terminal</span><pre>
+pip3 install adafruit-circuitpython-dht requests
+<span class="hl-g">sudo</span> apt install libgpiod2 -y</pre></div>
+
+  <h3>What Each Package Does</h3>
+  <table>
+    <tr><th>Package</th><th>Purpose</th></tr>
+    <tr><td><strong>adafruit-circuitpython-dht</strong></td><td>Library to read DHT11/DHT22 sensor data</td></tr>
+    <tr><td><strong>requests</strong></td><td>Python library to make HTTP requests (send data to ThingSpeak)</td></tr>
+    <tr><td><strong>libgpiod2</strong></td><td>Low-level GPIO library required by Adafruit DHT library</td></tr>
+  </table>
+
+  <div class="info tip">
+    ✅ <strong>Now Pi is ready</strong> to read the sensor and send data online.
+  </div>
+</div>
+
+<!-- ════════════════════════════════════════════════════════ -->
+<!-- STEP 3: PROJECT FOLDER                                 -->
+<!-- ════════════════════════════════════════════════════════ -->
+<div class="section blue" id="sec-step3">
+  <div class="step-header">
+    <div class="step-num">3</div>
+    <h2>📁 Create Project Folder &amp; File Structure</h2>
+  </div>
+
+  <h3>Folder Structure</h3>
+  <div class="tree">
+<span class="folder">iot-project/</span>
+│── <span class="file">send_to_thingspeak.py</span>   <span class="comment">← Python file (device side)</span>
+│── <span class="file">README.md</span>               <span class="comment">← (optional documentation)</span>
+  </div>
+
+  <h3>Create the Folder</h3>
+  <div class="code"><button class="cp" onclick="copyCode(this)">📋 Copy</button><span class="label">Terminal</span><pre>
+mkdir iot-project
+cd iot-project</pre></div>
+</div>
+
+<!-- ════════════════════════════════════════════════════════ -->
+<!-- STEP 4: THINGSPEAK ACCOUNT                             -->
+<!-- ════════════════════════════════════════════════════════ -->
+<div class="section purple" id="sec-step4">
+  <div class="step-header">
+    <div class="step-num">4</div>
+    <h2>☁️ Create ThingSpeak Account (DO THIS FIRST)</h2>
+  </div>
+
+  <div class="info purple-note">
+    📌 <strong>ThingSpeak</strong> is your cloud database. It stores sensor data and provides API access for reading/writing.
+  </div>
+
+  <h3>Steps to Set Up ThingSpeak</h3>
+  <div class="steps">
+    <div class="step">
+      <div>
+        <strong>Go to ThingSpeak</strong>
+        <p>Visit 👉 <a href="https://thingspeak.com" target="_blank" style="color:#1976d2;">https://thingspeak.com</a></p>
+      </div>
+    </div>
+    <div class="step">
+      <div>
+        <strong>Sign Up / Log In</strong>
+        <p>Create a free account (you can use your MathWorks account)</p>
+      </div>
+    </div>
+    <div class="step">
+      <div>
+        <strong>Create a New Channel</strong>
+        <p>Click <strong>"New Channel"</strong> button</p>
+      </div>
+    </div>
+    <div class="step">
+      <div>
+        <strong>Configure Fields</strong>
+        <p>Fill in the channel details:</p>
+        <table style="margin-top:8px;">
+          <tr><th>Field</th><th>Name</th></tr>
+          <tr><td>Field 1</td><td><strong>Temperature</strong></td></tr>
+          <tr><td>Field 2</td><td><strong>Humidity</strong></td></tr>
+        </table>
+      </div>
+    </div>
+    <div class="step">
+      <div>
+        <strong>Save the Channel</strong>
+        <p>Click <strong>Save Channel</strong></p>
+      </div>
+    </div>
+    <div class="step">
+      <div>
+        <strong>Get Your API Keys</strong>
+        <p>Go to the <strong>API Keys</strong> tab. You will get:</p>
+      </div>
+    </div>
+  </div>
+
+  <h3>API Keys You Need</h3>
+  <table>
+    <tr><th>Key</th><th>Purpose</th><th>Example</th></tr>
+    <tr><td><strong>Channel ID</strong></td><td>Unique identifier for your channel</td><td>3272751</td></tr>
+    <tr><td><strong>Write API Key</strong></td><td>Used by Raspberry Pi to SEND data</td><td>ABC123XYZ...</td></tr>
+    <tr><td><strong>Read API Key</strong></td><td>Used by website to FETCH data</td><td>DEF456UVW...</td></tr>
+  </table>
+
+  <div class="info warn">
+    ⚠️ <strong>Keep your Write API Key secret!</strong> Only the Read API Key should be used in public-facing code (HTML).
+  </div>
+</div>
+
+<!-- ════════════════════════════════════════════════════════ -->
+<!-- STEP 5: PYTHON FILE                                    -->
+<!-- ════════════════════════════════════════════════════════ -->
+<div class="section green" id="sec-step5">
+  <div class="step-header">
+    <div class="step-num">5</div>
+    <h2>🐍 Create Python File (Send Data to Cloud)</h2>
+  </div>
+
+  <h3>Create the File</h3>
+  <div class="code"><button class="cp" onclick="copyCode(this)">📋 Copy</button><span class="label">Terminal</span><pre>
+nano send_to_thingspeak.py</pre></div>
+
+  <h3>✅ FINAL Python Code</h3>
+  <div class="code"><button class="cp" onclick="copyCode(this)">📋 Copy</button><span class="label">Python — send_to_thingspeak.py</span><pre>
+<span class="hl-k">import</span> time
+<span class="hl-k">import</span> requests
+<span class="hl-k">import</span> board
+<span class="hl-k">import</span> adafruit_dht
+
+<span class="hl-c"># ─── Configuration ───</span>
+WRITE_API_KEY = <span class="hl-s">"YOUR_WRITE_API_KEY"</span>
+THINGSPEAK_URL = <span class="hl-s">"https://api.thingspeak.com/update"</span>
+
+<span class="hl-c"># ─── Initialize DHT11 on GPIO4 ───</span>
+dht = adafruit_dht.<span class="hl-g">DHT11</span>(board.D4)  <span class="hl-c"># GPIO4</span>
+
+<span class="hl-k">while</span> <span class="hl-b">True</span>:
+    <span class="hl-k">try</span>:
+        temperature = dht.temperature
+        humidity = dht.humidity
+
+        <span class="hl-k">if</span> temperature <span class="hl-k">is not</span> <span class="hl-b">None</span> <span class="hl-k">and</span> humidity <span class="hl-k">is not</span> <span class="hl-b">None</span>:
+            payload = {
+                <span class="hl-s">"api_key"</span>: WRITE_API_KEY,
+                <span class="hl-s">"field1"</span>: temperature,
+                <span class="hl-s">"field2"</span>: humidity
+            }
+
+            requests.<span class="hl-g">post</span>(THINGSPEAK_URL, data=payload)
+            <span class="hl-g">print</span>(<span class="hl-s">f"Sent → Temp: </span>{temperature}<span class="hl-s">°C  Humidity: </span>{humidity}<span class="hl-s">%"</span>)
+
+    <span class="hl-k">except</span> <span class="hl-b">Exception</span> <span class="hl-k">as</span> e:
+        <span class="hl-g">print</span>(<span class="hl-s">"Sensor error:"</span>, e)
+
+    time.<span class="hl-g">sleep</span>(<span class="hl-o">15</span>)  <span class="hl-c"># ThingSpeak minimum interval</span></pre></div>
+
+  <h3>Code Explanation</h3>
+  <table>
+    <tr><th>Line / Block</th><th>What It Does</th></tr>
+    <tr><td><code>import adafruit_dht</code></td><td>Imports the DHT sensor library</td></tr>
+    <tr><td><code>board.D4</code></td><td>Refers to GPIO4 on Raspberry Pi</td></tr>
+    <tr><td><code>dht.temperature</code></td><td>Reads the current temperature in °C</td></tr>
+    <tr><td><code>dht.humidity</code></td><td>Reads the current humidity in %</td></tr>
+    <tr><td><code>requests.post(...)</code></td><td>Sends data to ThingSpeak via HTTP POST</td></tr>
+    <tr><td><code>payload</code></td><td>Dictionary with API key + field values</td></tr>
+    <tr><td><code>time.sleep(15)</code></td><td>Waits 15 seconds (ThingSpeak free tier minimum)</td></tr>
+    <tr><td><code>try/except</code></td><td>Catches sensor read errors (common with DHT11)</td></tr>
+  </table>
+
+  <h3>Save &amp; Exit</h3>
+  <div class="info note">
+    <strong>In nano editor:</strong><br>
+    Save → <kbd>Ctrl</kbd> + <kbd>O</kbd> then press <kbd>Enter</kbd><br>
+    Exit → <kbd>Ctrl</kbd> + <kbd>X</kbd>
+  </div>
+</div>
+
+<!-- ════════════════════════════════════════════════════════ -->
+<!-- STEP 6: RUN SCRIPT                                     -->
+<!-- ════════════════════════════════════════════════════════ -->
+<div class="section teal" id="sec-step6">
+  <div class="step-header">
+    <div class="step-num">6</div>
+    <h2>▶️ Run Python Script</h2>
+  </div>
+
+  <h3>Execute the Script</h3>
+  <div class="code"><button class="cp" onclick="copyCode(this)">📋 Copy</button><span class="label">Terminal</span><pre>
+python3 send_to_thingspeak.py</pre></div>
+
+  <h3>Expected Output</h3>
+  <div class="code"><span class="label">Output</span><pre>
+<span class="hl-g">Sent → Temp: 28°C  Humidity: 64%</span>
+<span class="hl-g">Sent → Temp: 28°C  Humidity: 63%</span>
+<span class="hl-g">Sent → Temp: 29°C  Humidity: 62%</span>
+<span class="hl-c">... (every 15 seconds)</span></pre></div>
+
+  <h3>Verify on ThingSpeak</h3>
+  <div class="steps">
+    <div class="step"><div><strong>Go to your ThingSpeak Channel</strong></div></div>
+    <div class="step"><div><strong>Check the charts</strong> — you should see data points appearing</div></div>
+    <div class="step"><div><strong>Entries count will increase</strong> 📈 with each reading</div></div>
+  </div>
+
+  <div class="info tip">
+    👉 Now refresh ThingSpeak → Entries will increase 📈<br>
+    <strong>This confirms hardware + cloud is working!</strong>
+  </div>
+
+  <div class="info warn">
+    ⚠️ <strong>If you see "Sensor error"</strong> — this is normal occasionally. DHT11 sometimes fails to read. The <code>try/except</code> block handles this gracefully. The script continues running.
+  </div>
+</div>
+
+<!-- ════════════════════════════════════════════════════════ -->
+<!-- STEP 7: HTML DASHBOARD                                 -->
+<!-- ════════════════════════════════════════════════════════ -->
+<div class="section pink" id="sec-step7">
+  <div class="step-header">
+    <div class="step-num">7</div>
+    <h2>🌐 Create HTML Dashboard (Frontend)</h2>
+  </div>
+
+  <p>Now we build the <strong>viewer side</strong>. This HTML page fetches data from ThingSpeak using the <strong>Read API Key</strong> and displays it live.</p>
+
+  <h3>1️⃣ Create GitHub Repository</h3>
+  <div class="steps">
+    <div class="step"><div><strong>Go to GitHub</strong> → <a href="https://github.com/new" target="_blank" style="color:#1976d2;">github.com/new</a></div></div>
+    <div class="step"><div><strong>Repository Name:</strong> <code style="color:#1976d2;">iot-dashboard</code></div></div>
+    <div class="step"><div>Set to <strong>Public</strong></div></div>
+    <div class="step"><div>Click <strong>Create Repository</strong></div></div>
+  </div>
+
+  <h3>2️⃣ Create index.html</h3>
+  <p>Create a new file called <code>index.html</code> in the repository and paste this code:</p>
+
+  <div class="code"><button class="cp" onclick="copyCode(this)">📋 Copy</button><span class="label">HTML — index.html</span><pre>
+<span class="hl-b">&lt;!DOCTYPE html&gt;</span>
+<span class="hl-b">&lt;html&gt;</span>
+<span class="hl-b">&lt;head&gt;</span>
+  <span class="hl-b">&lt;title&gt;</span>IoT Temperature Monitoring<span class="hl-b">&lt;/title&gt;</span>
+  <span class="hl-b">&lt;style&gt;</span>
+    <span class="hl-k">body</span> { <span class="hl-g">font-family</span>: Arial; <span class="hl-g">text-align</span>: center; }
+    <span class="hl-k">.card</span> {
+      <span class="hl-g">display</span>: inline-block;
+      <span class="hl-g">padding</span>: 20px;
+      <span class="hl-g">margin</span>: 15px;
+      <span class="hl-g">border-radius</span>: 10px;
+      <span class="hl-g">box-shadow</span>: 0 0 10px #aaa;
+      <span class="hl-g">width</span>: 220px;
+    }
+  <span class="hl-b">&lt;/style&gt;</span>
+<span class="hl-b">&lt;/head&gt;</span>
+<span class="hl-b">&lt;body&gt;</span>
+
+<span class="hl-b">&lt;h1&gt;</span>🌍 IoT Temperature &amp; Humidity Dashboard<span class="hl-b">&lt;/h1&gt;</span>
+
+<span class="hl-b">&lt;div</span> class=<span class="hl-s">"card"</span><span class="hl-b">&gt;</span>
+  <span class="hl-b">&lt;h2&gt;</span>🌡 Temperature<span class="hl-b">&lt;/h2&gt;</span>
+  <span class="hl-b">&lt;p</span> id=<span class="hl-s">"temp"</span><span class="hl-b">&gt;</span>-- °C<span class="hl-b">&lt;/p&gt;</span>
+<span class="hl-b">&lt;/div&gt;</span>
+
+<span class="hl-b">&lt;div</span> class=<span class="hl-s">"card"</span><span class="hl-b">&gt;</span>
+  <span class="hl-b">&lt;h2&gt;</span>💧 Humidity<span class="hl-b">&lt;/h2&gt;</span>
+  <span class="hl-b">&lt;p</span> id=<span class="hl-s">"hum"</span><span class="hl-b">&gt;</span>-- %<span class="hl-b">&lt;/p&gt;</span>
+<span class="hl-b">&lt;/div&gt;</span>
+
+<span class="hl-b">&lt;script&gt;</span>
+<span class="hl-k">const</span> url =
+  <span class="hl-s">"https://api.thingspeak.com/channels/<span class="hl-o">3272751</span>/feeds.json?api_key=<span class="hl-o">YOUR_READ_API_KEY</span>&amp;results=1"</span>;
+
+<span class="hl-k">function</span> <span class="hl-g">fetchData</span>() {
+  <span class="hl-g">fetch</span>(url)
+    .<span class="hl-g">then</span>(res =&gt; res.<span class="hl-g">json</span>())
+    .<span class="hl-g">then</span>(data =&gt; {
+      <span class="hl-k">const</span> feed = data.feeds[<span class="hl-o">0</span>];
+      document.<span class="hl-g">getElementById</span>(<span class="hl-s">"temp"</span>).innerText = feed.field1 + <span class="hl-s">" °C"</span>;
+      document.<span class="hl-g">getElementById</span>(<span class="hl-s">"hum"</span>).innerText = feed.field2 + <span class="hl-s">" %"</span>;
+    });
+}
+
+<span class="hl-g">fetchData</span>();
+<span class="hl-g">setInterval</span>(<span class="hl-g">fetchData</span>, <span class="hl-o">5000</span>);  <span class="hl-c">// Refresh every 5 seconds</span>
+<span class="hl-b">&lt;/script&gt;</span>
+
+<span class="hl-b">&lt;/body&gt;</span>
+<span class="hl-b">&lt;/html&gt;</span></pre></div>
+
+  <h3>Code Explanation</h3>
+  <table>
+    <tr><th>Part</th><th>What It Does</th></tr>
+    <tr><td><code>fetch(url)</code></td><td>Makes HTTP GET request to ThingSpeak REST API</td></tr>
+    <tr><td><code>feeds.json?results=1</code></td><td>Gets only the latest 1 entry from the channel</td></tr>
+    <tr><td><code>feed.field1</code></td><td>Temperature value from ThingSpeak Field 1</td></tr>
+    <tr><td><code>feed.field2</code></td><td>Humidity value from ThingSpeak Field 2</td></tr>
+    <tr><td><code>setInterval(fetchData, 5000)</code></td><td>Auto-refreshes data every 5 seconds</td></tr>
+  </table>
+
+  <div class="info warn">
+    ⚠️ <strong>Replace in the code:</strong><br>
+    • <code>3272751</code> → Your actual <strong>Channel ID</strong><br>
+    • <code>YOUR_READ_API_KEY</code> → Your actual <strong>Read API Key</strong>
+  </div>
+
+  <h3>📱 Dashboard Preview</h3>
+  <div class="preview-frame">
+    <div class="preview-bar">
+      <span class="preview-dot r"></span>
+      <span class="preview-dot y"></span>
+      <span class="preview-dot g"></span>
+      <span class="preview-url">https://yourusername.github.io/iot-dashboard/</span>
+    </div>
+    <div class="preview-body">
+      <h2>🌍 IoT Temperature &amp; Humidity Dashboard</h2>
+      <div class="preview-cards">
+        <div class="preview-card">
+          <h3>🌡 Temperature</h3>
+          <p>28 °C</p>
+        </div>
+        <div class="preview-card">
+          <h3>💧 Humidity</h3>
+          <p style="color:#2196f3;">64 %</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <p>Commit this <code>index.html</code> file to your GitHub repository.</p>
+</div>
+
+<!-- ════════════════════════════════════════════════════════ -->
+<!-- STEP 8: GITHUB PAGES                                   -->
+<!-- ════════════════════════════════════════════════════════ -->
+<div class="section blue" id="sec-step8">
+  <div class="step-header">
+    <div class="step-num">8</div>
+    <h2>🚀 Enable GitHub Pages</h2>
+  </div>
+
+  <div class="steps">
+    <div class="step"><div><strong>Go to your repository</strong> on GitHub</div></div>
+    <div class="step"><div>Click <strong>Settings</strong> (top tab)</div></div>
+    <div class="step"><div>In the left sidebar, click <strong>Pages</strong></div></div>
+    <div class="step"><div>Under <strong>Source</strong>, select:<br>
+      <strong>Branch:</strong> main<br>
+      <strong>Folder:</strong> / (root)</div></div>
+    <div class="step"><div>Click <strong>Save</strong></div></div>
+  </div>
+
+  <div class="info tip">
+    🎉 <strong>You get a link like:</strong><br>
+    <code style="font-size:1.1rem;color:#2e7d32;background:#e8f5e9;padding:6px 14px;border-radius:6px;display:inline-block;margin-top:6px;">
+      https://yourusername.github.io/iot-dashboard/
+    </code><br><br>
+    This is your <strong>live dashboard URL</strong> — accessible from anywhere in the world! 🌍
+  </div>
+
+  <div class="info note">
+    <strong>Note:</strong> It may take 1-2 minutes for GitHub Pages to deploy. Refresh the page if it doesn't load immediately.
+  </div>
+</div>
+
+<!-- ════════════════════════════════════════════════════════ -->
+<!-- STEP 9: CONNECT EVERYTHING IN THINGSPEAK               -->
+<!-- ════════════════════════════════════════════════════════ -->
+<div class="section purple" id="sec-step9">
+  <div class="step-header">
+    <div class="step-num">9</div>
+    <h2>🔗 Connect Everything in ThingSpeak</h2>
+  </div>
+
+  <p>Go to your ThingSpeak <strong>Channel Settings</strong> and add these links:</p>
+
+  <table>
+    <tr><th>Setting</th><th>Value</th></tr>
+    <tr>
+      <td><strong>Link to External Site</strong></td>
+      <td><code style="color:#1976d2;">https://yourusername.github.io/iot-dashboard/</code></td>
+    </tr>
+    <tr>
+      <td><strong>Link to GitHub</strong></td>
+      <td><code style="color:#1976d2;">https://github.com/yourusername/iot-dashboard</code></td>
+    </tr>
+  </table>
+
+  <div class="info purple-note">
+    📌 This links your cloud channel to your live dashboard and source code, making it a <strong>complete, connected ecosystem</strong>.
+  </div>
+</div>
+
+<!-- ════════════════════════════════════════════════════════ -->
+<!-- STEP 10: FINAL DATA FLOW                               -->
+<!-- ════════════════════════════════════════════════════════ -->
+<div class="section red" id="sec-step10">
+  <div class="step-header">
+    <div class="step-num">10</div>
+    <h2>🔄 FINAL DATA FLOW (MEMORIZE THIS)</h2>
+  </div>
+
+  <div class="flow-diagram" style="flex-direction: column; gap: 0;">
+    <div class="flow-box" style="width:100%;max-width:400px;">
+      <span class="flow-icon">🌡️</span>
+      <strong>DHT11 Sensor</strong><br>
+      <small style="color:#777;">Reads temperature &amp; humidity</small>
+    </div>
+    <span class="flow-arrow" style="transform:rotate(90deg);margin:4px 0;">→</span>
+    <div class="flow-box highlight" style="width:100%;max-width:400px;">
+      <span class="flow-icon">🍇</span>
+      <strong>Raspberry Pi (Python)</strong><br>
+      <small style="color:#777;">Processes &amp; sends via HTTP POST</small>
+    </div>
+    <span class="flow-arrow" style="transform:rotate(90deg);margin:4px 0;">→</span>
+    <div style="display:flex;align-items:center;gap:8px;">
+      <span style="color:#e65100;font-size:.85rem;font-weight:600;">Write API Key</span>
+    </div>
+    <span class="flow-arrow" style="transform:rotate(90deg);margin:4px 0;">→</span>
+    <div class="flow-box" style="width:100%;max-width:400px;">
+      <span class="flow-icon">☁️</span>
+      <strong>ThingSpeak Cloud</strong><br>
+      <small style="color:#777;">Stores data, provides REST API</small>
+    </div>
+    <span class="flow-arrow" style="transform:rotate(90deg);margin:4px 0;">→</span>
+    <div style="display:flex;align-items:center;gap:8px;">
+      <span style="color:#2e7d32;font-size:.85rem;font-weight:600;">Read API Key</span>
+    </div>
+    <span class="flow-arrow" style="transform:rotate(90deg);margin:4px 0;">→</span>
+    <div class="flow-box" style="width:100%;max-width:400px;">
+      <span class="flow-icon">🌐</span>
+      <strong>GitHub Pages (HTML Dashboard)</strong><br>
+      <small style="color:#777;">Fetches data via JavaScript fetch()</small>
+    </div>
+    <span class="flow-arrow" style="transform:rotate(90deg);margin:4px 0;">→</span>
+    <div class="flow-box" style="width:100%;max-width:400px;">
+      <span class="flow-icon">📱💻🖥️</span>
+      <strong>Any Device — Anywhere!</strong><br>
+      <small style="color:#777;">Phone, PC, Tablet — with just a URL</small>
+    </div>
+  </div>
+</div>
+
+<!-- ════════════════════════════════════════════════════════ -->
+<!-- FINAL: SUMMARY & CHECKLIST                             -->
+<!-- ════════════════════════════════════════════════════════ -->
+<div class="section green" id="sec-final">
+  <h2>🏆 YOU HAVE NOW BUILT A COMPLETE STANDALONE IoT PROJECT</h2>
+
+  <ul class="checklist">
+    <li><span class="check-icon">✔</span> <span><strong>Hardware interfacing</strong> — DHT11 connected to Raspberry Pi GPIO4</span></li>
+    <li><span class="check-icon">✔</span> <span><strong>Cloud integration</strong> — Data sent to ThingSpeak via HTTP POST</span></li>
+    <li><span class="check-icon">✔</span> <span><strong>API-based data flow</strong> — Write API Key (send) + Read API Key (fetch)</span></li>
+    <li><span class="check-icon">✔</span> <span><strong>Live dashboard</strong> — HTML page with auto-refreshing data display</span></li>
+    <li><span class="check-icon">✔</span> <span><strong>Public access</strong> — GitHub Pages provides a public URL</span></li>
+    <li><span class="check-icon">✔</span> <span><strong>Industry-standard architecture</strong> — Sensor → Edge device → Cloud → Frontend</span></li>
+  </ul>
+
+  <h3>🧰 Complete Technology Map</h3>
+  <table>
+    <tr><th>Layer</th><th>Technology</th><th>Role</th></tr>
+    <tr><td>Sensor Layer</td><td>DHT11</td><td>Measures temperature &amp; humidity</td></tr>
+    <tr><td>Edge Device</td><td>Raspberry Pi</td><td>Reads sensor, processes, sends to cloud</td></tr>
+    <tr><td>Programming</td><td>Python</td><td>Device-side scripting</td></tr>
+    <tr><td>Protocol</td><td>HTTP POST / GET</td><td>Data transmission</td></tr>
+    <tr><td>Cloud Platform</td><td>ThingSpeak</td><td>Data storage + REST API</td></tr>
+    <tr><td>Frontend</td><td>HTML + JavaScript</td><td>Dashboard UI</td></tr>
+    <tr><td>Hosting</td><td>GitHub Pages</td><td>Free static site hosting</td></tr>
+    <tr><td>Access</td><td>Any Browser</td><td>View from phone, PC, tablet</td></tr>
+  </table>
+
+  <h3>🎯 Skills Mastered</h3>
+  <div class="outcome">
+    <span class="out-chip">GPIO Interfacing</span>
+    <span class="out-chip">Python Programming</span>
+    <span class="out-chip">DHT11 Sensor</span>
+    <span class="out-chip">HTTP REST API</span>
+    <span class="out-chip">ThingSpeak Cloud</span>
+    <span class="out-chip">GitHub Pages</span>
+    <span class="out-chip">JavaScript Fetch</span>
+    <span class="out-chip">IoT Architecture</span>
+    <span class="out-chip">Live Dashboard</span>
+    <span class="out-chip">End-to-End IoT</span>
+  </div>
+
+  <h3>🚀 Possible Enhancements</h3>
+  <table>
+    <tr><th>Enhancement</th><th>How</th></tr>
+    <tr><td>Add more sensors</td><td>Connect BMP280, MQ-2 — add more fields in ThingSpeak</td></tr>
+    <tr><td>Add charts</td><td>Use Chart.js or ThingSpeak iframe widgets in your HTML</td></tr>
+    <tr><td>Add alerts</td><td>Use ThingSpeak React app or IFTTT for email/SMS alerts</td></tr>
+    <tr><td>Use MQTT</td><td>Switch from HTTP to MQTT for faster, lighter communication</td></tr>
+    <tr><td>Add database</td><td>Use Firebase or MongoDB for extended data storage</td></tr>
+    <tr><td>Mobile app</td><td>Build a Flutter/React Native app using the same API</td></tr>
+    <tr><td>Run on boot</td><td>Add Python script to <code>crontab</code> so it starts automatically</td></tr>
+  </table>
+
+  <h3>🔁 Auto-Start on Boot (Bonus)</h3>
+  <div class="code"><button class="cp" onclick="copyCode(this)">📋 Copy</button><span class="label">Terminal</span><pre>
+<span class="hl-c"># Open crontab editor</span>
+crontab -e
+
+<span class="hl-c"># Add this line at the bottom:</span>
+@reboot python3 /home/pi/iot-project/send_to_thingspeak.py &amp;</pre></div>
+  <div class="info note">
+    This ensures the Python script <strong>starts automatically</strong> every time the Raspberry Pi boots up — no manual intervention needed!
+  </div>
+</div>
+
+</div><!-- end container -->
+
+<footer>
+  <p>Raspberry Pi IoT Project Guide &copy; 2026 — Complete End-to-End IoT with DHT11 + ThingSpeak + GitHub Pages</p>
+</footer>
+
+<!-- Scroll-to-top -->
+<button class="scroll-top" id="scrollTopBtn" onclick="window.scrollTo({top:0,behavior:'smooth'})">↑</button>
+
+<!-- ═══════════ JAVASCRIPT ═══════════ -->
+<script>
+  // Copy code
+  function copyCode(btn) {
+    const pre = btn.parentElement.querySelector('pre');
+    navigator.clipboard.writeText(pre.innerText).then(() => {
+      btn.textContent = '✅ Copied!';
+      setTimeout(() => btn.textContent = '📋 Copy', 1500);
+    });
+  }
+
+  // Scroll-to-top
+  window.addEventListener('scroll', () => {
+    document.getElementById('scrollTopBtn').style.display = window.scrollY > 400 ? 'block' : 'none';
+  });
+
+  // Smooth scroll nav
+  document.querySelectorAll('.topnav a').forEach(link => {
+    link.addEventListener('click', e => {
+      e.preventDefault();
+      const el = document.querySelector(link.getAttribute('href'));
+      if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    });
+  });
+
+  // Nav active highlight
+  const secs = document.querySelectorAll('.section');
+  const navs = document.querySelectorAll('.topnav a');
+  window.addEventListener('scroll', () => {
+    let cur = '';
+    secs.forEach(s => { if (window.scrollY >= s.offsetTop - 120) cur = s.id; });
+    navs.forEach(a => {
+      const active = a.getAttribute('href') === '#' + cur;
+      a.style.color = active ? '#1976d2' : '#666';
+      a.style.borderColor = active ? '#90caf9' : 'transparent';
+      a.style.background = active ? '#e3f2fd' : 'transparent';
+    });
+  });
+
+  // Section fade-in on scroll
+  const obs = new IntersectionObserver(entries => {
+    entries.forEach(e => {
+      if (e.isIntersecting) { e.target.style.opacity = '1'; e.target.style.transform = 'translateY(0)'; }
+    });
+  }, { threshold: 0.08 });
+  secs.forEach(s => {
+    s.style.opacity = '0';
+    s.style.transform = 'translateY(30px)';
+    s.style.transition = 'opacity .6s ease, transform .6s ease';
+    obs.observe(s);
+  });
+
+  // ═══════ DOWNLOAD PROJECT FILES AS ZIP ═══════
+  function downloadProjectFiles() {
+    const zip = new JSZip();
+    const folder = zip.folder('raspprojectfile');
+
+    // index.html
+    folder.file('index.html', `<!DOCTYPE html>
+<html>
+<head>
+  <title>IoT Temperature Monitoring</title>
+  <style>
+    body { font-family: Arial; text-align: center; }
+    .card {
+      display: inline-block;
+      padding: 20px;
+      margin: 15px;
+      border-radius: 10px;
+      box-shadow: 0 0 10px #aaa;
+      width: 220px;
+    }
+  </style>
+</head>
+<body>
+
+<h1>IoT Temperature & Humidity Dashboard</h1>
+
+<div class="card">
+  <h2>Temperature</h2>
+  <p id="temp">-- °C</p>
+</div>
+
+<div class="card">
+  <h2>Humidity</h2>
+  <p id="hum">-- %</p>
+</div>
+
+<script>
+const url =
+"https://api.thingspeak.com/channels/3272751/feeds.json?api_key=YOUR_READ_API_KEY&results=1";
+
+function fetchData() {
+  fetch(url)
+    .then(res => res.json())
+    .then(data => {
+      const feed = data.feeds[0];
+      document.getElementById("temp").innerText = feed.field1 + " °C";
+      document.getElementById("hum").innerText = feed.field2 + " %";
+    });
+}
+
+fetchData();
+setInterval(fetchData, 5000);
+<\/script>
+
+</body>
+</html>`);
+
+    // install.sh
+    folder.file('install.sh', `#!/bin/bash
+
+echo "Updating system packages..."
+sudo apt update
+
+echo "Installing python3-pip..."
+sudo apt install python3-pip -y
+
+echo "Installing libgpiod2 (required for DHT sensor)..."
+sudo apt install libgpiod2 -y
+
+echo "Installing Python libraries..."
+pip3 install adafruit-circuitpython-dht requests
+
+echo ""
+echo "Raspberry Pi is ready!"
+echo "Run 'python3 send_to_thingspeak.py' to start sending data."`);
+
+    // send_to_thingspeak.py
+    folder.file('send_to_thingspeak.py', `import time
+import requests
+import board
+import adafruit_dht
+
+WRITE_API_KEY = "YOUR_WRITE_API_KEY"
+THINGSPEAK_URL = "https://api.thingspeak.com/update"
+
+dht = adafruit_dht.DHT11(board.D4)  # GPIO4
+
+while True:
+    try:
+        temperature = dht.temperature
+        humidity = dht.humidity
+
+        if temperature is not None and humidity is not None:
+            payload = {
+                "api_key": WRITE_API_KEY,
+                "field1": temperature,
+                "field2": humidity
+            }
+
+            requests.post(THINGSPEAK_URL, data=payload)
+            print(f"Sent -> Temp: {temperature}°C  Humidity: {humidity}%")
+
+    except Exception as e:
+        print("Sensor error:", e)
+
+    time.sleep(15)  # ThingSpeak minimum interval`);
+
+    zip.generateAsync({ type: 'blob' }).then(content => {
+      saveAs(content, 'raspprojectfile.zip');
+    });
+  }
+</script>
+
+</body>
+</html>

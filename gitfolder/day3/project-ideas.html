@@ -1,0 +1,1275 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Project Ideas Roadmap | KEC Workshop</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700;800&family=Fira+Code:wght@400;500&display=swap"
+        rel="stylesheet">
+    <style>
+        *,
+        *::before,
+        *::after {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0
+        }
+
+        :root {
+            --bg: #07091a;
+            --card: #0f1629;
+            --card2: #131d33;
+            --card3: #1a2540;
+            --accent: #a855f7;
+            --accent2: #c084fc;
+            --accent3: #e879f9;
+            --green: #10b981;
+            --sky: #38bdf8;
+            --orange: #f59e0b;
+            --red: #ef4444;
+            --violet: #6366f1;
+            --teal: #22d3ee;
+            --l1: #10b981;
+            --l2: #f59e0b;
+            --l3: #38bdf8;
+            --l4: #a855f7;
+            --l5: #f97316;
+            --text: #e2e8f0;
+            --muted: #64748b;
+            --muted2: #94a3b8;
+            --border: rgba(168, 85, 247, 0.2);
+            --glow: 0 0 36px rgba(168, 85, 247, 0.25);
+        }
+
+        html {
+            scroll-behavior: smooth
+        }
+
+        body {
+            font-family: 'Outfit', sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            font-size: 15px;
+            overflow-x: hidden
+        }
+
+        #rbar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            height: 3px;
+            z-index: 999;
+            width: 0%;
+            background: linear-gradient(90deg, var(--l1), var(--l2), var(--l3), var(--l4), var(--l5))
+        }
+
+        .blobs {
+            position: fixed;
+            inset: 0;
+            pointer-events: none;
+            z-index: 0;
+            overflow: hidden
+        }
+
+        .blob {
+            position: absolute;
+            border-radius: 50%;
+            filter: blur(90px);
+            opacity: .12;
+            animation: bf 14s ease-in-out infinite alternate
+        }
+
+        .b1 {
+            width: 450px;
+            height: 450px;
+            background: #7c3aed;
+            top: -120px;
+            left: -80px
+        }
+
+        .b2 {
+            width: 300px;
+            height: 300px;
+            background: #10b981;
+            bottom: -80px;
+            right: -50px;
+            animation-delay: 5s
+        }
+
+        .b3 {
+            width: 250px;
+            height: 250px;
+            background: #f59e0b;
+            top: 40%;
+            left: 55%;
+            animation-delay: 2.5s
+        }
+
+        @keyframes bf {
+            from {
+                transform: scale(1) translate(0, 0)
+            }
+
+            to {
+                transform: scale(1.1) translate(20px, 12px)
+            }
+        }
+
+        nav {
+            position: sticky;
+            top: 0;
+            z-index: 200;
+            background: rgba(7, 9, 26, .94);
+            backdrop-filter: blur(16px);
+            border-bottom: 1px solid var(--border);
+            padding: .65rem 1rem;
+            display: flex;
+            align-items: center;
+            gap: .5rem;
+            overflow-x: auto;
+            padding-left: 6rem
+        }
+
+        .nav-logo {
+            font-weight: 800;
+            font-size: .95rem;
+            background: linear-gradient(90deg, var(--accent), var(--accent2));
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+            white-space: nowrap;
+            margin-right: .5rem
+        }
+
+        .nb {
+            font-family: 'Outfit', sans-serif;
+            font-size: .7rem;
+            font-weight: 600;
+            padding: .3rem .75rem;
+            border: 1px solid var(--border);
+            border-radius: 999px;
+            background: transparent;
+            color: var(--muted2);
+            cursor: pointer;
+            white-space: nowrap;
+            transition: all .2s
+        }
+
+        .nb:hover {
+            background: rgba(168, 85, 247, .18);
+            border-color: var(--accent);
+            color: #fff
+        }
+
+        .nb.l1 {
+            --c: var(--l1)
+        }
+
+        .nb.l2 {
+            --c: var(--l2)
+        }
+
+        .nb.l3 {
+            --c: var(--l3)
+        }
+
+        .nb.l4 {
+            --c: var(--l4)
+        }
+
+        .nb.l5 {
+            --c: var(--l5)
+        }
+
+        .nb.active {
+            background: var(--c, var(--accent));
+            border-color: var(--c, var(--accent));
+            color: #fff
+        }
+
+        section {
+            position: relative;
+            z-index: 10;
+            padding: 3.5rem 1.8rem;
+            max-width: 940px;
+            margin: 0 auto
+        }
+
+        .eyebrow {
+            font-family: 'Fira Code', monospace;
+            font-size: .68rem;
+            letter-spacing: .14em;
+            text-transform: uppercase;
+            margin-bottom: .5rem
+        }
+
+        .sec-title {
+            font-size: clamp(1.4rem, 3vw, 2rem);
+            font-weight: 800;
+            line-height: 1.2;
+            background: linear-gradient(135deg, #fff 25%, var(--accent2) 100%);
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: .6rem
+        }
+
+        .sec-lead {
+            font-size: .88rem;
+            color: var(--muted2);
+            line-height: 1.8;
+            max-width: 660px;
+            margin-bottom: 1.4rem
+        }
+
+        .rv {
+            opacity: 0;
+            transform: translateY(26px);
+            transition: opacity .65s ease, transform .65s ease
+        }
+
+        .rv.vis {
+            opacity: 1;
+            transform: translateY(0)
+        }
+
+        /* HERO */
+        #hero {
+            min-height: 88vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            gap: 1.3rem;
+            padding: 4rem 1.8rem;
+            max-width: 940px;
+            margin: 0 auto
+        }
+
+        .hero-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: .45rem;
+            font-family: 'Fira Code', monospace;
+            font-size: .7rem;
+            padding: .3rem .9rem;
+            border-radius: 999px;
+            border: 1px solid rgba(168, 85, 247, .4);
+            color: var(--accent2);
+            background: rgba(168, 85, 247, .07);
+            width: fit-content;
+            animation: fu .6s ease both
+        }
+
+        .hero-h1 {
+            font-size: clamp(2rem, 6vw, 3.4rem);
+            font-weight: 800;
+            line-height: 1.1;
+            background: linear-gradient(135deg, #fff 10%, var(--accent) 55%, var(--accent2) 100%);
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+            animation: fu .6s .08s ease both
+        }
+
+        .hero-sub {
+            font-size: .95rem;
+            color: var(--muted2);
+            max-width: 560px;
+            line-height: 1.8;
+            animation: fu .6s .16s ease both
+        }
+
+        .hero-levels {
+            display: flex;
+            flex-wrap: wrap;
+            gap: .65rem;
+            animation: fu .6s .25s ease both
+        }
+
+        .lvl-pill {
+            display: inline-flex;
+            align-items: center;
+            gap: .4rem;
+            padding: .35rem .9rem;
+            border-radius: 999px;
+            font-size: .75rem;
+            font-weight: 700;
+            border: 1px solid;
+            cursor: default
+        }
+
+        .lp1 {
+            background: rgba(16, 185, 129, .1);
+            border-color: rgba(16, 185, 129, .4);
+            color: var(--l1)
+        }
+
+        .lp2 {
+            background: rgba(245, 158, 11, .1);
+            border-color: rgba(245, 158, 11, .4);
+            color: var(--l2)
+        }
+
+        .lp3 {
+            background: rgba(56, 189, 248, .1);
+            border-color: rgba(56, 189, 248, .4);
+            color: var(--l3)
+        }
+
+        .lp4 {
+            background: rgba(168, 85, 247, .1);
+            border-color: rgba(168, 85, 247, .4);
+            color: var(--l4)
+        }
+
+        .lp5 {
+            background: rgba(249, 115, 22, .1);
+            border-color: rgba(249, 115, 22, .4);
+            color: var(--l5)
+        }
+
+        .scroll-hint {
+            font-size: .75rem;
+            color: var(--muted);
+            animation: fu .6s .4s ease both, bob 2s 1.5s ease-in-out infinite
+        }
+
+        @keyframes bob {
+
+            0%,
+            100% {
+                transform: translateY(0)
+            }
+
+            50% {
+                transform: translateY(5px)
+            }
+        }
+
+        @keyframes fu {
+            from {
+                opacity: 0;
+                transform: translateY(22px)
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0)
+            }
+        }
+
+        /* FLOW */
+        .flow-bar {
+            display: flex;
+            flex-wrap: wrap;
+            gap: .5rem;
+            align-items: center;
+            padding: 1rem 1.2rem;
+            background: rgba(168, 85, 247, .06);
+            border: 1px solid var(--border);
+            border-radius: 14px;
+            font-size: .78rem;
+            color: var(--muted2);
+            margin-bottom: 2rem
+        }
+
+        .flow-item {
+            color: var(--text);
+            font-weight: 600;
+            font-size: .78rem
+        }
+
+        .flow-arrow {
+            color: var(--muted);
+            font-size: .7rem
+        }
+
+        /* LEVEL SECTION */
+        .level-header {
+            display: flex;
+            align-items: center;
+            gap: .8rem;
+            margin-bottom: 1.4rem
+        }
+
+        .level-dot {
+            width: 14px;
+            height: 14px;
+            border-radius: 50%;
+            flex-shrink: 0
+        }
+
+        .level-title {
+            font-size: 1.2rem;
+            font-weight: 800
+        }
+
+        .level-sub {
+            font-size: .8rem;
+            color: var(--muted2);
+            margin-left: auto;
+            font-family: 'Fira Code', monospace
+        }
+
+        /* PROJECT CARDS */
+        .projects-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(270px, 1fr));
+            gap: 1.1rem
+        }
+
+        .pcard {
+            background: var(--card2);
+            border: 1px solid var(--border);
+            border-radius: 18px;
+            overflow: hidden;
+            transition: transform .3s, box-shadow .3s, border-color .3s;
+            cursor: default;
+            display: flex;
+            flex-direction: column
+        }
+
+        .pcard:hover {
+            transform: translateY(-6px);
+            border-color: var(--pc, var(--accent))
+        }
+
+        .pcard-top {
+            padding: 1.2rem 1.3rem .8rem;
+            display: flex;
+            align-items: flex-start;
+            gap: .8rem
+        }
+
+        .pcard-num {
+            min-width: 36px;
+            height: 36px;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-family: 'Fira Code', monospace;
+            font-size: .78rem;
+            font-weight: 800;
+            flex-shrink: 0;
+            border: 1px solid
+        }
+
+        .pcard-info {
+            flex: 1
+        }
+
+        .pcard-title {
+            font-size: .95rem;
+            font-weight: 800;
+            margin-bottom: .2rem;
+            line-height: 1.25
+        }
+
+        .pcard-tech {
+            font-family: 'Fira Code', monospace;
+            font-size: .65rem;
+            color: var(--muted2);
+            line-height: 1.4
+        }
+
+        .pcard-body {
+            padding: .5rem 1.3rem .9rem;
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            gap: .75rem
+        }
+
+        .skill-section h5 {
+            font-size: .72rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: .1em;
+            margin-bottom: .35rem
+        }
+
+        .skill-list {
+            display: flex;
+            flex-direction: column;
+            gap: .2rem
+        }
+
+        .skill-item {
+            font-size: .76rem;
+            color: var(--muted2);
+            display: flex;
+            align-items: flex-start;
+            gap: .35rem;
+            line-height: 1.4
+        }
+
+        .skill-item::before {
+            content: '▸';
+            flex-shrink: 0;
+            margin-top: .05rem;
+            font-size: .65rem
+        }
+
+        .pcard-footer {
+            padding: .8rem 1.3rem;
+            border-top: 1px solid rgba(255, 255, 255, .05);
+            background: rgba(0, 0, 0, .12);
+            display: flex;
+            align-items: flex-start;
+            gap: .5rem
+        }
+
+        .resume-label {
+            font-size: .64rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: .08em;
+            white-space: nowrap;
+            padding-top: .15rem
+        }
+
+        .resume-val {
+            font-size: .74rem;
+            color: var(--muted2);
+            line-height: 1.45
+        }
+
+        .optional-badge {
+            display: inline-block;
+            font-family: 'Fira Code', monospace;
+            font-size: .62rem;
+            padding: .12rem .5rem;
+            border-radius: 999px;
+            margin-left: .3rem;
+            border: 1px solid;
+            vertical-align: middle
+        }
+
+        /* DIVIDER */
+        .div {
+            height: 1px;
+            background: linear-gradient(90deg, transparent, rgba(168, 85, 247, .2), transparent);
+            margin: .5rem auto;
+            max-width: 940px
+        }
+
+        /* FOOTER */
+        .sfoot {
+            position: relative;
+            z-index: 10;
+            padding: 1.5rem;
+            text-align: center;
+            border-top: 1px solid var(--border);
+            color: var(--muted);
+            font-size: .77rem
+        }
+
+        .sfoot span {
+            color: var(--accent2)
+        }
+
+        @media(max-width:600px) {
+            section {
+                padding: 2.5rem 1rem
+            }
+
+            #hero {
+                padding: 3rem 1rem
+            }
+
+            .projects-grid {
+                grid-template-columns: 1fr
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div id="rbar"></div>
+    <div class="blobs">
+        <div class="blob b1"></div>
+        <div class="blob b2"></div>
+        <div class="blob b3"></div>
+    </div>
+
+    <!-- Back to Home -->
+    <a href="index.html"
+        style="position:fixed;top:1rem;left:1rem;z-index:9999;display:inline-flex;align-items:center;gap:.45rem;padding:.45rem 1rem;background:rgba(7,9,26,.9);border:1px solid rgba(99,102,241,.4);border-radius:999px;color:#a78bfa;font-family:'Outfit',sans-serif;font-size:.8rem;font-weight:700;text-decoration:none;backdrop-filter:blur(10px);transition:all .2s"
+        onmouseover="this.style.background='rgba(99,102,241,.25)';this.style.borderColor='#6366f1'"
+        onmouseout="this.style.background='rgba(7,9,26,.9)';this.style.borderColor='rgba(99,102,241,.4)'">← Home</a>
+
+    <nav>
+        <div class="nav-logo">🗺️ Project Roadmap</div>
+        <button class="nb l1 active" onclick="goTo('level1',this)">🟢 Level 1</button>
+        <button class="nb l2" onclick="goTo('level2',this)">🟡 Level 2</button>
+        <button class="nb l3" onclick="goTo('level3',this)">🔵 Level 3</button>
+        <button class="nb l4" onclick="goTo('level4',this)">🟣 Level 4</button>
+        <button class="nb l5" onclick="goTo('level5',this)">🟠 Level 5</button>
+        <button class="nb" onclick="goTo('flow',this)">🧭 Flow</button>
+    </nav>
+
+    <!-- ─── HERO ─── -->
+    <section id="hero">
+        <div class="hero-badge">🗺️ Web Dev Project Roadmap · KEC Workshop</div>
+        <h1 class="hero-h1">Build Real Projects.<br>Level Up Your Skills.</h1>
+        <p class="hero-sub">A skill-based progression from Intermediate Frontend to Freelancing-Ready projects. Complete
+            them in order to build a strong portfolio and land real opportunities.</p>
+        <div class="hero-levels">
+            <span class="lvl-pill lp1">🟢 Level 1 — Frontend</span>
+            <span class="lvl-pill lp2">🟡 Level 2 — UI/UX Websites</span>
+            <span class="lvl-pill lp3">🔵 Level 3 — React</span>
+            <span class="lvl-pill lp4">🟣 Level 4 — Deployment</span>
+            <span class="lvl-pill lp5">🟠 Level 5 — Freelancing</span>
+        </div>
+        <div class="scroll-hint">↓ Scroll through all 14 projects</div>
+    </section>
+
+    <div class="div"></div>
+
+    <!-- ─── LEVEL 1 ─── -->
+    <section id="level1" class="rv">
+        <div class="level-header">
+            <div class="level-dot" style="background:var(--l1)"></div>
+            <div class="level-title" style="color:var(--l1)">Level 1 — Intermediate Frontend Projects</div>
+            <div class="level-sub">3 projects</div>
+        </div>
+        <p class="sec-lead">Strengthens JavaScript logic, DOM manipulation, and API integration skills — the foundation
+            of all frontend development.</p>
+        <div class="projects-grid">
+
+            <!-- Project 1 -->
+            <div class="pcard" style="--pc:var(--l1)">
+                <div class="pcard-top">
+                    <div class="pcard-num"
+                        style="background:rgba(16,185,129,.1);color:var(--l1);border-color:rgba(16,185,129,.3)">01</div>
+                    <div class="pcard-info">
+                        <div class="pcard-title">Task Manager / To-Do App</div>
+                        <div class="pcard-tech">HTML · CSS · JavaScript · LocalStorage</div>
+                    </div>
+                </div>
+                <div class="pcard-body">
+                    <div class="skill-section">
+                        <h5 style="color:var(--l1)">Core Skills</h5>
+                        <div class="skill-list">
+                            <span class="skill-item" style="--c:var(--l1)">CRUD operations (Create, Read, Update,
+                                Delete)</span>
+                            <span class="skill-item">LocalStorage data persistence</span>
+                            <span class="skill-item">DOM manipulation & event handling</span>
+                            <span class="skill-item">Responsive UI design</span>
+                        </div>
+                    </div>
+                    <div class="skill-section">
+                        <h5 style="color:var(--muted)">Advanced Features <span class="optional-badge"
+                                style="background:rgba(100,116,139,.1);border-color:rgba(100,116,139,.3);color:var(--muted)">Optional</span>
+                        </h5>
+                        <div class="skill-list">
+                            <span class="skill-item">Task filtering (Completed / Pending)</span>
+                            <span class="skill-item">Due dates & drag-and-drop sorting</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="pcard-footer">
+                    <div class="resume-label" style="color:var(--l1)">📄 Resume</div>
+                    <div class="resume-val">Demonstrates strong understanding of JavaScript logic and state handling.
+                    </div>
+                </div>
+            </div>
+
+            <!-- Project 2 -->
+            <div class="pcard" style="--pc:var(--l1)">
+                <div class="pcard-top">
+                    <div class="pcard-num"
+                        style="background:rgba(16,185,129,.1);color:var(--l1);border-color:rgba(16,185,129,.3)">02</div>
+                    <div class="pcard-info">
+                        <div class="pcard-title">Movie Search Application</div>
+                        <div class="pcard-tech">JavaScript · Fetch API · TMDB API / OMDb API</div>
+                    </div>
+                </div>
+                <div class="pcard-body">
+                    <div class="skill-section">
+                        <h5 style="color:var(--l1)">Core Skills</h5>
+                        <div class="skill-list">
+                            <span class="skill-item">Fetch API & Async/Await</span>
+                            <span class="skill-item">Search functionality & loading states</span>
+                            <span class="skill-item">Error handling</span>
+                            <span class="skill-item">Dynamic UI rendering</span>
+                        </div>
+                    </div>
+                    <div class="skill-section">
+                        <h5 style="color:var(--muted)">Advanced Features <span class="optional-badge"
+                                style="background:rgba(100,116,139,.1);border-color:rgba(100,116,139,.3);color:var(--muted)">Optional</span>
+                        </h5>
+                        <div class="skill-list">
+                            <span class="skill-item">Pagination & movie detail modal</span>
+                            <span class="skill-item">Debounced search input</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="pcard-footer">
+                    <div class="resume-label" style="color:var(--l1)">📄 Resume</div>
+                    <div class="resume-val">Shows ability to integrate third-party APIs and handle real-world data.
+                    </div>
+                </div>
+            </div>
+
+            <!-- Project 3 -->
+            <div class="pcard" style="--pc:var(--l1)">
+                <div class="pcard-top">
+                    <div class="pcard-num"
+                        style="background:rgba(16,185,129,.1);color:var(--l1);border-color:rgba(16,185,129,.3)">03</div>
+                    <div class="pcard-info">
+                        <div class="pcard-title">Image Gallery (Unsplash Clone)</div>
+                        <div class="pcard-tech">JavaScript · CSS Grid/Flexbox · Unsplash API</div>
+                    </div>
+                </div>
+                <div class="pcard-body">
+                    <div class="skill-section">
+                        <h5 style="color:var(--l1)">Core Skills</h5>
+                        <div class="skill-list">
+                            <span class="skill-item">CSS Grid layout mastery</span>
+                            <span class="skill-item">API image fetching</span>
+                            <span class="skill-item">Lazy loading & performance basics</span>
+                        </div>
+                    </div>
+                    <div class="skill-section">
+                        <h5 style="color:var(--muted)">Advanced Features <span class="optional-badge"
+                                style="background:rgba(100,116,139,.1);border-color:rgba(100,116,139,.3);color:var(--muted)">Optional</span>
+                        </h5>
+                        <div class="skill-list">
+                            <span class="skill-item">Infinite scroll</span>
+                            <span class="skill-item">Category filters</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="pcard-footer">
+                    <div class="resume-label" style="color:var(--l1)">📄 Resume</div>
+                    <div class="resume-val">Demonstrates UI design and performance optimization skills.</div>
+                </div>
+            </div>
+
+        </div>
+    </section>
+
+    <div class="div"></div>
+
+    <!-- ─── LEVEL 2 ─── -->
+    <section id="level2" class="rv">
+        <div class="level-header">
+            <div class="level-dot" style="background:var(--l2)"></div>
+            <div class="level-title" style="color:var(--l2)">Level 2 — UI/UX & Real-World Websites</div>
+            <div class="level-sub">3 projects</div>
+        </div>
+        <p class="sec-lead">From small tools to real website sections — develops design thinking, layout architecture,
+            and freelancing-ready skills.</p>
+        <div class="projects-grid">
+
+            <!-- Project 4 -->
+            <div class="pcard" style="--pc:var(--l2)">
+                <div class="pcard-top">
+                    <div class="pcard-num"
+                        style="background:rgba(245,158,11,.1);color:var(--l2);border-color:rgba(245,158,11,.3)">04</div>
+                    <div class="pcard-info">
+                        <div class="pcard-title">Personal Blog UI (Responsive)</div>
+                        <div class="pcard-tech">HTML · CSS</div>
+                    </div>
+                </div>
+                <div class="pcard-body">
+                    <div class="skill-section">
+                        <h5 style="color:var(--l2)">Core Skills</h5>
+                        <div class="skill-list">
+                            <span class="skill-item">Layout structuring & navigation systems</span>
+                            <span class="skill-item">Mobile-first design principles</span>
+                            <span class="skill-item">Typography system design</span>
+                        </div>
+                    </div>
+                    <div class="skill-section">
+                        <h5 style="color:var(--muted)">Advanced Features <span class="optional-badge"
+                                style="background:rgba(100,116,139,.1);border-color:rgba(100,116,139,.3);color:var(--muted)">Optional</span>
+                        </h5>
+                        <div class="skill-list">
+                            <span class="skill-item">Category-based layout</span>
+                            <span class="skill-item">Author profile section</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="pcard-footer">
+                    <div class="resume-label" style="color:var(--l2)">📄 Resume</div>
+                    <div class="resume-val">Shows strong design thinking and layout architecture skills.</div>
+                </div>
+            </div>
+
+            <!-- Project 5 -->
+            <div class="pcard" style="--pc:var(--l2)">
+                <div class="pcard-top">
+                    <div class="pcard-num"
+                        style="background:rgba(245,158,11,.1);color:var(--l2);border-color:rgba(245,158,11,.3)">05</div>
+                    <div class="pcard-info">
+                        <div class="pcard-title">Startup / Agency Landing Page</div>
+                        <div class="pcard-tech">HTML · CSS · JavaScript</div>
+                    </div>
+                </div>
+                <div class="pcard-body">
+                    <div class="skill-section">
+                        <h5 style="color:var(--l2)">Core Skills</h5>
+                        <div class="skill-list">
+                            <span class="skill-item">Section architecture & CTA design</span>
+                            <span class="skill-item">Scroll animations</span>
+                            <span class="skill-item">Modern UI styling</span>
+                        </div>
+                    </div>
+                    <div class="skill-section">
+                        <h5 style="color:var(--muted)">Advanced Features <span class="optional-badge"
+                                style="background:rgba(100,116,139,.1);border-color:rgba(100,116,139,.3);color:var(--muted)">Optional</span>
+                        </h5>
+                        <div class="skill-list">
+                            <span class="skill-item">Pricing tables & FAQ accordion</span>
+                            <span class="skill-item">Testimonials slider</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="pcard-footer">
+                    <div class="resume-label" style="color:var(--l2)">📄 Resume</div>
+                    <div class="resume-val">Freelancing-ready project — direct client deliverable experience.</div>
+                </div>
+            </div>
+
+            <!-- Project 6 -->
+            <div class="pcard" style="--pc:var(--l2)">
+                <div class="pcard-top">
+                    <div class="pcard-num"
+                        style="background:rgba(245,158,11,.1);color:var(--l2);border-color:rgba(245,158,11,.3)">06</div>
+                    <div class="pcard-info">
+                        <div class="pcard-title">Multi-Page Portfolio (Advanced)</div>
+                        <div class="pcard-tech">HTML · CSS · JavaScript</div>
+                    </div>
+                </div>
+                <div class="pcard-body">
+                    <div class="skill-section">
+                        <h5 style="color:var(--l2)">Upgrade Features</h5>
+                        <div class="skill-list">
+                            <span class="skill-item">Project filter system</span>
+                            <span class="skill-item">Dark / Light mode toggle</span>
+                            <span class="skill-item">Smooth scrolling & SEO meta tags</span>
+                            <span class="skill-item">Performance optimization</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="pcard-footer">
+                    <div class="resume-label" style="color:var(--l2)">📄 Resume</div>
+                    <div class="resume-val">Shows professional polish and advanced frontend development skills.</div>
+                </div>
+            </div>
+
+        </div>
+    </section>
+
+    <div class="div"></div>
+
+    <!-- ─── LEVEL 3 ─── -->
+    <section id="level3" class="rv">
+        <div class="level-header">
+            <div class="level-dot" style="background:var(--l3)"></div>
+            <div class="level-title" style="color:var(--l3)">Level 3 — React-Based Applications</div>
+            <div class="level-sub">3 projects</div>
+        </div>
+        <p class="sec-lead">Next-level frontend development using React — components, state management, data
+            visualization, and professional UI patterns.</p>
+        <div class="projects-grid">
+
+            <!-- Project 7 -->
+            <div class="pcard" style="--pc:var(--l3)">
+                <div class="pcard-top">
+                    <div class="pcard-num"
+                        style="background:rgba(56,189,248,.1);color:var(--l3);border-color:rgba(56,189,248,.3)">07</div>
+                    <div class="pcard-info">
+                        <div class="pcard-title">Notes Application (React)</div>
+                        <div class="pcard-tech">React · CSS</div>
+                    </div>
+                </div>
+                <div class="pcard-body">
+                    <div class="skill-section">
+                        <h5 style="color:var(--l3)">Core Skills</h5>
+                        <div class="skill-list">
+                            <span class="skill-item">React components, Props & useState</span>
+                            <span class="skill-item">Form handling</span>
+                            <span class="skill-item">Component structure best practices</span>
+                        </div>
+                    </div>
+                    <div class="skill-section">
+                        <h5 style="color:var(--muted)">Advanced Features <span class="optional-badge"
+                                style="background:rgba(100,116,139,.1);border-color:rgba(100,116,139,.3);color:var(--muted)">Optional</span>
+                        </h5>
+                        <div class="skill-list">
+                            <span class="skill-item">LocalStorage integration</span>
+                            <span class="skill-item">Edit & delete notes functionality</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="pcard-footer">
+                    <div class="resume-label" style="color:var(--l3)">📄 Resume</div>
+                    <div class="resume-val">Shows understanding of modern frontend frameworks (React).</div>
+                </div>
+            </div>
+
+            <!-- Project 8 -->
+            <div class="pcard" style="--pc:var(--l3)">
+                <div class="pcard-top">
+                    <div class="pcard-num"
+                        style="background:rgba(56,189,248,.1);color:var(--l3);border-color:rgba(56,189,248,.3)">08</div>
+                    <div class="pcard-info">
+                        <div class="pcard-title">E-Commerce Product UI</div>
+                        <div class="pcard-tech">React (Frontend Only)</div>
+                    </div>
+                </div>
+                <div class="pcard-body">
+                    <div class="skill-section">
+                        <h5 style="color:var(--l3)">Core Skills</h5>
+                        <div class="skill-list">
+                            <span class="skill-item">Component architecture</span>
+                            <span class="skill-item">Cart state management</span>
+                            <span class="skill-item">Product filtering & dynamic rendering</span>
+                        </div>
+                    </div>
+                    <div class="skill-section">
+                        <h5 style="color:var(--muted)">Advanced Features <span class="optional-badge"
+                                style="background:rgba(100,116,139,.1);border-color:rgba(100,116,139,.3);color:var(--muted)">Optional</span>
+                        </h5>
+                        <div class="skill-list">
+                            <span class="skill-item">Context API for global state</span>
+                            <span class="skill-item">Search + price sorting</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="pcard-footer">
+                    <div class="resume-label" style="color:var(--l3)">📄 Resume</div>
+                    <div class="resume-val">High recruiter value — looks professional and demonstrates real-world app
+                        architecture.</div>
+                </div>
+            </div>
+
+            <!-- Project 9 -->
+            <div class="pcard" style="--pc:var(--l3)">
+                <div class="pcard-top">
+                    <div class="pcard-num"
+                        style="background:rgba(56,189,248,.1);color:var(--l3);border-color:rgba(56,189,248,.3)">09</div>
+                    <div class="pcard-info">
+                        <div class="pcard-title">Admin Dashboard UI</div>
+                        <div class="pcard-tech">React · Chart.js / Recharts</div>
+                    </div>
+                </div>
+                <div class="pcard-body">
+                    <div class="skill-section">
+                        <h5 style="color:var(--l3)">Core Skills</h5>
+                        <div class="skill-list">
+                            <span class="skill-item">Layout systems & sidebar navigation</span>
+                            <span class="skill-item">Data visualization with charts</span>
+                            <span class="skill-item">Professional UI patterns</span>
+                        </div>
+                    </div>
+                    <div class="skill-section">
+                        <h5 style="color:var(--muted)">Example Ideas</h5>
+                        <div class="skill-list">
+                            <span class="skill-item">Student Management Dashboard</span>
+                            <span class="skill-item">Analytics Dashboard</span>
+                            <span class="skill-item">Sales Tracker</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="pcard-footer">
+                    <div class="resume-label" style="color:var(--l3)">📄 Resume</div>
+                    <div class="resume-val">Makes portfolio look senior-level — data visualization is a highly valued
+                        skill.</div>
+                </div>
+            </div>
+
+        </div>
+    </section>
+
+    <div class="div"></div>
+
+    <!-- ─── LEVEL 4 ─── -->
+    <section id="level4" class="rv">
+        <div class="level-header">
+            <div class="level-dot" style="background:var(--l4)"></div>
+            <div class="level-title" style="color:var(--l4)">Level 4 — Deployment & Infrastructure</div>
+            <div class="level-sub">2 projects</div>
+        </div>
+        <p class="sec-lead">Understanding real-world hosting, environments, and DNS — skills that go beyond coding and
+            show engineering maturity.</p>
+        <div class="projects-grid">
+
+            <!-- Project 10 -->
+            <div class="pcard" style="--pc:var(--l4)">
+                <div class="pcard-top">
+                    <div class="pcard-num"
+                        style="background:rgba(168,85,247,.1);color:var(--l4);border-color:rgba(168,85,247,.3)">10</div>
+                    <div class="pcard-info">
+                        <div class="pcard-title">Multi-Environment Deployment</div>
+                        <div class="pcard-tech">GitHub Pages · Netlify / Render</div>
+                    </div>
+                </div>
+                <div class="pcard-body">
+                    <div class="skill-section">
+                        <h5 style="color:var(--l4)">What You Deploy</h5>
+                        <div class="skill-list">
+                            <span class="skill-item">Dev Version → GitHub Pages</span>
+                            <span class="skill-item">Production Version → Netlify / Render</span>
+                        </div>
+                    </div>
+                    <div class="skill-section">
+                        <h5 style="color:var(--l4)">Skills Learned</h5>
+                        <div class="skill-list">
+                            <span class="skill-item">Environment variables (.env)</span>
+                            <span class="skill-item">Build process & deployment pipelines</span>
+                            <span class="skill-item">Hosting differences & CI/CD basics</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="pcard-footer">
+                    <div class="resume-label" style="color:var(--l4)">📄 Resume</div>
+                    <div class="resume-val">Shows practical DevOps awareness — understanding environments is a must for
+                        any job.</div>
+                </div>
+            </div>
+
+            <!-- Project 11 -->
+            <div class="pcard" style="--pc:var(--l4)">
+                <div class="pcard-top">
+                    <div class="pcard-num"
+                        style="background:rgba(168,85,247,.1);color:var(--l4);border-color:rgba(168,85,247,.3)">11</div>
+                    <div class="pcard-info">
+                        <div class="pcard-title">Custom Domain + Subdomain Setup</div>
+                        <div class="pcard-tech">DNS · Domain Registrar · Hosting</div>
+                    </div>
+                </div>
+                <div class="pcard-body">
+                    <div class="skill-section">
+                        <h5 style="color:var(--l4)">Example Setup</h5>
+                        <div class="skill-list">
+                            <span class="skill-item">mainportfolio.com → Main site</span>
+                            <span class="skill-item">blog.mainportfolio.com → Blog subdomain</span>
+                        </div>
+                    </div>
+                    <div class="skill-section">
+                        <h5 style="color:var(--l4)">Skills Learned</h5>
+                        <div class="skill-list">
+                            <span class="skill-item">DNS basics: A record, CNAME</span>
+                            <span class="skill-item">Domain configuration & propagation</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="pcard-footer">
+                    <div class="resume-label" style="color:var(--l4)">📄 Resume</div>
+                    <div class="resume-val">Shows understanding beyond coding — infrastructure knowledge impresses
+                        employers.</div>
+                </div>
+            </div>
+
+        </div>
+    </section>
+
+    <div class="div"></div>
+
+    <!-- ─── LEVEL 5 ─── -->
+    <section id="level5" class="rv">
+        <div class="level-header">
+            <div class="level-dot" style="background:var(--l5)"></div>
+            <div class="level-title" style="color:var(--l5)">Level 5 — Freelancing-Ready Projects</div>
+            <div class="level-sub">3 projects</div>
+        </div>
+        <p class="sec-lead">High client-value projects that are the most commonly requested in freelance markets — build
+            these to start earning.</p>
+        <div class="projects-grid">
+
+            <!-- Project 12 -->
+            <div class="pcard" style="--pc:var(--l5)">
+                <div class="pcard-top">
+                    <div class="pcard-num"
+                        style="background:rgba(249,115,22,.1);color:var(--l5);border-color:rgba(249,115,22,.3)">12</div>
+                    <div class="pcard-info">
+                        <div class="pcard-title">Restaurant Website</div>
+                        <div class="pcard-tech">HTML · CSS · JavaScript</div>
+                    </div>
+                </div>
+                <div class="pcard-body">
+                    <div class="skill-section">
+                        <h5 style="color:var(--l5)">Required Features</h5>
+                        <div class="skill-list">
+                            <span class="skill-item">Menu section with categories</span>
+                            <span class="skill-item">Contact form with validation</span>
+                            <span class="skill-item">Google Maps embed</span>
+                            <span class="skill-item">Photo gallery & responsive layout</span>
+                        </div>
+                    </div>
+                    <div class="skill-section">
+                        <h5 style="color:var(--muted)">Why Important</h5>
+                        <div class="skill-list">
+                            <span class="skill-item">Most common freelance project — direct client deliverable</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="pcard-footer">
+                    <div class="resume-label" style="color:var(--l5)">💰 Freelance</div>
+                    <div class="resume-val">Most common client request. Build this = earn from it directly.</div>
+                </div>
+            </div>
+
+            <!-- Project 13 -->
+            <div class="pcard" style="--pc:var(--l5)">
+                <div class="pcard-top">
+                    <div class="pcard-num"
+                        style="background:rgba(249,115,22,.1);color:var(--l5);border-color:rgba(249,115,22,.3)">13</div>
+                    <div class="pcard-info">
+                        <div class="pcard-title">College Club Website</div>
+                        <div class="pcard-tech">HTML · CSS · JavaScript</div>
+                    </div>
+                </div>
+                <div class="pcard-body">
+                    <div class="skill-section">
+                        <h5 style="color:var(--l5)">Required Features</h5>
+                        <div class="skill-list">
+                            <span class="skill-item">Events section with calendar</span>
+                            <span class="skill-item">Image gallery</span>
+                            <span class="skill-item">Member registration form</span>
+                            <span class="skill-item">Fully responsive UI</span>
+                        </div>
+                    </div>
+                    <div class="skill-section">
+                        <h5 style="color:var(--muted)">Why Important</h5>
+                        <div class="skill-list">
+                            <span class="skill-item">Real institutional client — builds trust and references</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="pcard-footer">
+                    <div class="resume-label" style="color:var(--l5)">💰 Freelance</div>
+                    <div class="resume-val">Real client project within your own college — great for references.</div>
+                </div>
+            </div>
+
+            <!-- Project 14 -->
+            <div class="pcard" style="--pc:var(--l5)">
+                <div class="pcard-top">
+                    <div class="pcard-num"
+                        style="background:rgba(249,115,22,.1);color:var(--l5);border-color:rgba(249,115,22,.3)">14</div>
+                    <div class="pcard-info">
+                        <div class="pcard-title">Freelancer Personal Brand Website</div>
+                        <div class="pcard-tech">HTML · CSS · JavaScript</div>
+                    </div>
+                </div>
+                <div class="pcard-body">
+                    <div class="skill-section">
+                        <h5 style="color:var(--l5)">Required Sections</h5>
+                        <div class="skill-list">
+                            <span class="skill-item">Services & Pricing section</span>
+                            <span class="skill-item">Client testimonials</span>
+                            <span class="skill-item">Contact form</span>
+                            <span class="skill-item">Portfolio showcase</span>
+                        </div>
+                    </div>
+                    <div class="skill-section">
+                        <h5 style="color:var(--muted)">Why Important</h5>
+                        <div class="skill-list">
+                            <span class="skill-item">Helps you get real clients by showcasing yourself
+                                professionally</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="pcard-footer">
+                    <div class="resume-label" style="color:var(--l5)">💰 Freelance</div>
+                    <div class="resume-val">Your own brand website — this is how you attract clients instead of chasing
+                        them.</div>
+                </div>
+            </div>
+
+        </div>
+    </section>
+
+    <div class="div"></div>
+
+    <!-- ─── FLOW ─── -->
+    <section id="flow" class="rv">
+        <p class="eyebrow" style="color:var(--accent3)">Complete Progression</p>
+        <h2 class="sec-title">🧭 Project Progression Flow</h2>
+        <p class="sec-lead">Follow this exact order to build skills in the right sequence. Each project builds on the
+            last.</p>
+        <div class="flow-bar">
+            <span class="flow-item" style="color:var(--l1)">Portfolio Website</span><span class="flow-arrow">→</span>
+            <span class="flow-item" style="color:var(--l1)">Weather API App</span><span class="flow-arrow">→</span>
+            <span class="flow-item" style="color:var(--l1)">To-Do App</span><span class="flow-arrow">→</span>
+            <span class="flow-item" style="color:var(--l1)">Movie Search API</span><span class="flow-arrow">→</span>
+            <span class="flow-item" style="color:var(--l1)">Image Gallery</span><span class="flow-arrow">→</span>
+            <span class="flow-item" style="color:var(--l2)">Landing Page/Blog UI</span><span class="flow-arrow">→</span>
+            <span class="flow-item" style="color:var(--l2)">Portfolio Upgrade</span><span class="flow-arrow">→</span>
+            <span class="flow-item" style="color:var(--l3)">React Notes App</span><span class="flow-arrow">→</span>
+            <span class="flow-item" style="color:var(--l3)">E-Commerce UI</span><span class="flow-arrow">→</span>
+            <span class="flow-item" style="color:var(--l3)">Dashboard UI</span><span class="flow-arrow">→</span>
+            <span class="flow-item" style="color:var(--l5)">Freelancing Websites</span>
+        </div>
+
+        <!-- summary grid -->
+        <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:.8rem;margin-top:1.2rem">
+            <div
+                style="background:rgba(16,185,129,.07);border:1px solid rgba(16,185,129,.3);border-radius:12px;padding:.9rem;text-align:center">
+                <div style="font-size:1.5rem;margin-bottom:.3rem">⚡</div>
+                <div style="font-size:.82rem;font-weight:700;color:var(--l1)">3 Frontend</div>
+                <div style="font-size:.72rem;color:var(--muted2)">JS + APIs + DOM</div>
+            </div>
+            <div
+                style="background:rgba(245,158,11,.07);border:1px solid rgba(245,158,11,.3);border-radius:12px;padding:.9rem;text-align:center">
+                <div style="font-size:1.5rem;margin-bottom:.3rem">🎨</div>
+                <div style="font-size:.82rem;font-weight:700;color:var(--l2)">3 UI/UX</div>
+                <div style="font-size:.72rem;color:var(--muted2)">Design + Layout</div>
+            </div>
+            <div
+                style="background:rgba(56,189,248,.07);border:1px solid rgba(56,189,248,.3);border-radius:12px;padding:.9rem;text-align:center">
+                <div style="font-size:1.5rem;margin-bottom:.3rem">⚛️</div>
+                <div style="font-size:.82rem;font-weight:700;color:var(--l3)">3 React</div>
+                <div style="font-size:.72rem;color:var(--muted2)">Components + State</div>
+            </div>
+            <div
+                style="background:rgba(168,85,247,.07);border:1px solid rgba(168,85,247,.3);border-radius:12px;padding:.9rem;text-align:center">
+                <div style="font-size:1.5rem;margin-bottom:.3rem">🚀</div>
+                <div style="font-size:.82rem;font-weight:700;color:var(--l4)">2 Deploy</div>
+                <div style="font-size:.72rem;color:var(--muted2)">DNS + CI/CD</div>
+            </div>
+            <div
+                style="background:rgba(249,115,22,.07);border:1px solid rgba(249,115,22,.3);border-radius:12px;padding:.9rem;text-align:center">
+                <div style="font-size:1.5rem;margin-bottom:.3rem">💰</div>
+                <div style="font-size:.82rem;font-weight:700;color:var(--l5)">3 Freelance</div>
+                <div style="font-size:.72rem;color:var(--muted2)">Client-Ready</div>
+            </div>
+            <div
+                style="background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08);border-radius:12px;padding:.9rem;text-align:center">
+                <div style="font-size:1.5rem;margin-bottom:.3rem">🏆</div>
+                <div style="font-size:.82rem;font-weight:700;color:var(--text)">14 Total</div>
+                <div style="font-size:.72rem;color:var(--muted2)">Complete Roadmap</div>
+            </div>
+        </div>
+    </section>
+
+    <div class="div"></div>
+    <footer class="sfoot">KEC Workshop © 2026 · Project Ideas Roadmap · <span>Powered by Antigravity</span></footer>
+
+    <script>
+        function goTo(id, btn) {
+            document.getElementById(id)?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            document.querySelectorAll('.nb').forEach(b => b.classList.remove('active'));
+            if (btn) btn.classList.add('active');
+        }
+        const obs = new IntersectionObserver(entries => {
+            entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('vis'); obs.unobserve(e.target) } });
+        }, { threshold: 0.08 });
+        document.querySelectorAll('.rv').forEach(el => obs.observe(el));
+        window.addEventListener('scroll', () => {
+            const p = (window.scrollY / (document.documentElement.scrollHeight - window.innerHeight)) * 100;
+            document.getElementById('rbar').style.width = p + '%';
+        });
+    </script>
+</body>
+
+</html>

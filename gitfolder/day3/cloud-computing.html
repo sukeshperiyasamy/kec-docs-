@@ -1,0 +1,1328 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Cloud Computing Basics | KEC Workshop</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700;800&family=Fira+Code:wght@400;500&display=swap"
+        rel="stylesheet">
+    <style>
+        *,
+        *::before,
+        *::after {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0
+        }
+
+        :root {
+            --bg: #07091a;
+            --card: #0f1629;
+            --card2: #131d33;
+            --card3: #1a2540;
+            --accent: #38bdf8;
+            --accent2: #7dd3fc;
+            --accent3: #22d3ee;
+            --green: #10b981;
+            --orange: #f59e0b;
+            --purple: #a855f7;
+            --red: #ef4444;
+            --violet: #6366f1;
+            --text: #e2e8f0;
+            --muted: #64748b;
+            --muted2: #94a3b8;
+            --border: rgba(56, 189, 248, 0.2);
+            --glow: 0 0 36px rgba(56, 189, 248, 0.22);
+        }
+
+        html {
+            scroll-behavior: smooth
+        }
+
+        body {
+            font-family: 'Outfit', sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            font-size: 15px;
+            overflow-x: hidden
+        }
+
+        #rbar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            height: 3px;
+            z-index: 999;
+            width: 0%;
+            background: linear-gradient(90deg, var(--accent), var(--accent2), var(--accent3))
+        }
+
+        .blobs {
+            position: fixed;
+            inset: 0;
+            pointer-events: none;
+            z-index: 0;
+            overflow: hidden
+        }
+
+        .blob {
+            position: absolute;
+            border-radius: 50%;
+            filter: blur(90px);
+            opacity: .12;
+            animation: bf 14s ease-in-out infinite alternate
+        }
+
+        .b1 {
+            width: 400px;
+            height: 400px;
+            background: #0ea5e9;
+            top: -100px;
+            left: -80px
+        }
+
+        .b2 {
+            width: 300px;
+            height: 300px;
+            background: var(--violet);
+            bottom: -80px;
+            right: -50px;
+            animation-delay: 5s
+        }
+
+        .b3 {
+            width: 220px;
+            height: 220px;
+            background: #22d3ee;
+            top: 45%;
+            left: 60%;
+            animation-delay: 2.5s
+        }
+
+        @keyframes bf {
+            from {
+                transform: scale(1) translate(0, 0)
+            }
+
+            to {
+                transform: scale(1.1) translate(20px, 12px)
+            }
+        }
+
+        nav {
+            position: sticky;
+            top: 0;
+            z-index: 200;
+            background: rgba(7, 9, 26, .92);
+            backdrop-filter: blur(16px);
+            border-bottom: 1px solid var(--border);
+            padding: .65rem 1rem;
+            display: flex;
+            align-items: center;
+            gap: .4rem;
+            overflow-x: auto;
+            padding-left: 6rem
+        }
+
+        .nav-logo {
+            font-weight: 800;
+            font-size: .95rem;
+            background: linear-gradient(90deg, var(--accent), var(--accent2));
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+            white-space: nowrap;
+            margin-right: .4rem
+        }
+
+        .nb {
+            font-family: 'Outfit', sans-serif;
+            font-size: .72rem;
+            font-weight: 600;
+            padding: .32rem .8rem;
+            border: 1px solid var(--border);
+            border-radius: 999px;
+            background: transparent;
+            color: var(--muted2);
+            cursor: pointer;
+            white-space: nowrap;
+            transition: all .2s
+        }
+
+        .nb:hover,
+        .nb.active {
+            background: var(--accent);
+            border-color: var(--accent);
+            color: #fff
+        }
+
+        section {
+            position: relative;
+            z-index: 10;
+            padding: 3.5rem 1.8rem;
+            max-width: 900px;
+            margin: 0 auto
+        }
+
+        .eyebrow {
+            font-family: 'Fira Code', monospace;
+            font-size: .68rem;
+            color: var(--accent3);
+            letter-spacing: .14em;
+            text-transform: uppercase;
+            margin-bottom: .5rem
+        }
+
+        .sec-title {
+            font-size: clamp(1.5rem, 3.5vw, 2.2rem);
+            font-weight: 800;
+            line-height: 1.2;
+            background: linear-gradient(135deg, #fff 25%, var(--accent2) 100%);
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: .75rem
+        }
+
+        .sec-lead {
+            font-size: .9rem;
+            color: var(--muted2);
+            line-height: 1.8;
+            max-width: 660px;
+            margin-bottom: 1.6rem
+        }
+
+        .rv {
+            opacity: 0;
+            transform: translateY(26px);
+            transition: opacity .65s ease, transform .65s ease
+        }
+
+        .rv.vis {
+            opacity: 1;
+            transform: translateY(0)
+        }
+
+        #hero {
+            min-height: 88vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            gap: 1.3rem;
+            padding: 4rem 1.8rem;
+            max-width: 900px;
+            margin: 0 auto
+        }
+
+        .hero-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: .45rem;
+            font-family: 'Fira Code', monospace;
+            font-size: .7rem;
+            padding: .3rem .9rem;
+            border-radius: 999px;
+            border: 1px solid rgba(56, 189, 248, .4);
+            color: var(--accent2);
+            background: rgba(56, 189, 248, .07);
+            width: fit-content;
+            animation: fu .6s ease both
+        }
+
+        .hero-h1 {
+            font-size: clamp(2rem, 6vw, 3.5rem);
+            font-weight: 800;
+            line-height: 1.1;
+            background: linear-gradient(135deg, #fff 15%, var(--accent) 55%, var(--accent2) 100%);
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+            animation: fu .6s .08s ease both
+        }
+
+        .hero-sub {
+            font-size: 1rem;
+            color: var(--muted2);
+            max-width: 540px;
+            line-height: 1.8;
+            animation: fu .6s .16s ease both
+        }
+
+        .hero-stats {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 1rem;
+            animation: fu .6s .3s ease both
+        }
+
+        .hstat {
+            background: var(--card2);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: .65rem 1.1rem;
+            display: flex;
+            flex-direction: column;
+            min-width: 90px
+        }
+
+        .hstat-n {
+            font-size: 1.35rem;
+            font-weight: 800;
+            color: var(--accent2)
+        }
+
+        .hstat-l {
+            font-size: .65rem;
+            color: var(--muted);
+            margin-top: .1rem
+        }
+
+        .scroll-hint {
+            font-size: .75rem;
+            color: var(--muted);
+            display: flex;
+            align-items: center;
+            gap: .4rem;
+            animation: fu .6s .4s ease both, bob 2s 1.5s ease-in-out infinite
+        }
+
+        @keyframes bob {
+
+            0%,
+            100% {
+                transform: translateY(0)
+            }
+
+            50% {
+                transform: translateY(5px)
+            }
+        }
+
+        @keyframes fu {
+            from {
+                opacity: 0;
+                transform: translateY(22px)
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0)
+            }
+        }
+
+        /* CARDS */
+        .cards-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(195px, 1fr));
+            gap: 1rem
+        }
+
+        .cards-grid.col2 {
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr))
+        }
+
+        .card {
+            background: var(--card2);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            padding: 1.2rem;
+            transition: transform .3s, box-shadow .3s, border-color .3s;
+            cursor: default
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: var(--glow);
+            border-color: var(--accent)
+        }
+
+        .card .ci {
+            font-size: 1.8rem;
+            margin-bottom: .6rem
+        }
+
+        .card h3 {
+            font-size: .88rem;
+            font-weight: 700;
+            margin-bottom: .35rem
+        }
+
+        .card p {
+            font-size: .78rem;
+            color: var(--muted2);
+            line-height: 1.65
+        }
+
+        /* PROVIDER CARDS */
+        .provider-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 1rem;
+            margin: .75rem 0
+        }
+
+        .provider-card {
+            background: var(--card2);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            padding: 1.2rem 1.4rem;
+            display: flex;
+            flex-direction: column;
+            gap: .5rem;
+            transition: border-color .25s, transform .25s
+        }
+
+        .provider-card:hover {
+            border-color: var(--accent);
+            transform: translateY(-3px)
+        }
+
+        .provider-name {
+            font-size: 1rem;
+            font-weight: 800
+        }
+
+        .provider-desc {
+            font-size: .78rem;
+            color: var(--muted2);
+            line-height: 1.6
+        }
+
+        /* SERVICE MODEL */
+        .service-grid {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+            margin: .75rem 0
+        }
+
+        .service-card {
+            background: var(--card2);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            padding: 1.2rem 1.5rem;
+            display: flex;
+            gap: 1.2rem;
+            align-items: flex-start;
+            transition: border-color .25s, transform .25s
+        }
+
+        .service-card:hover {
+            border-color: var(--accent);
+            transform: translateX(4px)
+        }
+
+        .service-badge {
+            min-width: 64px;
+            height: 64px;
+            border-radius: 14px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: .78rem;
+            font-weight: 800;
+            font-family: 'Fira Code', monospace;
+            flex-shrink: 0;
+            letter-spacing: .04em
+        }
+
+        .iaas .service-badge {
+            background: rgba(56, 189, 248, .12);
+            color: var(--accent);
+            border: 1px solid rgba(56, 189, 248, .3)
+        }
+
+        .paas .service-badge {
+            background: rgba(168, 85, 247, .12);
+            color: var(--purple);
+            border: 1px solid rgba(168, 85, 247, .3)
+        }
+
+        .saas .service-badge {
+            background: rgba(16, 185, 129, .12);
+            color: var(--green);
+            border: 1px solid rgba(16, 185, 129, .3)
+        }
+
+        .service-body h3 {
+            font-size: .95rem;
+            font-weight: 700;
+            margin-bottom: .3rem
+        }
+
+        .service-body p {
+            font-size: .8rem;
+            color: var(--muted2);
+            line-height: 1.65
+        }
+
+        .service-tagline {
+            display: inline-block;
+            font-family: 'Fira Code', monospace;
+            font-size: .7rem;
+            margin-top: .4rem;
+            padding: .2rem .6rem;
+            border-radius: 999px;
+            background: rgba(56, 189, 248, .07);
+            border: 1px solid var(--border);
+            color: var(--accent3)
+        }
+
+        /* STEP LIST */
+        .step-list {
+            display: flex;
+            flex-direction: column;
+            gap: 0
+        }
+
+        .step {
+            display: flex;
+            align-items: flex-start;
+            gap: 1rem;
+            position: relative
+        }
+
+        .step:not(:last-child)::after {
+            content: '';
+            position: absolute;
+            left: 21px;
+            top: 44px;
+            width: 2px;
+            height: calc(100% - 12px);
+            background: linear-gradient(180deg, var(--accent), transparent)
+        }
+
+        .step-num {
+            min-width: 42px;
+            height: 42px;
+            border-radius: 50%;
+            border: 2px solid var(--accent);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 800;
+            font-size: .85rem;
+            color: var(--accent);
+            background: rgba(56, 189, 248, .1);
+            flex-shrink: 0;
+            position: relative;
+            z-index: 2;
+            margin-top: 8px;
+            transition: all .3s
+        }
+
+        .step:hover .step-num {
+            background: var(--accent);
+            color: #fff;
+            box-shadow: 0 0 18px rgba(56, 189, 248, .6)
+        }
+
+        .step-body {
+            background: var(--card2);
+            border: 1px solid var(--border);
+            border-radius: 14px;
+            padding: .9rem 1.2rem;
+            margin-bottom: 1rem;
+            flex: 1;
+            transition: border-color .3s, transform .3s
+        }
+
+        .step:hover .step-body {
+            border-color: var(--accent);
+            transform: translateX(4px)
+        }
+
+        .step-body h4 {
+            font-size: .9rem;
+            font-weight: 700;
+            margin-bottom: .25rem
+        }
+
+        .step-body p {
+            font-size: .8rem;
+            color: var(--muted2);
+            line-height: 1.65
+        }
+
+        /* COMPARISON TABLE */
+        .cmp-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: .82rem;
+            margin: .75rem 0
+        }
+
+        .cmp-table th {
+            background: rgba(56, 189, 248, .12);
+            color: var(--accent2);
+            font-weight: 700;
+            padding: .65rem 1rem;
+            text-align: left;
+            border-bottom: 2px solid var(--border)
+        }
+
+        .cmp-table td {
+            padding: .6rem 1rem;
+            border-bottom: 1px solid rgba(255, 255, 255, .05);
+            color: var(--muted2)
+        }
+
+        .cmp-table td:first-child {
+            color: var(--text);
+            font-weight: 600
+        }
+
+        .cmp-table tr:hover td {
+            background: rgba(56, 189, 248, .04)
+        }
+
+        .cmp-table .bad {
+            color: var(--red)
+        }
+
+        .cmp-table .good {
+            color: var(--green)
+        }
+
+        /* DEPLOYMENT MODELS */
+        .deploy-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+            gap: 1rem;
+            margin: .75rem 0
+        }
+
+        .deploy-card {
+            background: var(--card2);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            padding: 1.2rem;
+            text-align: center;
+            transition: border-color .25s, transform .25s
+        }
+
+        .deploy-card:hover {
+            border-color: var(--accent);
+            transform: translateY(-4px)
+        }
+
+        .deploy-icon {
+            font-size: 2.5rem;
+            margin-bottom: .6rem
+        }
+
+        .deploy-card h3 {
+            font-size: .95rem;
+            font-weight: 700;
+            margin-bottom: .4rem
+        }
+
+        .deploy-card p {
+            font-size: .78rem;
+            color: var(--muted2);
+            line-height: 1.6
+        }
+
+        /* REAL WORLD TABLE */
+        .rw-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: .82rem;
+            margin: .75rem 0
+        }
+
+        .rw-table th {
+            background: rgba(56, 189, 248, .12);
+            color: var(--accent2);
+            font-weight: 700;
+            padding: .65rem 1rem;
+            text-align: left;
+            border-bottom: 2px solid var(--border)
+        }
+
+        .rw-table td {
+            padding: .6rem 1rem;
+            border-bottom: 1px solid rgba(255, 255, 255, .05);
+            color: var(--muted2)
+        }
+
+        .rw-table td:first-child {
+            color: var(--text);
+            font-weight: 700
+        }
+
+        .rw-table tr:hover td {
+            background: rgba(56, 189, 248, .04)
+        }
+
+        /* CAREER CARDS */
+        .career-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 1rem;
+            margin: .75rem 0
+        }
+
+        .career-card {
+            background: linear-gradient(135deg, rgba(56, 189, 248, .07), rgba(99, 102, 241, .05));
+            border: 1px solid rgba(56, 189, 248, .25);
+            border-radius: 16px;
+            padding: 1.2rem;
+            transition: border-color .25s, transform .25s
+        }
+
+        .career-card:hover {
+            border-color: var(--accent);
+            transform: translateY(-4px)
+        }
+
+        .career-card .ci {
+            font-size: 1.8rem;
+            margin-bottom: .6rem
+        }
+
+        .career-card h3 {
+            font-size: .9rem;
+            font-weight: 700;
+            margin-bottom: .3rem;
+            color: var(--accent2)
+        }
+
+        .career-card p {
+            font-size: .78rem;
+            color: var(--muted2);
+            line-height: 1.6
+        }
+
+        /* ANALOGY BOX */
+        .analogy {
+            background: rgba(56, 189, 248, .06);
+            border: 1px solid rgba(56, 189, 248, .22);
+            border-radius: 14px;
+            padding: 1rem 1.3rem;
+            margin: .75rem 0;
+            font-size: .85rem;
+            line-height: 1.75;
+            color: var(--text)
+        }
+
+        .analogy strong {
+            color: var(--accent2)
+        }
+
+        /* ALERT */
+        .alert {
+            border-radius: 12px;
+            padding: .9rem 1.1rem;
+            font-size: .82rem;
+            line-height: 1.65;
+            margin: .75rem 0;
+            display: flex;
+            gap: .65rem;
+            align-items: flex-start
+        }
+
+        .alert-info {
+            background: rgba(56, 189, 248, .07);
+            border: 1px solid rgba(56, 189, 248, .25);
+            color: var(--accent2)
+        }
+
+        .alert-success {
+            background: rgba(16, 185, 129, .07);
+            border: 1px solid rgba(16, 185, 129, .25);
+            color: #34d399
+        }
+
+        /* DIV & FOOTER */
+        .div {
+            height: 1px;
+            background: linear-gradient(90deg, transparent, var(--border), transparent);
+            margin: .5rem auto;
+            max-width: 900px
+        }
+
+        .sfoot {
+            position: relative;
+            z-index: 10;
+            padding: 1.5rem;
+            text-align: center;
+            border-top: 1px solid var(--border);
+            color: var(--muted);
+            font-size: .77rem
+        }
+
+        .sfoot span {
+            color: var(--accent2)
+        }
+
+        @media(max-width:580px) {
+            section {
+                padding: 2.5rem 1rem
+            }
+
+            #hero {
+                padding: 3rem 1rem
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div id="rbar"></div>
+    <div class="blobs">
+        <div class="blob b1"></div>
+        <div class="blob b2"></div>
+        <div class="blob b3"></div>
+    </div>
+
+    <!-- Back to Home -->
+    <a href="index.html"
+        style="position:fixed;top:1rem;left:1rem;z-index:9999;display:inline-flex;align-items:center;gap:.45rem;padding:.45rem 1rem;background:rgba(7,9,26,.9);border:1px solid rgba(99,102,241,.4);border-radius:999px;color:#a78bfa;font-family:'Outfit',sans-serif;font-size:.8rem;font-weight:700;text-decoration:none;backdrop-filter:blur(10px);transition:all .2s;"
+        onmouseover="this.style.background='rgba(99,102,241,.25)';this.style.borderColor='#6366f1'"
+        onmouseout="this.style.background='rgba(7,9,26,.9)';this.style.borderColor='rgba(99,102,241,.4)'">← Home</a>
+
+    <nav>
+        <div class="nav-logo">☁️ Cloud Computing</div>
+        <button class="nb active" onclick="goTo('hero')">Intro</button>
+        <button class="nb" onclick="goTo('providers')">Providers</button>
+        <button class="nb" onclick="goTo('how')">How It Works</button>
+        <button class="nb" onclick="goTo('services')">IaaS/PaaS/SaaS</button>
+        <button class="nb" onclick="goTo('deployment')">Models</button>
+        <button class="nb" onclick="goTo('tech')">Technologies</button>
+        <button class="nb" onclick="goTo('why')">Why Cloud</button>
+        <button class="nb" onclick="goTo('realworld')">Real World</button>
+        <button class="nb" onclick="goTo('careers')">Careers</button>
+        <button class="nb" onclick="goTo('comparison')">vs Traditional</button>
+    </nav>
+
+    <!-- ─── HERO ─── -->
+    <section id="hero">
+        <div class="hero-badge">☁️ Cloud Computing Basics · KEC Workshop</div>
+        <h1 class="hero-h1">Cloud Computing<br>Made Simple</h1>
+        <p class="hero-sub">Delivering computing services — servers, storage, databases, software, AI — over the
+            internet. Instead of owning hardware, you rent computing power and pay only for what you use.</p>
+        <div class="hero-stats">
+            <div class="hstat"><span class="hstat-n">3</span><span class="hstat-l">Major Providers</span></div>
+            <div class="hstat"><span class="hstat-n">3</span><span class="hstat-l">Service Models</span></div>
+            <div class="hstat"><span class="hstat-n">3</span><span class="hstat-l">Deploy Models</span></div>
+            <div class="hstat"><span class="hstat-n">4</span><span class="hstat-l">Career Paths</span></div>
+        </div>
+        <div class="scroll-hint">↓ Scroll to explore all sections</div>
+    </section>
+
+    <div class="div"></div>
+
+    <!-- ─── SIMPLE ANALOGY ─── -->
+    <section id="analogy" class="rv">
+        <p class="eyebrow">Section 2</p>
+        <h2 class="sec-title">💡 Simple Real-Life Analogy</h2>
+        <p class="sec-lead">Cloud Computing is like electricity — you don't build your own power plant. You just plug in
+            and pay monthly.</p>
+        <div class="analogy">
+            💡 <strong>You need electricity.</strong><br>
+            You don't build your own power plant.<br>
+            You just plug into the power grid and pay monthly.<br><br>
+            ☁️ <strong>Cloud is like electricity for computing.</strong><br>
+            You need computing power → you plug into the cloud → you pay for what you use.
+        </div>
+        <div class="cards-grid" style="margin-top:1.2rem">
+            <div class="card">
+                <div class="ci">🚫</div>
+                <h3>Without Cloud</h3>
+                <p>Buy servers, maintain hardware, pay electricity & IT staff 24/7 even when not in use.</p>
+            </div>
+            <div class="card">
+                <div class="ci">☁️</div>
+                <h3>With Cloud</h3>
+                <p>Rent computing power online. Pay only for what you actually use. Scale up or down instantly.</p>
+            </div>
+            <div class="card">
+                <div class="ci">💰</div>
+                <h3>Cost Model</h3>
+                <p>Cloud follows <strong>pay-as-you-go</strong> — like a mobile data plan, not a fixed landline
+                    subscription.</p>
+            </div>
+        </div>
+    </section>
+
+    <div class="div"></div>
+
+    <!-- ─── PROVIDERS ─── -->
+    <section id="providers" class="rv">
+        <p class="eyebrow">Section 3</p>
+        <h2 class="sec-title">🏗️ Major Cloud Providers</h2>
+        <p class="sec-lead">Four major companies run the global cloud infrastructure that powers most of the internet
+            today.</p>
+        <div class="provider-grid">
+            <div class="provider-card">
+                <div style="font-size:2rem">🟠</div>
+                <div class="provider-name" style="color:#f97316">Amazon Web Services</div>
+                <div class="provider-desc">Most popular cloud platform. Used by Netflix, Airbnb, NASA, and thousands of
+                    startups. Offers 200+ services.</div>
+            </div>
+            <div class="provider-card">
+                <div style="font-size:2rem">🔵</div>
+                <div class="provider-name" style="color:#38bdf8">Microsoft Azure</div>
+                <div class="provider-desc">Popular in enterprises. Excellent integration with Windows, Office 365, and
+                    .NET applications.</div>
+            </div>
+            <div class="provider-card">
+                <div style="font-size:2rem">🟢</div>
+                <div class="provider-name" style="color:#34d399">Google Cloud Platform</div>
+                <div class="provider-desc">Strong in AI & Machine Learning. Used by YouTube, Spotify, and data-intensive
+                    applications.</div>
+            </div>
+            <div class="provider-card">
+                <div style="font-size:2rem">🔴</div>
+                <div class="provider-name" style="color:#f87171">Oracle Cloud</div>
+                <div class="provider-desc">Enterprise database focused. Preferred by large corporations running Oracle
+                    databases and ERP systems.</div>
+            </div>
+        </div>
+    </section>
+
+    <div class="div"></div>
+
+    <!-- ─── HOW IT WORKS ─── -->
+    <section id="how" class="rv">
+        <p class="eyebrow">Section 4</p>
+        <h2 class="sec-title">⚙️ How Cloud Works — Step by Step</h2>
+        <p class="sec-lead">From a physical data center to your browser — here is how cloud computing actually works
+            under the hood.</p>
+        <div class="step-list">
+            <div class="step">
+                <div class="step-num">1</div>
+                <div class="step-body">
+                    <h4>🏢 Data Centers</h4>
+                    <p>Cloud providers build massive data centers worldwide containing thousands of physical servers,
+                        cooling systems, backup power, and high-speed internet connections — all running 24/7.</p>
+                </div>
+            </div>
+            <div class="step">
+                <div class="step-num">2</div>
+                <div class="step-body">
+                    <h4>🖥️ Virtualization</h4>
+                    <p>One physical server is divided into multiple <strong>Virtual Machines (VMs)</strong>. Think: one
+                        big apartment building → many small individual flats. Each flat = one virtual server for one
+                        customer.</p>
+                </div>
+            </div>
+            <div class="step">
+                <div class="step-num">3</div>
+                <div class="step-body">
+                    <h4>🌐 Internet Access</h4>
+                    <p>When you upload a photo to Google Drive, watch Netflix, or use Gmail → your request travels:
+                        <strong>Your Device → Internet → Cloud Server → Response back to you.</strong> This happens in
+                        milliseconds.</p>
+                </div>
+            </div>
+            <div class="step">
+                <div class="step-num">4</div>
+                <div class="step-body">
+                    <h4>💳 Pay As You Go</h4>
+                    <p>You pay only for storage used (GB), compute time (CPU hours), and data transfer. No upfront
+                        hardware purchase. You can start with $1/month and scale to millions — or shut down instantly.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <div class="div"></div>
+
+    <!-- ─── SERVICE MODELS ─── -->
+    <section id="services" class="rv">
+        <p class="eyebrow">Section 5 — Very Important for Exams</p>
+        <h2 class="sec-title">📦 Types of Cloud Services</h2>
+        <p class="sec-lead">The three fundamental service models define how much you manage vs. how much the cloud
+            provider manages for you.</p>
+
+        <div class="service-grid">
+            <div class="service-card iaas">
+                <div class="service-badge">IaaS</div>
+                <div class="service-body">
+                    <h3>Infrastructure as a Service</h3>
+                    <p>You <strong>rent</strong>: Virtual machines, storage, network hardware.<br>You
+                        <strong>manage</strong>: Operating system, applications, security inside the
+                        VM.<br><br>Examples: <strong>AWS EC2, Azure Virtual Machines, Google Compute Engine</strong></p>
+                    <span class="service-tagline">👉 Like renting an empty apartment — you furnish it yourself</span>
+                </div>
+            </div>
+            <div class="service-card paas">
+                <div class="service-badge"
+                    style="background:rgba(168,85,247,.12);color:var(--purple);border-color:rgba(168,85,247,.3)">PaaS
+                </div>
+                <div class="service-body">
+                    <h3>Platform as a Service</h3>
+                    <p>You <strong>get</strong>: Server + OS + runtime + database preconfigured.<br>You <strong>only
+                            write code</strong> — no infrastructure management needed.<br><br>Examples: <strong>Google
+                            App Engine, Heroku, AWS Elastic Beanstalk</strong></p>
+                    <span class="service-tagline"
+                        style="background:rgba(168,85,247,.07);border-color:rgba(168,85,247,.25);color:var(--purple)">👉
+                        Like renting a fully furnished apartment — ready to move in</span>
+                </div>
+            </div>
+            <div class="service-card saas">
+                <div class="service-badge"
+                    style="background:rgba(16,185,129,.12);color:var(--green);border-color:rgba(16,185,129,.3)">SaaS
+                </div>
+                <div class="service-body">
+                    <h3>Software as a Service</h3>
+                    <p>You <strong>just use the software</strong> — no setup, no maintenance, no hardware.<br>Everything
+                        is managed by the provider.<br><br>Examples: <strong>Gmail, Zoom, Google Docs, Slack,
+                            Salesforce</strong></p>
+                    <span class="service-tagline"
+                        style="background:rgba(16,185,129,.07);border-color:rgba(16,185,129,.25);color:var(--green)">👉
+                        Like staying in a hotel — everything is provided for you</span>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <div class="div"></div>
+
+    <!-- ─── DEPLOYMENT MODELS ─── -->
+    <section id="deployment" class="rv">
+        <p class="eyebrow">Section 6</p>
+        <h2 class="sec-title">🏗️ Cloud Deployment Models</h2>
+        <p class="sec-lead">How cloud infrastructure is owned and shared across organizations determines the deployment
+            model.</p>
+        <div class="deploy-grid">
+            <div class="deploy-card">
+                <div class="deploy-icon">☁️</div>
+                <h3>Public Cloud</h3>
+                <p>Available to anyone. Shared infrastructure managed by provider. Most cost-effective option for
+                    startups and developers.<br><br><strong>Examples:</strong> AWS, Azure, Google Cloud</p>
+            </div>
+            <div class="deploy-card">
+                <div class="deploy-icon">🏢</div>
+                <h3>Private Cloud</h3>
+                <p>Used exclusively by one organization. Hosted on-premises or by a dedicated provider. Higher security
+                    and control.<br><br><strong>Examples:</strong> Banking systems, Government databases</p>
+            </div>
+            <div class="deploy-card">
+                <div class="deploy-icon">🔄</div>
+                <h3>Hybrid Cloud</h3>
+                <p>Combination of public + private cloud. Sensitive data stays private; other workloads run on public
+                    cloud.<br><br><strong>Example:</strong> Hospital stores patient data privately but runs analytics on
+                    AWS</p>
+            </div>
+        </div>
+    </section>
+
+    <div class="div"></div>
+
+    <!-- ─── ARCHITECTURE ─── -->
+    <section id="arch" class="rv">
+        <p class="eyebrow">Section 7</p>
+        <h2 class="sec-title">🏛️ Key Components of Cloud Architecture</h2>
+        <p class="sec-lead">Every cloud application has three layers working together: frontend, backend, and
+            networking.</p>
+        <div class="cards-grid col2">
+            <div class="card">
+                <div class="ci">💻</div>
+                <h3>Frontend</h3>
+                <p>User devices (phones, laptops), web browsers, and mobile apps. This is what users see and interact
+                    with.</p>
+            </div>
+            <div class="card">
+                <div class="ci">🖥️</div>
+                <h3>Backend (Servers)</h3>
+                <p>Cloud servers that process requests, run business logic, manage databases, and generate responses.
+                </p>
+            </div>
+            <div class="card">
+                <div class="ci">💾</div>
+                <h3>Storage</h3>
+                <p>Databases (MySQL, MongoDB), object storage (AWS S3), file systems — all replicated for reliability.
+                </p>
+            </div>
+            <div class="card">
+                <div class="ci">🌐</div>
+                <h3>Networking</h3>
+                <p>Internet connections, load balancers, CDN, firewalls, and DNS routing that connect all layers
+                    together.</p>
+            </div>
+        </div>
+    </section>
+
+    <div class="div"></div>
+
+    <!-- ─── TECHNOLOGIES ─── -->
+    <section id="tech" class="rv">
+        <p class="eyebrow">Section 8</p>
+        <h2 class="sec-title">🔧 Important Cloud Technologies</h2>
+        <p class="sec-lead">Three key technologies power modern cloud infrastructure — every cloud engineer needs to
+            understand these.</p>
+        <div class="cards-grid">
+            <div class="card">
+                <div class="ci">🖥️</div>
+                <h3>Virtualization</h3>
+                <p>Creates multiple Virtual Machines from one physical server. Foundation of all cloud computing.
+                    Enables resource sharing and isolation between customers.</p>
+            </div>
+            <div class="card">
+                <div class="ci">📦</div>
+                <h3>Containers</h3>
+                <p>Lightweight, portable application packages. Faster to start than VMs, use fewer resources.
+                    Orchestrated at scale using <strong>Docker</strong> and <strong>Kubernetes</strong>.</p>
+            </div>
+            <div class="card">
+                <div class="ci">⚡</div>
+                <h3>Serverless Computing</h3>
+                <p>No server management at all. You upload a function → cloud runs it on demand → you pay per execution.
+                    Example: <strong>AWS Lambda</strong>, Google Cloud Functions.</p>
+            </div>
+            <div class="card">
+                <div class="ci">🌐</div>
+                <h3>CDN</h3>
+                <p>Content Delivery Network — copies of your app stored on servers worldwide so users always connect to
+                    the nearest server for fastest response.</p>
+            </div>
+            <div class="card">
+                <div class="ci">⚖️</div>
+                <h3>Load Balancing</h3>
+                <p>Distributes incoming traffic across multiple servers. Prevents any single server from getting
+                    overwhelmed. Essential for high-traffic applications.</p>
+            </div>
+            <div class="card">
+                <div class="ci">💾</div>
+                <h3>Auto Scaling</h3>
+                <p>Cloud automatically adds or removes servers based on traffic. During flash sales, servers multiply in
+                    seconds — then scale back down automatically.</p>
+            </div>
+        </div>
+    </section>
+
+    <div class="div"></div>
+
+    <!-- ─── WHY CLOUD ─── -->
+    <section id="why" class="rv">
+        <p class="eyebrow">Section 9</p>
+        <h2 class="sec-title">✅ Why Cloud is Important</h2>
+        <p class="sec-lead">Cloud is not just a trend — it is the fundamental infrastructure of the modern internet and
+            every major application you use daily.</p>
+        <div class="cards-grid">
+            <div class="card">
+                <div class="ci">📈</div>
+                <h3>Scalability</h3>
+                <p>10 users → fine. Suddenly 1 lakh users → cloud automatically scales. No manual hardware upgrades
+                    needed — ever.</p>
+            </div>
+            <div class="card">
+                <div class="ci">💰</div>
+                <h3>Cost Effective</h3>
+                <p>No upfront hardware purchase. Zero maintenance cost. Start a startup for the price of a coffee per
+                    day. Scale infinitely.</p>
+            </div>
+            <div class="card">
+                <div class="ci">🌍</div>
+                <h3>Global Access</h3>
+                <p>Deploy your app in India, US, Europe, and Asia simultaneously. Users always get served from the
+                    nearest region.</p>
+            </div>
+            <div class="card">
+                <div class="ci">🔒</div>
+                <h3>Backup & Recovery</h3>
+                <p>Automatic backups across multiple data centers. If one fails, another instantly takes over. 99.99%
+                    uptime guaranteed.</p>
+            </div>
+            <div class="card">
+                <div class="ci">🤝</div>
+                <h3>Collaboration</h3>
+                <p>Teams across the world work on the same server. Real-time collaboration like Google Docs is only
+                    possible through cloud.</p>
+            </div>
+            <div class="card">
+                <div class="ci">🚀</div>
+                <h3>Speed to Market</h3>
+                <p>Launch a product globally in hours instead of months. Cloud removes all infrastructure bottlenecks
+                    for development teams.</p>
+            </div>
+        </div>
+    </section>
+
+    <div class="div"></div>
+
+    <!-- ─── REAL WORLD ─── -->
+    <section id="realworld" class="rv">
+        <p class="eyebrow">Section 10</p>
+        <h2 class="sec-title">🌐 Real World Cloud Examples</h2>
+        <p class="sec-lead">Every app you use daily runs on cloud infrastructure. Here are some major examples that show
+            the scale of cloud computing.</p>
+        <table class="rw-table">
+            <thead>
+                <tr>
+                    <th>Company</th>
+                    <th>How They Use Cloud</th>
+                    <th>Provider</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>Netflix</td>
+                    <td>Streams 250 million+ videos simultaneously worldwide</td>
+                    <td>AWS</td>
+                </tr>
+                <tr>
+                    <td>Instagram</td>
+                    <td>Stores billions of photos and handles millions of uploads per hour</td>
+                    <td>AWS</td>
+                </tr>
+                <tr>
+                    <td>Flipkart</td>
+                    <td>Auto-scales servers during Big Billion Day sale to handle 10x traffic</td>
+                    <td>Azure / AWS</td>
+                </tr>
+                <tr>
+                    <td>YouTube</td>
+                    <td>Processes & delivers 500 hours of video uploaded every single minute</td>
+                    <td>Google Cloud</td>
+                </tr>
+                <tr>
+                    <td>Spotify</td>
+                    <td>Streams music data & runs ML recommendation algorithms at scale</td>
+                    <td>Google Cloud</td>
+                </tr>
+                <tr>
+                    <td>Airbnb</td>
+                    <td>Manages global booking platform serving 150+ countries</td>
+                    <td>AWS</td>
+                </tr>
+                <tr>
+                    <td>NASA</td>
+                    <td>Processes satellite imagery and scientific data — petabytes per day</td>
+                    <td>AWS</td>
+                </tr>
+            </tbody>
+        </table>
+        <div class="alert alert-info" style="margin-top:1rem">💡 When Flipkart runs a sale, they can spin up <strong>10×
+                more servers in seconds</strong> using cloud auto-scaling — then shut them all down when the sale ends.
+            This is impossible with physical servers.</div>
+    </section>
+
+    <div class="div"></div>
+
+    <!-- ─── CAREERS ─── -->
+    <section id="careers" class="rv">
+        <p class="eyebrow">Section 11</p>
+        <h2 class="sec-title">💼 Career Opportunities in Cloud</h2>
+        <p class="sec-lead">Cloud is one of the highest-paying and fastest-growing fields in tech. These roles are in
+            demand globally and in India.</p>
+        <div class="career-grid">
+            <div class="career-card">
+                <div class="ci">🔥</div>
+                <h3>Cloud Engineer</h3>
+                <p>Deploy and manage cloud infrastructure. Set up servers, databases, networking, and auto-scaling on
+                    AWS/Azure/GCP.</p>
+            </div>
+            <div class="career-card">
+                <div class="ci">⚙️</div>
+                <h3>DevOps Engineer</h3>
+                <p>Automate cloud deployment using CI/CD pipelines. Bridge between development teams and cloud
+                    operations.</p>
+            </div>
+            <div class="career-card">
+                <div class="ci">🏗️</div>
+                <h3>Cloud Architect</h3>
+                <p>Design large-scale cloud systems from scratch. High-level planning of infrastructure that serves
+                    millions of users.</p>
+            </div>
+            <div class="career-card">
+                <div class="ci">🔐</div>
+                <h3>Cloud Security Engineer</h3>
+                <p>Secure cloud systems. Manage access control, encryption, compliance, and threat detection for cloud
+                    infrastructure.</p>
+            </div>
+        </div>
+        <div class="alert alert-success" style="margin-top:1rem">✅ AWS, Azure &amp; Google Cloud all offer <strong>free
+                certifications</strong> for students. Getting certified as a student massively boosts your resume and
+            LinkedIn profile.</div>
+    </section>
+
+    <div class="div"></div>
+
+    <!-- ─── COMPARISON ─── -->
+    <section id="comparison" class="rv">
+        <p class="eyebrow">Section 12</p>
+        <h2 class="sec-title">⚖️ Cloud vs Traditional IT</h2>
+        <p class="sec-lead">Understanding why businesses are migrating to cloud requires knowing what problems
+            traditional IT creates.</p>
+        <table class="cmp-table">
+            <thead>
+                <tr>
+                    <th>Factor</th>
+                    <th>Traditional IT</th>
+                    <th>Cloud</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>Infrastructure</td>
+                    <td class="bad">Buy physical servers</td>
+                    <td class="good">Rent virtual servers</td>
+                </tr>
+                <tr>
+                    <td>Cost</td>
+                    <td class="bad">High upfront capital cost</td>
+                    <td class="good">Pay per use — as low as $1/month</td>
+                </tr>
+                <tr>
+                    <td>Scaling</td>
+                    <td class="bad">Hard — order new hardware (weeks)</td>
+                    <td class="good">Instant — click a button or automated</td>
+                </tr>
+                <tr>
+                    <td>Setup Time</td>
+                    <td class="bad">Weeks to months</td>
+                    <td class="good">Minutes to hours</td>
+                </tr>
+                <tr>
+                    <td>Maintenance</td>
+                    <td class="bad">Manual — needs IT staff</td>
+                    <td class="good">Automated — provider handles it</td>
+                </tr>
+                <tr>
+                    <td>Backup</td>
+                    <td class="bad">Manual, risk of data loss</td>
+                    <td class="good">Automatic, multi-region</td>
+                </tr>
+                <tr>
+                    <td>Global Reach</td>
+                    <td class="bad">Single location</td>
+                    <td class="good">Deploy in 30+ regions worldwide</td>
+                </tr>
+                <tr>
+                    <td>Disaster Recovery</td>
+                    <td class="bad">Complex and expensive</td>
+                    <td class="good">Built-in, automatic failover</td>
+                </tr>
+            </tbody>
+        </table>
+    </section>
+
+    <div class="div"></div>
+    <footer class="sfoot">KEC Workshop © 2026 · Cloud Computing Basics · <span>Powered by Antigravity</span></footer>
+
+    <script>
+        function goTo(id) {
+            document.getElementById(id)?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            document.querySelectorAll('.nb').forEach(b => b.classList.remove('active'));
+            event.target.classList.add('active');
+        }
+        const obs = new IntersectionObserver(entries => {
+            entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('vis'); obs.unobserve(e.target) } });
+        }, { threshold: 0.1 });
+        document.querySelectorAll('.rv').forEach(el => obs.observe(el));
+        window.addEventListener('scroll', () => {
+            const p = (window.scrollY / (document.documentElement.scrollHeight - window.innerHeight)) * 100;
+            document.getElementById('rbar').style.width = p + '%';
+        });
+    </script>
+</body>
+
+</html>

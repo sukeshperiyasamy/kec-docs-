@@ -1,0 +1,1322 @@
+1. Smart Bakery Website
+Aim:
+To create a responsive bakery website using HTML and CSS to display products and allow ordering.
+Algorithm:
+Start 
+Create HTML structure (header, product section, footer) 
+Add product cards (Cake, Bread, Cookies) 
+Add Order buttons with alert function 
+Apply CSS styling and responsiveness 
+Display webpage in browser 
+Stop 
+Program:
+<!DOCTYPE html>
+<html>
+<head>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Smart Bakery</title>
+<style>
+body{margin:0;font-family:Arial}
+.hero{background:#f8b400;color:white;padding:60px;text-align:center}
+.products{display:flex;flex-wrap:wrap;justify-content:center}
+.card{border:1px solid #ddd;margin:10px;padding:20px;width:250px;text-align:center;border-radius:10px}
+button{background:#ff5722;color:white;border:none;padding:10px;cursor:pointer}
+footer{background:#333;color:white;text-align:center;padding:20px}
+@media(max-width:600px){.products{flex-direction:column;align-items:center}}
+</style>
+</head>
+<body>
+
+<div class="hero">
+<h1>Smart Bakery</h1>
+<p>Fresh Cakes, Bread & Cookies</p>
+</div>
+
+<div class="products">
+<div class="card">
+<h3>Cake</h3>
+<p>Chocolate Cake</p>
+<button onclick="alert('Order placed')">Order</button>
+</div>
+
+<div class="card">
+<h3>Bread</h3>
+<p>Fresh Bread</p>
+<button onclick="alert('Order placed')">Order</button>
+</div>
+
+<div class="card">
+<h3>Cookies</h3>
+<p>Crunchy Cookies</p>
+<button onclick="alert('Order placed')">Order</button>
+</div>
+</div>
+
+<footer>
+<p>Contact: bakery@email.com</p>
+</footer>
+
+</body>
+</html>
+Expected Output:
+A responsive bakery webpage displaying products with order buttons.
+
+✅ 2. Study Timer (Pomodoro)
+Aim:
+To implement a countdown timer for study sessions using JavaScript.
+Algorithm:
+Start 
+Initialize time = 1500 seconds 
+Display time in minutes:seconds 
+Start timer using setInterval() 
+Decrease time every second 
+Add Pause and Reset functions 
+Stop when time reaches zero 
+Stop 
+Program:
+<!DOCTYPE html>
+<html>
+<body>
+
+<h1 id="time">25:00</h1>
+
+<button onclick="startTimer()">Start</button>
+<button onclick="pauseTimer()">Pause</button>
+<button onclick="resetTimer()">Reset</button>
+
+<script>
+let time=1500;
+let interval;
+
+function updateDisplay(){
+let m=Math.floor(time/60);
+let s=time%60;
+document.getElementById("time").innerText=
+m+":"+(s<10?"0":"")+s;
+}
+
+function startTimer(){
+if(!interval){
+interval=setInterval(()=>{
+if(time>0){
+time--;
+updateDisplay();
+}
+},1000);
+}
+}
+
+function pauseTimer(){
+clearInterval(interval);
+interval=null;
+}
+
+function resetTimer(){
+time=1500;
+updateDisplay();
+pauseTimer();
+}
+
+updateDisplay();
+</script>
+
+</body>
+</html>
+Expected Output:
+Timer counts down from 25:00 with Start, Pause, and Reset functionality.
+
+✅ 3. Emergency Contact Page
+Aim:
+To create a webpage with clickable emergency contact numbers.
+Algorithm:
+Start 
+Create HTML page 
+Add list of emergency contacts 
+Use tel: links for calling 
+Display page 
+Stop 
+Program:
+<!DOCTYPE html>
+<html>
+<body>
+
+<h2>Emergency Contacts</h2>
+
+<ul>
+<li>Police <a href="tel:100"><button>Call</button></a></li>
+<li>Ambulance <a href="tel:102"><button>Call</button></a></li>
+<li>Fire <a href="tel:101"><button>Call</button></a></li>
+<li>Hospital <a href="tel:108"><button>Call</button></a></li>
+<li>Family <a href="tel:9999999999"><button>Call</button></a></li>
+</ul>
+
+</body>
+</html>
+Expected Output:
+Clicking buttons opens phone dialer with respective number.
+
+✅ 4. Mood Color Generator
+Aim:
+To change webpage background color based on selected mood.
+Algorithm:
+Start 
+Create buttons for moods 
+Define function to change color 
+On click, update background and text 
+Display mood message 
+Stop 
+Program:
+<!DOCTYPE html>
+<html>
+<body>
+
+<h2 id="msg">Select Mood</h2>
+
+<button onclick="setMood('yellow','Happy 😊')">Happy</button>
+<button onclick="setMood('lightblue','Calm 😌')">Calm</button>
+<button onclick="setMood('red','Angry 😡')">Angry</button>
+
+<script>
+function setMood(color,message){
+document.body.style.background=color;
+document.getElementById("msg").innerText=message;
+}
+</script>
+
+</body>
+</html>
+Expected Output:
+Background color changes based on mood selection.
+
+✅ 5. Student Portfolio
+Aim:
+To create a simple personal portfolio webpage.
+Algorithm:
+Start 
+Create HTML structure 
+Add sections: Skills, Projects, Contact 
+Display information 
+Stop 
+Program:
+<!DOCTYPE html>
+<html>
+<body>
+
+<h1>My Portfolio</h1>
+
+<h2>Skills</h2>
+<ul>
+<li>HTML</li>
+<li>CSS</li>
+<li>JavaScript</li>
+</ul>
+
+<h2>Projects</h2>
+<ul>
+<li>Smart Bakery Website</li>
+<li>IoT Projects</li>
+</ul>
+
+<h2>Contact</h2>
+<p>Email: student@email.com</p>
+
+</body>
+</html>
+Expected Output:
+A portfolio webpage showing skills, projects, and contact details.
+
+👍 If you want, I’ll continue with 6–10 (Calculator, Expense Tracker, Quiz, etc.) in same format.
+next 
+Here are Programs 6–10 in full lab-record format (Aim + Algorithm + Program + Expected Output) from your file 
+
+✅ 6. Smart Calculator
+Aim:
+To create a simple calculator that performs arithmetic operations and supports dark mode.
+Algorithm:
+Start 
+Create input display field 
+Add buttons for numbers and operators 
+Append values on button click 
+Evaluate expression using eval() 
+Add clear function 
+Add dark mode toggle 
+Stop 
+Program:
+<!DOCTYPE html>
+<html>
+<body>
+
+<input id="display" readonly>
+
+<br><br>
+
+<button onclick="addValue('1')">1</button>
+<button onclick="addValue('2')">2</button>
+<button onclick="addValue('+')">+</button>
+<button onclick="calculate()">=</button>
+
+<br><br>
+
+<button onclick="clearDisplay()">Clear</button>
+<button onclick="toggleDark()">Dark Mode</button>
+
+<script>
+function addValue(val){
+document.getElementById("display").value+=val;
+}
+
+function calculate(){
+let exp=document.getElementById("display").value;
+document.getElementById("display").value=eval(exp);
+}
+
+function clearDisplay(){
+document.getElementById("display").value="";
+}
+
+function toggleDark(){
+document.body.style.background="black";
+document.body.style.color="white";
+}
+</script>
+
+</body>
+</html>
+Expected Output:
+Calculator performs addition and displays result. Dark mode changes background.
+
+✅ 7. Daily Expense Tracker
+Aim:
+To track daily expenses and calculate the total amount dynamically.
+Algorithm:
+Start 
+Create input fields for item and amount 
+Add button to add expense 
+Store values entered by user 
+Add item to list 
+Update total amount 
+Display updated total 
+Stop 
+Program:
+<!DOCTYPE html>
+<html>
+<body>
+
+<input id="item" placeholder="Item">
+<input id="amount" placeholder="Amount">
+<button onclick="addExpense()">Add</button>
+
+<ul id="list"></ul>
+
+<h3 id="total">Total: 0</h3>
+
+<script>
+let total=0;
+
+function addExpense(){
+let item=document.getElementById("item").value;
+let amt=Number(document.getElementById("amount").value);
+
+let li=document.createElement("li");
+li.innerText=item+" - "+amt;
+document.getElementById("list").appendChild(li);
+
+total+=amt;
+document.getElementById("total").innerText="Total: "+total;
+}
+</script>
+
+</body>
+</html>
+Expected Output:
+Items are added to list and total expense updates automatically.
+
+✅ 8. Quiz Challenge App
+Aim:
+To develop a quiz application that evaluates answers and displays score.
+Algorithm:
+Start 
+Store questions and answers in array 
+Display first question 
+Accept user answer 
+Compare with correct answer 
+Update score 
+Move to next question 
+Display final score 
+Stop 
+Program:
+<!DOCTYPE html>
+<html>
+<body>
+
+<h2 id="question"></h2>
+<button onclick="check(0)">Option A</button>
+<button onclick="check(1)">Option B</button>
+
+<script>
+let questions=[
+["2+2?",0],
+["3+3?",1],
+["5-2?",0],
+["10/2?",1],
+["1+1?",0]
+];
+
+let i=0,score=0;
+
+function load(){
+document.getElementById("question").innerText=questions[i][0];
+}
+
+function check(ans){
+if(ans===questions[i][1])score++;
+i++;
+
+if(i<questions.length) load();
+else alert("Final Score: "+score);
+}
+
+load();
+</script>
+
+</body>
+</html>
+Expected Output:
+Questions are displayed one by one and final score is shown at the end.
+
+✅ 9. Weather Dashboard UI
+Aim:
+To design a simple weather dashboard displaying city temperature and condition.
+Algorithm:
+Start 
+Create HTML structure 
+Add city name, temperature, and condition 
+Display static data 
+Stop 
+Program:
+<!DOCTYPE html>
+<html>
+<body>
+
+<h2>Weather Dashboard</h2>
+
+<div>
+<h3>City: Jodhpur</h3>
+<p>Temperature: 35°C</p>
+<p>Condition: Sunny</p>
+</div>
+
+</body>
+</html>
+Expected Output:
+Weather information (city, temperature, condition) displayed on screen.
+
+✅ 10. Lost & Found Portal
+Aim:
+To create a webpage where users can report lost items.
+Algorithm:
+Start 
+Create input field for item name 
+Add submit button 
+Capture input value 
+Display item in list 
+Append new entries dynamically 
+Stop 
+Program:
+<!DOCTYPE html>
+<html>
+<body>
+
+<h2>Lost & Found</h2>
+
+<input id="item" placeholder="Enter item">
+<button onclick="addItem()">Submit</button>
+
+<div id="items"></div>
+
+<script>
+function addItem(){
+let item=document.getElementById("item").value;
+let p=document.createElement("p");
+p.innerText="Lost: "+item;
+document.getElementById("items").appendChild(p);
+}
+</script>
+
+</body>
+</html>
+Expected Output:
+User can enter lost item details, which appear on the page.
+
+👍 Next I can give 11–18 (Linux Programs) in same format — just say next.
+next
+Here are Programs 11–18 (Linux Practicals) in full lab-record format (Aim + Algorithm + Program + Expected Output) from your file 
+
+✅ 11. Secret File Hunt
+Aim:
+To locate hidden files in the system using Linux commands.
+Algorithm:
+Start 
+Open terminal 
+Use find command to search hidden files 
+Suppress permission errors 
+Display results 
+Stop 
+Program:
+#!/bin/bash
+find / -type f -name ".*" 2>/dev/null
+Expected Output:
+List of hidden files present in the system is displayed.
+
+✅ 12. Auto Backup Script
+Aim:
+To create a backup of a folder with date and time.
+Algorithm:
+Start 
+Define source folder 
+Generate destination folder with timestamp 
+Copy files using cp -r 
+Display success message 
+Stop 
+Program:
+#!/bin/bash
+src="myfolder"
+dest="backup_$(date +%Y%m%d_%H%M%S)"
+cp -r $src $dest
+echo "Backup created: $dest"
+Expected Output:
+A new backup folder is created with date and time.
+
+✅ 13. User Security
+Aim:
+To create a new user and secure a private folder.
+Algorithm:
+Start 
+Create new user 
+Create private directory 
+Assign ownership to user 
+Set permissions to restrict access 
+Stop 
+Program:
+sudo useradd secureuser
+sudo mkdir /home/secureuser/private
+sudo chown secureuser:secureuser /home/secureuser/private
+chmod 700 /home/secureuser/private
+Expected Output:
+User created and private folder accessible only by that user.
+
+✅ 14. Process Detective
+Aim:
+To identify top memory-consuming processes.
+Algorithm:
+Start 
+Use ps aux command 
+Sort processes by memory usage 
+Display top processes 
+Save output to file 
+Stop 
+Program:
+ps aux --sort=-%mem | head -n 6 > top_process.txt
+Expected Output:
+Top memory-consuming processes saved in top_process.txt.
+
+✅ 15. Linux Calculator (Menu)
+Aim:
+To perform arithmetic operations using a shell script.
+Algorithm:
+Start 
+Display menu options 
+Read user choice 
+Accept two numbers 
+Perform selected operation 
+Display result 
+Stop 
+Program:
+#!/bin/bash
+echo "1.Add 2.Subtract 3.Multiply 4.Divide"
+read ch
+echo "Enter numbers:"
+read a b
+
+case $ch in
+1) echo $((a+b));;
+2) echo $((a-b));;
+3) echo $((a*b));;
+4) echo $((a/b));;
+esac
+Expected Output:
+Correct arithmetic result is displayed based on user choice.
+
+✅ 16. Permission Repair
+Aim:
+To set file permissions so only the owner can read and write.
+Algorithm:
+Start 
+Select file 
+Apply permission using chmod 
+Restrict access to owner only 
+Stop 
+Program:
+chmod 600 file.txt
+Expected Output:
+Only the file owner has read and write permission.
+
+✅ 17. Network Check Tool
+Aim:
+To check internet connectivity using ping command.
+Algorithm:
+Start 
+Ping a website 
+Check response status 
+If success → display Online 
+Else → display Offline 
+Stop 
+Program:
+#!/bin/bash
+ping -c 1 google.com > /dev/null
+if [ $? -eq 0 ]
+then echo "Online"
+else echo "Offline"
+fi
+Expected Output:
+Displays “Online” if internet is working, otherwise “Offline”.
+
+✅ 18. Package Install Report
+Aim:
+To install a package and verify installation.
+Algorithm:
+Start 
+Update package list 
+Install package (git) 
+Check installed version 
+Display result 
+Stop 
+Program:
+sudo apt update
+sudo apt install git -y
+git --version
+Expected Output:
+Git is installed and version is displayed.
+
+👍 Next I can give 19–25 (Arduino / ESP32) in same format — just say next.
+next
+Here are Programs 19–25 (Arduino / ESP32) in full lab-record format (Aim + Algorithm + Program + Expected Output) from your file 
+
+✅ 19. Smart Traffic Signal
+Aim:
+To simulate a traffic signal system using LEDs.
+Algorithm:
+Start 
+Define pins for Red, Yellow, Green LEDs 
+Set pins as OUTPUT 
+Turn ON Red LED → delay 
+Turn ON Yellow LED → delay 
+Turn ON Green LED → delay 
+Repeat loop 
+Stop 
+Program:
+int red=2,yellow=3,green=4;
+
+void setup(){
+pinMode(red,OUTPUT);
+pinMode(yellow,OUTPUT);
+pinMode(green,OUTPUT);
+}
+
+void loop(){
+digitalWrite(red,HIGH); delay(3000);
+digitalWrite(red,LOW);
+
+digitalWrite(yellow,HIGH); delay(1000);
+digitalWrite(yellow,LOW);
+
+digitalWrite(green,HIGH); delay(3000);
+digitalWrite(green,LOW);
+}
+Expected Output:
+LEDs glow in sequence like a traffic signal (Red → Yellow → Green).
+
+✅ 20. Clap Switch (Button Simulation)
+Aim:
+To toggle an LED using a button input.
+Algorithm:
+Start 
+Define LED and button pins 
+Set LED as OUTPUT and button as INPUT 
+Read button state 
+Toggle LED state on press 
+Add delay to avoid bouncing 
+Repeat loop 
+Stop 
+Program:
+int led=2,btn=4;
+bool state=0;
+
+void setup(){
+pinMode(led,OUTPUT);
+pinMode(btn,INPUT);
+}
+
+void loop(){
+if(digitalRead(btn)==HIGH){
+state=!state;
+digitalWrite(led,state);
+delay(300);
+}
+}
+Expected Output:
+LED turns ON/OFF each time the button is pressed.
+
+✅ 21. Automatic Night Lamp
+Aim:
+To automatically turn ON an LED in darkness using an LDR sensor.
+Algorithm:
+Start 
+Connect LDR to analog pin 
+Read light intensity 
+If value < threshold → turn LED ON 
+Else → turn LED OFF 
+Repeat loop 
+Stop 
+Program:
+int ldr=A0,led=2;
+
+void setup(){
+pinMode(led,OUTPUT);
+}
+
+void loop(){
+int val=analogRead(ldr);
+if(val<500) digitalWrite(led,HIGH);
+else digitalWrite(led,LOW);
+}
+Expected Output:
+LED automatically glows in darkness and turns OFF in light.
+
+✅ 22. Temperature Alert System
+Aim:
+To activate a buzzer when temperature exceeds a threshold.
+Algorithm:
+Start 
+Read temperature sensor value 
+Compare with threshold 
+If high → buzzer ON 
+Else → buzzer OFF 
+Repeat loop 
+Stop 
+Program:
+int temp=A0,buzzer=2;
+
+void setup(){
+pinMode(buzzer,OUTPUT);
+}
+
+void loop(){
+int t=analogRead(temp);
+if(t>600) digitalWrite(buzzer,HIGH);
+else digitalWrite(buzzer,LOW);
+}
+Expected Output:
+Buzzer sounds when temperature exceeds set limit.
+
+✅ 23. Push Button Counter
+Aim:
+To count the number of button presses and display it.
+Algorithm:
+Start 
+Initialize counter variable 
+Detect button press 
+Increment count 
+Display count using Serial Monitor 
+Add delay 
+Repeat loop 
+Stop 
+Program:
+int btn=2;
+int count=0;
+
+void setup(){
+Serial.begin(9600);
+pinMode(btn,INPUT);
+}
+
+void loop(){
+if(digitalRead(btn)==HIGH){
+count++;
+Serial.println(count);
+delay(300);
+}
+}
+Expected Output:
+Count increases and is displayed on Serial Monitor with each press.
+
+✅ 24. Servo Gate Controller
+Aim:
+To control a servo motor to simulate an automatic gate.
+Algorithm:
+Start 
+Initialize servo motor 
+Attach servo to pin 
+Rotate to 90° (open gate) 
+Delay 
+Rotate to 0° (close gate) 
+Repeat loop 
+Stop 
+Program:
+#include <Servo.h>
+
+Servo myServo;
+
+void setup(){
+myServo.attach(2);
+}
+
+void loop(){
+myServo.write(90);
+delay(2000);
+myServo.write(0);
+delay(2000);
+}
+Expected Output:
+Servo motor rotates between 0° and 90° repeatedly.
+
+✅ 25. ESP32 WiFi LED Control
+Aim:
+To control an LED using a web browser via ESP32 Wi-Fi.
+Algorithm:
+Start 
+Connect ESP32 to Wi-Fi 
+Start web server 
+Wait for client request 
+Check request (/ON or /OFF) 
+Control LED accordingly 
+Send response webpage 
+Repeat loop 
+Stop 
+Program:
+#include <WiFi.h>
+
+const char* ssid="YOUR_SSID";
+const char* password="YOUR_PASS";
+
+WiFiServer server(80);
+
+void setup(){
+pinMode(2,OUTPUT);
+WiFi.begin(ssid,password);
+server.begin();
+}
+
+void loop(){
+WiFiClient client=server.available();
+if(client){
+String req=client.readStringUntil('\r');
+
+if(req.indexOf("/ON")!=-1) digitalWrite(2,HIGH);
+if(req.indexOf("/OFF")!=-1) digitalWrite(2,LOW);
+
+client.println("HTTP/1.1 200 OK");
+client.println("Content-Type:text/html");
+client.println("<a href='/ON'>ON</a><br><a href='/OFF'>OFF</a>");
+}
+}
+Expected Output:
+LED can be turned ON/OFF using a web browser.
+
+👍 Next I can give 26–30 (Raspberry Pi + Extra UI) in same format — just say next.
+next
+Here are Programs 26–30 (Raspberry Pi + Extra UI) in full lab-record format (Aim + Algorithm + Program + Expected Output) from your file 
+
+✅ 26. System Health Dashboard (Raspberry Pi)
+Aim:
+To display CPU, RAM, and disk usage of the system.
+Algorithm:
+Start 
+Display CPU usage using top 
+Display RAM usage using free -h 
+Display disk usage using df -h 
+Show all outputs in terminal 
+Stop 
+Program:
+echo "CPU:"
+top -bn1 | head -n 5
+echo "RAM:"
+free -h
+echo "Disk:"
+df -h
+Expected Output:
+CPU, memory, and disk usage details are displayed in the terminal.
+
+✅ 27. Camera Trigger
+Aim:
+To capture an image using a webcam when triggered.
+Algorithm:
+Start 
+Prompt user to press Enter 
+Wait for input 
+Capture image using webcam 
+Save image with timestamp filename 
+Stop 
+Program:
+#!/bin/bash
+echo "Press Enter to capture"
+read
+fswebcam image_$(date +%s).jpg
+Expected Output:
+Image is captured and saved with a timestamp filename.
+
+✅ 28. Bus Tracker UI
+Aim:
+To design a simple webpage displaying bus timings.
+Algorithm:
+Start 
+Create HTML structure 
+Add bus names and timings 
+Display information 
+Stop 
+Program:
+<h2>Bus Timings</h2>
+<p>Bus A - 8:00 AM</p>
+<p>Bus B - 9:00 AM</p>
+Expected Output:
+Bus schedule is displayed on the webpage.
+
+✅ 29. Attendance System UI
+Aim:
+To create a basic attendance input form.
+Algorithm:
+Start 
+Create input fields for Name and Roll No 
+Add submit button 
+Display form 
+Stop 
+Program:
+<input placeholder="Name">
+<input placeholder="Roll No">
+<button>Submit</button>
+Expected Output:
+A form appears allowing users to enter attendance details.
+
+✅ 30. Countdown Timer
+Aim:
+To create a countdown timer with start and reset functionality.
+Algorithm:
+Start 
+Initialize timer value 
+Start countdown using setInterval() 
+Decrease value every second 
+Stop at zero 
+Reset timer when required 
+Stop 
+Program:
+<!DOCTYPE html>
+<html>
+<body>
+
+<h1 id="timer">10</h1>
+<button onclick="start()">Start</button>
+<button onclick="reset()">Reset</button>
+
+<script>
+let t=10,i;
+
+function start(){
+i=setInterval(()=>{
+if(t>0){
+t--;
+timer.innerText=t;
+}else clearInterval(i);
+},1000);
+}
+
+function reset(){
+t=10;
+timer.innerText=t;
+clearInterval(i);
+}
+</script>
+
+</body>
+</html>
+Expected Output:
+Timer counts down from 10 to 0 and can be reset.
+
+✅ You now have Programs 1–30 fully completed (Aim + Algorithm + Program + Output) ready for submission.
+If you want, I can also prepare:
+📄 PDF record file 
+🎤 Viva questions + answers 
+📊 Marks-improving explanation lines 
+Just tell 👍
+next 
+Alright — here are Programs 31–35 (Windows / Scripting Practicals) in full lab-record format (Aim + Algorithm + Program + Expected Output) from your file 
+
+✅ 31. System Information Script
+Aim:
+To create a batch script that collects system details and saves them into a text file.
+Algorithm:
+Start 
+Create a text file for output 
+Fetch computer name and username 
+Get OS details using systeminfo 
+Get CPU and RAM using wmic 
+Save all data into file 
+Display completion message 
+Stop 
+Program:
+@echo off
+echo ===== SYSTEM INFORMATION ===== > system_info.txt
+
+echo Computer Name: %COMPUTERNAME% >> system_info.txt
+echo Username: %USERNAME% >> system_info.txt
+
+echo. >> system_info.txt
+echo --- OS DETAILS --- >> system_info.txt
+systeminfo | findstr /B /C:"OS Name" /C:"OS Version" >> system_info.txt
+
+echo. >> system_info.txt
+echo --- PROCESSOR --- >> system_info.txt
+wmic cpu get name >> system_info.txt
+
+echo. >> system_info.txt
+echo --- RAM (Bytes) --- >> system_info.txt
+wmic computersystem get totalphysicalmemory >> system_info.txt
+
+echo Report generated successfully.
+pause
+Expected Output:
+A file system_info.txt is created containing system specifications.
+
+✅ 32. Network Details Report
+Aim:
+To generate a report of network configuration details.
+Algorithm:
+Start 
+Create output file 
+Execute ipconfig /all 
+Save network details 
+Display confirmation 
+Stop 
+Program:
+@echo off
+echo ===== NETWORK DETAILS ===== > network_report.txt
+ipconfig /all >> network_report.txt
+echo Report saved successfully.
+pause
+Expected Output:
+network_report.txt contains IP, MAC, DNS, and gateway details.
+
+✅ 33. Installed Software List
+Aim:
+To list all installed software and save it to a file.
+Algorithm:
+Start 
+Create output file 
+Use wmic product command 
+Fetch software name and version 
+Save data 
+Stop 
+Program:
+@echo off
+echo ===== INSTALLED SOFTWARE ===== > software_list.txt
+wmic product get name,version >> software_list.txt
+echo Software list saved.
+pause
+Expected Output:
+software_list.txt contains list of installed programs.
+
+✅ 34. Disk Usage Report
+Aim:
+To display disk usage including total and free space.
+Algorithm:
+Start 
+Create output file 
+Use wmic logicaldisk 
+Extract disk details 
+Save output 
+Stop 
+Program:
+@echo off
+echo ===== DISK USAGE REPORT ===== > disk_report.txt
+wmic logicaldisk get name,size,freespace >> disk_report.txt
+echo Disk report generated.
+pause
+Expected Output:
+disk_report.txt shows disk size and free space.
+
+✅ 35. Running Process Report
+Aim:
+To list all running processes in the system.
+Algorithm:
+Start 
+Create output file 
+Use tasklist command 
+Save process details 
+Stop 
+Program:
+@echo off
+echo ===== RUNNING PROCESSES ===== > process_report.txt
+tasklist >> process_report.txt
+echo Process report saved.
+pause
+Expected Output:
+process_report.txt contains all running processes.
+
+👍 Next I’ll give 36–40 (Battery, Wi-Fi, Backup, Shutdown, PC Health) — just say next.
+next 
+Here are Programs 36–40 (Windows / Scripting Practicals) in full lab-record format (Aim + Algorithm + Program + Expected Output) from your file 
+
+✅ 36. Battery Health Check
+Aim:
+To generate a detailed battery health report.
+Algorithm:
+Start 
+Execute powercfg /batteryreport 
+Save report as HTML file 
+Display confirmation message 
+Stop 
+Program:
+@echo off
+powercfg /batteryreport /output battery_report.html
+echo Battery report generated.
+pause
+Expected Output:
+An HTML file battery_report.html is created showing battery usage and health.
+
+✅ 37. Wi-Fi Profiles Export
+Aim:
+To display and save all Wi-Fi profile names.
+Algorithm:
+Start 
+Create output file 
+Use netsh wlan show profiles 
+Save profile list 
+Display confirmation 
+Stop 
+Program:
+@echo off
+echo ===== WIFI PROFILES ===== > wifi_profiles.txt
+netsh wlan show profiles >> wifi_profiles.txt
+echo Wi-Fi profiles exported.
+pause
+Expected Output:
+wifi_profiles.txt contains all saved Wi-Fi profiles.
+
+✅ 38. Auto Folder Backup
+Aim:
+To automatically copy files from a source folder to a backup folder.
+Algorithm:
+Start 
+Define source and destination paths 
+Use xcopy command 
+Copy all files and subfolders 
+Display success message 
+Stop 
+Program:
+@echo off
+set source=C:\SourceFolder
+set backup=C:\BackupFolder
+
+echo Copying files...
+xcopy "%source%" "%backup%" /E /I /Y
+
+echo Backup completed successfully.
+pause
+Expected Output:
+Files from source folder are copied to backup folder.
+
+✅ 39. Shutdown Timer Tool
+Aim:
+To schedule system shutdown after a specified time and allow cancellation.
+Algorithm:
+Start 
+Ask user for time in seconds 
+Schedule shutdown using shutdown -s -t 
+Wait for user input 
+Cancel shutdown using shutdown -a 
+Stop 
+Program:
+@echo off
+echo Enter time in seconds:
+set /p t=
+
+shutdown -s -t %t%
+
+echo Shutdown scheduled. Press any key to cancel...
+pause
+
+shutdown -a
+echo Shutdown cancelled.
+pause
+Expected Output:
+System shutdown is scheduled and can be cancelled before execution.
+
+✅ 40. PC Health Dashboard
+Aim:
+To collect complete system health details into a single file.
+Algorithm:
+Start 
+Create output file 
+Collect system info 
+Collect CPU, RAM, disk data 
+Collect network data 
+Save all into file 
+Stop 
+Program:
+@echo off
+echo ===== PC HEALTH DASHBOARD ===== > pc_health.txt
+
+echo --- SYSTEM INFO --- >> pc_health.txt
+systeminfo >> pc_health.txt
+
+echo --- CPU --- >> pc_health.txt
+wmic cpu get name >> pc_health.txt
+
+echo --- RAM --- >> pc_health.txt
+wmic computersystem get totalphysicalmemory >> pc_health.txt
+
+echo --- DISK --- >> pc_health.txt
+wmic logicaldisk get name,size,freespace >> pc_health.txt
+
+echo --- NETWORK --- >> pc_health.txt
+ipconfig >> pc_health.txt
+
+echo Full report generated.
+pause
+Expected Output:
+pc_health.txt contains complete system information including CPU, RAM, disk, and network details.
+
+👍 Next I’ll give 41–45 (Git + CMD Practicals) — just say next.
+next 
+Here are Programs 41–45 (Git + Windows CMD Practicals) in full lab-record format (Aim + Algorithm + Program + Expected Output) from your file 
+
+✅ 41. Git Repository Setup
+Aim:
+To create and initialize a local Git repository and make the first commit.
+Algorithm:
+Start 
+Create a project folder 
+Navigate into folder 
+Initialize Git repository 
+Create a file 
+Add file to staging area 
+Commit changes 
+View commit history 
+Stop 
+Program:
+mkdir myproject
+cd myproject
+
+git init
+
+echo Hello World > file.txt
+
+git add file.txt
+git commit -m "Initial commit"
+
+git log
+Expected Output:
+A Git repository is created and commit history is displayed.
+
+✅ 42. GitHub Push Task
+Aim:
+To push a local repository to GitHub.
+Algorithm:
+Start 
+Initialize repository 
+Add files 
+Commit changes 
+Set main branch 
+Add remote repository 
+Push code to GitHub 
+Stop 
+Program:
+git init
+git add .
+git commit -m "First commit"
+
+git branch -M main
+
+git remote add origin https://github.com/username/repo.git
+
+git push -u origin main
+Expected Output:
+Project is successfully uploaded to GitHub repository.
+
+✅ 43. Branch Management Task
+Aim:
+To create, modify, and merge a branch in Git.
+Algorithm:
+Start 
+Create a new branch 
+Modify file 
+Add and commit changes 
+Switch to main branch 
+Merge branch 
+Check status 
+Stop 
+Program:
+git checkout -b feature
+
+echo Updated content >> file.txt
+
+git add .
+git commit -m "Update in branch"
+
+git checkout main
+git merge feature
+
+git status
+Expected Output:
+Branch is successfully merged into main branch.
+
+✅ 44. Folder Automation using CMD
+Aim:
+To create a folder structure using Windows Command Prompt.
+Algorithm:
+Start 
+Create main folder 
+Navigate into folder 
+Create subfolders (Docs, Code, Images, Output) 
+Display success message 
+Stop 
+Program:
+mkdir StudentProject
+cd StudentProject
+
+mkdir Docs
+mkdir Code
+mkdir Images
+mkdir Output
+
+echo Folder structure created successfully.
+Expected Output:
+Folder structure is created with required subfolders.
+
+✅ 45. Windows Command Report
+Aim:
+To collect system details and save them into a file using CMD.
+Algorithm:
+Start 
+Create output file 
+Fetch username 
+Fetch current directory 
+Fetch date and time 
+Fetch network information 
+Save all data into file 
+Stop 
+Program:
+@echo off
+echo ===== WINDOWS REPORT ===== > report.txt
+
+echo Username: %USERNAME% >> report.txt
+echo Current Path: %CD% >> report.txt
+echo Date: %DATE% >> report.txt
+echo Time: %TIME% >> report.txt
+
+echo --- NETWORK INFO --- >> report.txt
+ipconfig >> report.txt
+
+echo Report generated successfully.
+pause
+Expected Output:
+report.txt contains system details including username, path, date, time, and network info.

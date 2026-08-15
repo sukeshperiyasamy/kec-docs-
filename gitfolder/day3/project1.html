@@ -1,0 +1,1685 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Project 1 — AI Portfolio Website | KEC Workshop</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700;800&family=Fira+Code:wght@400;500&display=swap"
+        rel="stylesheet">
+    <style>
+        *,
+        *::before,
+        *::after {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0
+        }
+
+        :root {
+            --bg: #07091a;
+            --surface: #0f1629;
+            --card: #161f35;
+            --card2: #1c273f;
+            --accent: #6366f1;
+            --accent2: #a855f7;
+            --accent3: #22d3ee;
+            --green: #10b981;
+            --orange: #f59e0b;
+            --red: #ef4444;
+            --text: #e2e8f0;
+            --muted: #64748b;
+            --muted2: #94a3b8;
+            --border: rgba(99, 102, 241, .22);
+            --glow: 0 0 40px rgba(99, 102, 241, .28);
+        }
+
+        html,
+        body {
+            height: 100%
+        }
+
+        body {
+            font-family: 'Outfit', sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            min-height: 100vh;
+            overflow-x: hidden
+        }
+
+        body::before {
+            content: '';
+            position: fixed;
+            inset: 0;
+            z-index: 0;
+            pointer-events: none;
+            background: radial-gradient(ellipse 80% 55% at 15% 10%, rgba(99, 102, 241, .13) 0%, transparent 70%),
+                radial-gradient(ellipse 70% 50% at 80% 85%, rgba(168, 85, 247, .10) 0%, transparent 70%)
+        }
+
+        /* ── NAV ── */
+        nav {
+            position: sticky;
+            top: 0;
+            z-index: 200;
+            background: rgba(7, 9, 26, .9);
+            backdrop-filter: blur(16px);
+            border-bottom: 1px solid var(--border);
+            padding: .8rem 2rem;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 1rem
+        }
+
+        .nav-logo {
+            display: flex;
+            align-items: center;
+            gap: .6rem;
+            font-weight: 800;
+            font-size: 1.05rem;
+            background: linear-gradient(90deg, var(--accent), var(--accent2));
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent
+        }
+
+        .nav-logo-icon {
+            width: 30px;
+            height: 30px;
+            border-radius: 8px;
+            background: linear-gradient(135deg, var(--accent), var(--accent2));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: .85rem
+        }
+
+        .nav-tabs {
+            display: flex;
+            gap: .5rem;
+            flex-wrap: wrap
+        }
+
+        .nav-tab {
+            padding: .4rem 1rem;
+            border-radius: 999px;
+            border: 1px solid var(--border);
+            background: transparent;
+            color: var(--muted2);
+            font-family: 'Outfit', sans-serif;
+            font-size: .8rem;
+            cursor: pointer;
+            transition: all .2s
+        }
+
+        .nav-tab:hover,
+        .nav-tab.active {
+            background: rgba(99, 102, 241, .15);
+            border-color: var(--accent);
+            color: var(--accent)
+        }
+
+        .back-btn {
+            padding: .4rem 1rem;
+            border-radius: 999px;
+            background: rgba(255, 255, 255, .06);
+            border: 1px solid var(--border);
+            color: var(--muted2);
+            font-size: .8rem;
+            cursor: pointer;
+            font-family: 'Outfit', sans-serif;
+            text-decoration: none;
+            transition: all .2s
+        }
+
+        .back-btn:hover {
+            border-color: var(--accent);
+            color: var(--accent)
+        }
+
+        /* ── HERO ── */
+        .hero {
+            position: relative;
+            z-index: 10;
+            text-align: center;
+            padding: 4rem 2rem 2.5rem;
+            max-width: 900px;
+            margin: 0 auto
+        }
+
+        .hero-eyebrow {
+            font-family: 'Fira Code', monospace;
+            font-size: .72rem;
+            color: var(--accent3);
+            letter-spacing: .14em;
+            text-transform: uppercase;
+            margin-bottom: 1rem;
+            display: inline-flex;
+            align-items: center;
+            gap: .45rem
+        }
+
+        .hero-eyebrow::before {
+            content: '//';
+            color: var(--accent)
+        }
+
+        .hero-h1 {
+            font-size: clamp(2rem, 5vw, 3.4rem);
+            font-weight: 800;
+            line-height: 1.15;
+            background: linear-gradient(135deg, #fff 30%, var(--accent2) 100%);
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 1rem
+        }
+
+        .hero-sub {
+            font-size: .95rem;
+            color: var(--muted2);
+            line-height: 1.75;
+            max-width: 640px;
+            margin: 0 auto 2rem
+        }
+
+        .hero-badges {
+            display: flex;
+            gap: .6rem;
+            justify-content: center;
+            flex-wrap: wrap
+        }
+
+        .hbadge {
+            font-family: 'Fira Code', monospace;
+            font-size: .7rem;
+            padding: .3rem .8rem;
+            border-radius: 999px;
+            border: 1px solid
+        }
+
+        .hbadge.v {
+            color: var(--accent);
+            border-color: rgba(99, 102, 241, .35);
+            background: rgba(99, 102, 241, .1)
+        }
+
+        .hbadge.p {
+            color: var(--accent2);
+            border-color: rgba(168, 85, 247, .35);
+            background: rgba(168, 85, 247, .1)
+        }
+
+        .hbadge.g {
+            color: var(--green);
+            border-color: rgba(16, 185, 129, .35);
+            background: rgba(16, 185, 129, .1)
+        }
+
+        .hbadge.c {
+            color: var(--accent3);
+            border-color: rgba(34, 211, 238, .35);
+            background: rgba(34, 211, 238, .1)
+        }
+
+        .hbadge.o {
+            color: var(--orange);
+            border-color: rgba(245, 158, 11, .35);
+            background: rgba(245, 158, 11, .1)
+        }
+
+        /* ── PART TABS ── */
+        .part-switcher {
+            position: relative;
+            z-index: 10;
+            display: flex;
+            gap: 0;
+            max-width: 700px;
+            margin: 0 auto 3rem;
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            overflow: hidden
+        }
+
+        .part-btn {
+            flex: 1;
+            padding: 1.1rem 1.5rem;
+            background: transparent;
+            border: none;
+            cursor: pointer;
+            font-family: 'Outfit', sans-serif;
+            font-size: .95rem;
+            font-weight: 600;
+            color: var(--muted2);
+            transition: all .3s;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: .3rem
+        }
+
+        .part-btn .part-num {
+            font-family: 'Fira Code', monospace;
+            font-size: .65rem;
+            color: var(--muted);
+            text-transform: uppercase;
+            letter-spacing: .1em
+        }
+
+        .part-btn:first-child {
+            border-right: 1px solid var(--border)
+        }
+
+        .part-btn.active {
+            background: rgba(99, 102, 241, .12);
+            color: var(--text)
+        }
+
+        .part-btn.active .part-num {
+            color: var(--accent)
+        }
+
+        /* ── CONTENT ── */
+        .content {
+            position: relative;
+            z-index: 10;
+            max-width: 960px;
+            margin: 0 auto;
+            padding: 0 2rem 4rem
+        }
+
+        .part-section {
+            display: none
+        }
+
+        .part-section.active {
+            display: block
+        }
+
+        /* ── SECTION ── */
+        .section {
+            margin-bottom: 3rem
+        }
+
+        .section-header {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+            padding-bottom: .75rem;
+            border-bottom: 1px solid var(--border)
+        }
+
+        .section-num {
+            width: 38px;
+            height: 38px;
+            border-radius: 10px;
+            background: linear-gradient(135deg, var(--accent), var(--accent2));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 800;
+            font-size: .9rem;
+            flex-shrink: 0
+        }
+
+        .section-title {
+            font-size: 1.3rem;
+            font-weight: 700
+        }
+
+        .section-sub {
+            font-size: .82rem;
+            color: var(--muted2);
+            margin-top: .15rem
+        }
+
+        /* ── CARDS & GRIDS ── */
+        .info-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+            margin-bottom: 1.5rem
+        }
+
+        .info-card {
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: 14px;
+            padding: 1.2rem 1.4rem
+        }
+
+        .info-card h4 {
+            font-size: .85rem;
+            font-weight: 700;
+            color: var(--accent2);
+            margin-bottom: .6rem;
+            text-transform: uppercase;
+            letter-spacing: .06em;
+            font-family: 'Fira Code', monospace
+        }
+
+        .info-card ul {
+            list-style: none;
+            display: flex;
+            flex-direction: column;
+            gap: .35rem
+        }
+
+        .info-card ul li {
+            font-size: .82rem;
+            color: var(--muted2);
+            display: flex;
+            align-items: flex-start;
+            gap: .4rem
+        }
+
+        .info-card ul li::before {
+            content: '→';
+            color: var(--accent);
+            flex-shrink: 0
+        }
+
+        /* ── CODE BLOCK ── */
+        .code-block {
+            background: #0a0e1f;
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            overflow: hidden;
+            margin: 1rem 0
+        }
+
+        .code-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: .55rem 1rem;
+            background: var(--card);
+            border-bottom: 1px solid var(--border)
+        }
+
+        .code-lang {
+            font-family: 'Fira Code', monospace;
+            font-size: .68rem;
+            color: var(--accent3);
+            text-transform: uppercase;
+            letter-spacing: .1em
+        }
+
+        .copy-btn {
+            font-family: 'Fira Code', monospace;
+            font-size: .65rem;
+            padding: .2rem .6rem;
+            border-radius: 6px;
+            background: rgba(99, 102, 241, .15);
+            border: 1px solid var(--border);
+            color: var(--accent);
+            cursor: pointer;
+            transition: all .2s
+        }
+
+        .copy-btn:hover {
+            background: rgba(99, 102, 241, .3)
+        }
+
+        .code-block pre {
+            padding: 1.2rem 1.4rem;
+            overflow-x: auto;
+            font-family: 'Fira Code', monospace;
+            font-size: .82rem;
+            line-height: 1.7;
+            color: #c4d9f8
+        }
+
+        .code-block pre .kw {
+            color: #a78bfa
+        }
+
+        .code-block pre .str {
+            color: #6ee7b7
+        }
+
+        .code-block pre .cm {
+            color: #4b5563
+        }
+
+        .code-block pre .fn {
+            color: #93c5fd
+        }
+
+        /* ── PROMPT BOX ── */
+        .prompt-box {
+            background: linear-gradient(135deg, rgba(99, 102, 241, .08), rgba(168, 85, 247, .08));
+            border: 1px solid rgba(99, 102, 241, .3);
+            border-radius: 14px;
+            padding: 1.6rem;
+            margin: 1rem 0
+        }
+
+        .prompt-label {
+            font-family: 'Fira Code', monospace;
+            font-size: .68rem;
+            color: var(--accent);
+            letter-spacing: .1em;
+            text-transform: uppercase;
+            margin-bottom: .8rem;
+            display: flex;
+            align-items: center;
+            gap: .4rem
+        }
+
+        .prompt-label::before {
+            content: '🧠'
+        }
+
+        .prompt-text {
+            font-size: .88rem;
+            color: var(--muted2);
+            line-height: 1.8;
+            white-space: pre-wrap
+        }
+
+        /* ── STEP LIST ── */
+        .step-list {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem
+        }
+
+        .step-item {
+            display: flex;
+            gap: 1rem;
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: 14px;
+            padding: 1.2rem 1.4rem;
+            transition: border-color .3s
+        }
+
+        .step-item:hover {
+            border-color: var(--accent)
+        }
+
+        .step-num {
+            width: 32px;
+            height: 32px;
+            border-radius: 8px;
+            background: linear-gradient(135deg, var(--accent), var(--accent2));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 800;
+            font-size: .8rem;
+            flex-shrink: 0
+        }
+
+        .step-body h4 {
+            font-size: .95rem;
+            font-weight: 700;
+            margin-bottom: .3rem
+        }
+
+        .step-body p {
+            font-size: .83rem;
+            color: var(--muted2);
+            line-height: 1.65
+        }
+
+        /* ── FOLDER TREE ── */
+        .folder-tree {
+            background: #0a0e1f;
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 1.2rem 1.4rem;
+            font-family: 'Fira Code', monospace;
+            font-size: .83rem;
+            line-height: 2;
+            color: #c4d9f8
+        }
+
+        .folder-tree .dir {
+            color: var(--accent3)
+        }
+
+        .folder-tree .file {
+            color: #6ee7b7
+        }
+
+        /* ── HIGHLIGHT BOX ── */
+        .highlight-box {
+            border-radius: 14px;
+            padding: 1.2rem 1.4rem;
+            margin: 1rem 0;
+            border: 1px solid
+        }
+
+        .highlight-box.tip {
+            background: rgba(16, 185, 129, .06);
+            border-color: rgba(16, 185, 129, .25);
+            color: var(--green)
+        }
+
+        .highlight-box.warn {
+            background: rgba(245, 158, 11, .06);
+            border-color: rgba(245, 158, 11, .25);
+            color: var(--orange)
+        }
+
+        .highlight-box.info {
+            background: rgba(99, 102, 241, .06);
+            border-color: rgba(99, 102, 241, .25);
+            color: var(--accent)
+        }
+
+        .highlight-box .hb-title {
+            font-weight: 700;
+            font-size: .85rem;
+            margin-bottom: .4rem
+        }
+
+        .highlight-box .hb-body {
+            font-size: .82rem;
+            line-height: 1.65;
+            color: var(--muted2)
+        }
+
+        /* ── LEARN PILLS ── */
+        .learn-grid {
+            display: flex;
+            flex-wrap: wrap;
+            gap: .6rem;
+            margin-top: .5rem
+        }
+
+        .learn-pill {
+            display: flex;
+            align-items: center;
+            gap: .5rem;
+            background: var(--card2);
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            padding: .55rem .9rem;
+            font-size: .8rem
+        }
+
+        .learn-pill span {
+            font-size: 1rem
+        }
+
+        /* ── SITE LINKS ── */
+        .site-links {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+            margin: .8rem 0
+        }
+
+        .site-link-card {
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 1rem 1.2rem;
+            text-decoration: none;
+            transition: all .3s;
+            display: block
+        }
+
+        .site-link-card:hover {
+            border-color: var(--accent);
+            transform: translateY(-2px);
+            box-shadow: var(--glow)
+        }
+
+        .site-link-card .sl-num {
+            font-family: 'Fira Code', monospace;
+            font-size: .65rem;
+            color: var(--accent);
+            margin-bottom: .3rem
+        }
+
+        .site-link-card .sl-name {
+            font-size: .9rem;
+            font-weight: 700;
+            color: var(--text);
+            margin-bottom: .2rem
+        }
+
+        .site-link-card .sl-url {
+            font-family: 'Fira Code', monospace;
+            font-size: .7rem;
+            color: var(--muted2)
+        }
+
+        /* ── TWO COL ── */
+        .two-col {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1.5rem
+        }
+
+        @media(max-width:640px) {
+            .two-col {
+                grid-template-columns: 1fr
+            }
+        }
+
+        /* ── DIVIDER ── */
+        .part-divider {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            margin: 2.5rem 0;
+            color: var(--muted);
+            font-size: .78rem
+        }
+
+        .part-divider::before,
+        .part-divider::after {
+            content: '';
+            flex: 1;
+            height: 1px;
+            background: var(--border)
+        }
+
+        /* ── RESPONSIVE ── */
+        @media(max-width:768px) {
+            nav {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: .7rem
+            }
+
+            .nav-tabs {
+                width: 100%
+            }
+
+            .hero {
+                padding: 2.5rem 1.2rem 1.5rem
+            }
+
+            .content {
+                padding: 0 1.2rem 3rem
+            }
+
+            .part-switcher {
+                margin: 0 1.2rem 2rem
+            }
+        }
+
+        /* ANIMATIONS */
+        @keyframes fadeUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px)
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0)
+            }
+        }
+
+        .anim {
+            animation: fadeUp .5s ease both
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- Back to Home -->
+    <a href="index.html"
+        style="position:fixed;top:1rem;left:1rem;z-index:9999;display:inline-flex;align-items:center;gap:.45rem;padding:.45rem 1rem;background:rgba(7,9,26,.9);border:1px solid rgba(99,102,241,.4);border-radius:999px;color:#a78bfa;font-family:'Outfit',sans-serif;font-size:.8rem;font-weight:700;text-decoration:none;backdrop-filter:blur(10px);transition:all .2s;"
+        onmouseover="this.style.background='rgba(99,102,241,.25)';this.style.borderColor='#6366f1'"
+        onmouseout="this.style.background='rgba(7,9,26,.9)';this.style.borderColor='rgba(99,102,241,.4)'">← Home</a>
+
+    <!-- NAV -->
+    <nav style="padding-left:6rem;">
+        <div class="nav-logo">
+            <div class="nav-logo-icon">🎓</div>
+            KEC Workshop · Project 1
+        </div>
+        <div class="nav-tabs">
+            <button class="nav-tab active" onclick="switchPart('part1',this)">Part 1 — Build Your Own</button>
+            <button class="nav-tab" onclick="switchPart('part2',this)">Part 2 — Template Based</button>
+        </div>
+        <a href="index.html" class="back-btn">← Back to Home</a>
+    </nav>
+
+    <!-- HERO -->
+    <div class="hero anim">
+        <p class="hero-eyebrow">KEC Workshop · Day 3</p>
+        <h1 class="hero-h1">🌐 Project 1 — AI Portfolio Website</h1>
+        <p class="hero-sub">Build a professional personal portfolio using HTML, CSS &amp; JavaScript — powered by AI
+            prompts. Two paths: design from scratch or customize a free template.</p>
+        <div class="hero-badges">
+            <span class="hbadge v">HTML / CSS / JS</span>
+            <span class="hbadge p">AI Prompting</span>
+            <span class="hbadge g">GitHub Pages</span>
+            <span class="hbadge c">Free Deployment</span>
+            <span class="hbadge o">Personal Branding</span>
+        </div>
+    </div>
+
+    <!-- PART SWITCHER -->
+    <div class="part-switcher">
+        <button class="part-btn active" id="btn-part1" onclick="switchPart('part1',this)">
+            <span class="part-num">Part 1</span>
+            ✍️ Design Your Own Portfolio
+        </button>
+        <button class="part-btn" id="btn-part2" onclick="switchPart('part2',this)">
+            <span class="part-num">Part 2</span>
+            🎨 Template-Based Portfolio
+        </button>
+    </div>
+
+    <!-- CONTENT -->
+    <div class="content">
+
+        <!-- ════════════════ PART 1 ════════════════ -->
+        <div class="part-section active" id="part1">
+
+            <!-- SECTION 0: What is a Portfolio -->
+            <div class="section anim">
+                <div class="section-header">
+                    <div class="section-num">📌</div>
+                    <div>
+                        <div class="section-title">What is a Portfolio Website?</div>
+                        <div class="section-sub">Understanding the purpose &amp; value of a personal portfolio</div>
+                    </div>
+                </div>
+                <div class="info-grid">
+                    <div class="info-card">
+                        <h4>🎯 What it is</h4>
+                        <ul>
+                            <li>Personal branding website</li>
+                            <li>Digital resume</li>
+                            <li>Showcase of skills &amp; projects</li>
+                            <li>Public professional identity</li>
+                        </ul>
+                    </div>
+                    <div class="info-card">
+                        <h4>📋 Standard Sections</h4>
+                        <ul>
+                            <li>Hero — Name &amp; Tagline</li>
+                            <li>About Me</li>
+                            <li>Skills</li>
+                            <li>Projects</li>
+                            <li>Education</li>
+                            <li>Experience</li>
+                            <li>Certifications</li>
+                            <li>Contact &amp; Social Links</li>
+                        </ul>
+                    </div>
+                    <div class="info-card">
+                        <h4>💡 Why Build One?</h4>
+                        <ul>
+                            <li>Impress recruiters &amp; clients</li>
+                            <li>Stand out from other students</li>
+                            <li>Showcase real work publicly</li>
+                            <li>Learn Git &amp; deployment</li>
+                            <li>Build online presence</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <!-- SECTION 1: Collect Details -->
+            <div class="section">
+                <div class="section-header">
+                    <div class="section-num">1</div>
+                    <div>
+                        <div class="section-title">STEP 1 — Collect Your Details</div>
+                        <div class="section-sub">Gather all personal information before coding</div>
+                    </div>
+                </div>
+                <div class="info-grid">
+                    <div class="info-card">
+                        <h4>🙋 Personal</h4>
+                        <ul>
+                            <li>Full Name</li>
+                            <li>Professional Title (e.g. Frontend Developer)</li>
+                            <li>Short Bio (2–3 lines)</li>
+                            <li>Profile Photo (optional)</li>
+                        </ul>
+                    </div>
+                    <div class="info-card">
+                        <h4>⚙️ Skills</h4>
+                        <ul>
+                            <li>Programming Languages</li>
+                            <li>Tools &amp; Technologies</li>
+                            <li>Soft Skills</li>
+                        </ul>
+                    </div>
+                    <div class="info-card">
+                        <h4>🗂️ Projects (for each)</h4>
+                        <ul>
+                            <li>Project Title</li>
+                            <li>Description</li>
+                            <li>Technologies Used</li>
+                            <li>GitHub Link</li>
+                            <li>Live Demo Link</li>
+                        </ul>
+                    </div>
+                    <div class="info-card">
+                        <h4>🎓 Education</h4>
+                        <ul>
+                            <li>Degree &amp; Branch</li>
+                            <li>College Name</li>
+                            <li>Year (Passout or Current)</li>
+                        </ul>
+                    </div>
+                    <div class="info-card">
+                        <h4>💼 Experience</h4>
+                        <ul>
+                            <li>Internship / Company</li>
+                            <li>Role</li>
+                            <li>Duration</li>
+                        </ul>
+                    </div>
+                    <div class="info-card">
+                        <h4>📬 Contact</h4>
+                        <ul>
+                            <li>Email ID</li>
+                            <li>Phone (optional)</li>
+                            <li>LinkedIn Profile URL</li>
+                            <li>GitHub Profile URL</li>
+                            <li>Instagram (optional)</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <!-- SECTION 2: Folder Structure -->
+            <div class="section">
+                <div class="section-header">
+                    <div class="section-num">2</div>
+                    <div>
+                        <div class="section-title">STEP 2 — Create Folder Structure</div>
+                        <div class="section-sub">Set up your project files before writing any code</div>
+                    </div>
+                </div>
+                <div class="folder-tree">
+                    <span class="dir">portfolio/</span><br>
+                    &nbsp;&nbsp;├── <span class="file">index.html</span><br>
+                    &nbsp;&nbsp;├── <span class="file">style.css</span><br>
+                    &nbsp;&nbsp;├── <span class="file">script.js</span><br>
+                    &nbsp;&nbsp;└── <span class="dir">images/</span><br>
+                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;└── <span class="file">profile.jpg</span>
+                </div>
+                <div class="step-list" style="margin-top:1rem">
+                    <div class="step-item">
+                        <div class="step-num">1</div>
+                        <div class="step-body">
+                            <h4>Create the folder</h4>
+                            <p>Create a new folder named <code style="color:var(--accent3)">portfolio</code> anywhere on
+                                your computer.</p>
+                        </div>
+                    </div>
+                    <div class="step-item">
+                        <div class="step-num">2</div>
+                        <div class="step-body">
+                            <h4>Open in VS Code</h4>
+                            <p>Right-click inside the folder → "Open with Code". Use the built-in terminal (Ctrl+`) for
+                                commands.</p>
+                        </div>
+                    </div>
+                    <div class="step-item">
+                        <div class="step-num">3</div>
+                        <div class="step-body">
+                            <h4>Create three files</h4>
+                            <p>Create <code style="color:var(--accent3)">index.html</code>, <code
+                                    style="color:var(--accent3)">style.css</code>, and <code
+                                    style="color:var(--accent3)">script.js</code> using VS Code's file explorer.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- SECTION 3: Basic Prompt -->
+            <div class="section">
+                <div class="section-header">
+                    <div class="section-num">3</div>
+                    <div>
+                        <div class="section-title">STEP 3 — AI Prompt: Basic Layout</div>
+                        <div class="section-sub">Use this first prompt inside Antigravity or ChatGPT</div>
+                    </div>
+                </div>
+                <div class="prompt-box">
+                    <div class="prompt-label">Prompt 1 — Basic Layout Version</div>
+                    <div class="prompt-text">Create a clean, responsive personal portfolio website using HTML, CSS, and
+                        JavaScript.
+
+                        Include:
+                        - Hero section with name and professional title
+                        - About Me section
+                        - Skills section
+                        - Projects section
+                        - Education section
+                        - Contact section
+                        - Simple navbar
+                        - Responsive layout for mobile
+
+                        Use modern fonts.
+                        Keep it minimal and clean.
+                        Separate HTML, CSS, and JS files.
+                        Add placeholder content where needed.</div>
+                </div>
+                <div class="step-list" style="margin-top:1rem">
+                    <div class="step-item">
+                        <div class="step-num">1</div>
+                        <div class="step-body">
+                            <h4>Copy the prompt above</h4>
+                            <p>Open Antigravity, paste the prompt, and press Generate.</p>
+                        </div>
+                    </div>
+                    <div class="step-item">
+                        <div class="step-num">2</div>
+                        <div class="step-body">
+                            <h4>Copy generated code</h4>
+                            <p>Copy the HTML → paste into <code style="color:var(--accent3)">index.html</code>. Do same
+                                for CSS and JS files.</p>
+                        </div>
+                    </div>
+                    <div class="step-item">
+                        <div class="step-num">3</div>
+                        <div class="step-body">
+                            <h4>Test in browser</h4>
+                            <p>Double-click <code style="color:var(--accent3)">index.html</code> to open in browser.
+                                Check all sections appear correctly.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- SECTION 4: Premium Prompt -->
+            <div class="section">
+                <div class="section-header">
+                    <div class="section-num">4</div>
+                    <div>
+                        <div class="section-title">STEP 4 — AI Prompt: Premium Version</div>
+                        <div class="section-sub">Upgrade your design with this powerful single prompt</div>
+                    </div>
+                </div>
+                <div class="prompt-box">
+                    <div class="prompt-label">Prompt 2 — Premium AI Portfolio</div>
+                    <div class="prompt-text">Create a premium, modern, and visually stunning personal portfolio website
+                        using HTML, CSS, and JavaScript.
+
+                        Requirements:
+                        - Full-screen hero section with gradient background
+                        - Smooth scrolling navbar
+                        - Glassmorphism cards
+                        - Animated sections on scroll
+                        - Project cards with hover effects
+                        - Skills displayed in animated progress bars
+                        - Responsive mobile-first design
+                        - Modern typography
+                        - Social media icons
+                        - Contact form
+                        - Smooth animations using CSS and JavaScript
+                        - Clean and structured code
+
+                        At the bottom, add a section that says:
+                        "ENTER YOUR PERSONAL DETAILS BELOW"
+
+                        Leave placeholders for:
+                        - Name
+                        - Title
+                        - Bio
+                        - Skills
+                        - Projects
+                        - Education
+                        - Contact Info</div>
+                </div>
+                <div class="highlight-box tip" style="margin-top:1rem">
+                    <div class="hb-title">✅ After generating — Replace Placeholders</div>
+                    <div class="hb-body">Open the generated code and replace all placeholder text (YOUR_NAME,
+                        YOUR_TITLE, etc.) with your actual personal details gathered in Step 1.</div>
+                </div>
+            </div>
+
+            <!-- SECTION 5: Push to GitHub -->
+            <div class="section">
+                <div class="section-header">
+                    <div class="section-num">5</div>
+                    <div>
+                        <div class="section-title">STEP 5 — Push to GitHub</div>
+                        <div class="section-sub">Version control your portfolio using Git</div>
+                    </div>
+                </div>
+                <div class="highlight-box info" style="margin-bottom:1rem">
+                    <div class="hb-title">📋 Pre-requisite</div>
+                    <div class="hb-body">Create a free GitHub account at <strong>github.com</strong> if you do not have
+                        one. Also install Git from <strong>git-scm.com</strong>.</div>
+                </div>
+                <div class="code-block">
+                    <div class="code-header"><span class="code-lang">bash — Terminal (inside portfolio
+                            folder)</span><button class="copy-btn" onclick="copyCode(this)">Copy</button></div>
+                    <pre>git init
+git add .
+git commit -m "Initial portfolio website"
+git branch -M main
+git remote add origin https://github.com/username/portfolio.git
+git push -u origin main</pre>
+                </div>
+                <div class="highlight-box warn" style="margin-top:.5rem">
+                    <div class="hb-title">⚠️ Replace username</div>
+                    <div class="hb-body">Replace <strong>username</strong> in the remote URL with your actual GitHub
+                        username. Create a new repository named <strong>portfolio</strong> on GitHub first (without any
+                        files).</div>
+                </div>
+            </div>
+
+            <!-- SECTION 6: Deploy GitHub Pages -->
+            <div class="section">
+                <div class="section-header">
+                    <div class="section-num">6</div>
+                    <div>
+                        <div class="section-title">STEP 6 — Deploy with GitHub Pages</div>
+                        <div class="section-sub">Make your portfolio live on the internet — for FREE</div>
+                    </div>
+                </div>
+                <div class="step-list">
+                    <div class="step-item">
+                        <div class="step-num">1</div>
+                        <div class="step-body">
+                            <h4>Open your GitHub Repository</h4>
+                            <p>Go to <strong>github.com/username/portfolio</strong> in your browser.</p>
+                        </div>
+                    </div>
+                    <div class="step-item">
+                        <div class="step-num">2</div>
+                        <div class="step-body">
+                            <h4>Click Settings</h4>
+                            <p>Click the <strong>Settings</strong> tab at the top of your repository page.</p>
+                        </div>
+                    </div>
+                    <div class="step-item">
+                        <div class="step-num">3</div>
+                        <div class="step-body">
+                            <h4>Open Pages Section</h4>
+                            <p>In the left sidebar, scroll down and click <strong>Pages</strong>.</p>
+                        </div>
+                    </div>
+                    <div class="step-item">
+                        <div class="step-num">4</div>
+                        <div class="step-body">
+                            <h4>Select Source</h4>
+                            <p>Under <em>Source</em>, choose <strong>Deploy from a branch</strong>. Select the
+                                <strong>main</strong> branch and click <strong>Save</strong>.
+                            </p>
+                        </div>
+                    </div>
+                    <div class="step-item">
+                        <div class="step-num">5</div>
+                        <div class="step-body">
+                            <h4>🎉 Portfolio is LIVE!</h4>
+                            <p>GitHub will give you a URL: <code
+                                    style="color:var(--green)">https://username.github.io/portfolio/</code> — Share it
+                                everywhere!</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- SECTION 7: Version 2 Upgrades -->
+            <div class="section">
+                <div class="section-header">
+                    <div class="section-num">7</div>
+                    <div>
+                        <div class="section-title">STEP 7 — Upgrade to Version 2</div>
+                        <div class="section-sub">Add premium features to make your portfolio stand out</div>
+                    </div>
+                </div>
+                <div class="info-grid">
+                    <div class="info-card">
+                        <h4>✨ New Features to Add</h4>
+                        <ul>
+                            <li>Dark mode toggle</li>
+                            <li>Scroll animations (AOS)</li>
+                            <li>Loader / preloader animation</li>
+                            <li>Project filter by category</li>
+                            <li>Animated typing effect</li>
+                            <li>SEO meta tags</li>
+                        </ul>
+                    </div>
+                    <div class="info-card">
+                        <h4>🔁 Push Update Commands</h4>
+                        <ul>
+                            <li>git add .</li>
+                            <li>git commit -m "Upgraded portfolio"</li>
+                            <li>git push</li>
+                            <li>Live site auto-updates!</li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="code-block">
+                    <div class="code-header"><span class="code-lang">bash — Push Version 2</span><button
+                            class="copy-btn" onclick="copyCode(this)">Copy</button></div>
+                    <pre>git add .
+git commit -m "Upgraded portfolio with animations and dark mode"
+git push</pre>
+                </div>
+            </div>
+
+            <!-- SECTION 8: What Students Learn -->
+            <div class="section">
+                <div class="section-header">
+                    <div class="section-num">🎓</div>
+                    <div>
+                        <div class="section-title">What You Learn in Project 1</div>
+                        <div class="section-sub">Skills gained by completing this project</div>
+                    </div>
+                </div>
+                <div class="learn-grid">
+                    <div class="learn-pill"><span>📄</span> HTML Structure</div>
+                    <div class="learn-pill"><span>🎨</span> CSS Styling</div>
+                    <div class="learn-pill"><span>⚡</span> JavaScript Interactivity</div>
+                    <div class="learn-pill"><span>🤖</span> AI Prompt Engineering</div>
+                    <div class="learn-pill"><span>🔀</span> Git Version Control</div>
+                    <div class="learn-pill"><span>🌐</span> GitHub Hosting</div>
+                    <div class="learn-pill"><span>💼</span> Personal Branding</div>
+                    <div class="learn-pill"><span>🚀</span> Web Deployment</div>
+                </div>
+            </div>
+
+        </div><!-- /part1 -->
+
+        <!-- ════════════════ PART 2 ════════════════ -->
+        <div class="part-section" id="part2">
+
+            <!-- SECTION 1: Template Sites -->
+            <div class="section anim">
+                <div class="section-header">
+                    <div class="section-num">1</div>
+                    <div>
+                        <div class="section-title">STEP 1 — Download Free Portfolio Templates</div>
+                        <div class="section-sub">Free HTML/CSS template websites you can use</div>
+                    </div>
+                </div>
+                <div class="site-links">
+                    <a href="https://themevagon.com" target="_blank" class="site-link-card">
+                        <div class="sl-num">01 / ThemeVagon</div>
+                        <div class="sl-name">ThemeVagon</div>
+                        <div class="sl-url">themevagon.com</div>
+                    </a>
+                    <a href="https://html5up.net" target="_blank" class="site-link-card">
+                        <div class="sl-num">02 / HTML5 UP</div>
+                        <div class="sl-name">HTML5 UP</div>
+                        <div class="sl-url">html5up.net</div>
+                    </a>
+                    <a href="https://bootstrapmade.com" target="_blank" class="site-link-card">
+                        <div class="sl-num">03 / BootstrapMade</div>
+                        <div class="sl-name">BootstrapMade</div>
+                        <div class="sl-url">bootstrapmade.com</div>
+                    </a>
+                    <a href="https://colorlib.com" target="_blank" class="site-link-card">
+                        <div class="sl-num">04 / Colorlib</div>
+                        <div class="sl-name">Colorlib</div>
+                        <div class="sl-url">colorlib.com</div>
+                    </a>
+                </div>
+                <div class="highlight-box info" style="margin-top:1rem">
+                    <div class="hb-title">📦 What You Get</div>
+                    <div class="hb-body">Templates include: index.html, CSS files, JS files, and an images folder with
+                        pre-built sections like Hero, About, Skills, Projects, and Contact — already styled and
+                        responsive.</div>
+                </div>
+            </div>
+
+            <!-- SECTION 2: Download Template -->
+            <div class="section">
+                <div class="section-header">
+                    <div class="section-num">2</div>
+                    <div>
+                        <div class="section-title">STEP 2 — Download &amp; Extract Template</div>
+                        <div class="section-sub">How to download and open the template</div>
+                    </div>
+                </div>
+                <div class="step-list">
+                    <div class="step-item">
+                        <div class="step-num">1</div>
+                        <div class="step-body">
+                            <h4>Find a portfolio template</h4>
+                            <p>Open one of the template sites above and search for <strong>"Free Portfolio
+                                    Template"</strong>.</p>
+                        </div>
+                    </div>
+                    <div class="step-item">
+                        <div class="step-num">2</div>
+                        <div class="step-body">
+                            <h4>Download as ZIP</h4>
+                            <p>Click on the template → Click <strong>Download</strong>. It will download as a .zip file.
+                            </p>
+                        </div>
+                    </div>
+                    <div class="step-item">
+                        <div class="step-num">3</div>
+                        <div class="step-body">
+                            <h4>Extract the ZIP</h4>
+                            <p>Right-click the ZIP → <strong>"Extract Here"</strong>. You will see a folder with all the
+                                files.</p>
+                        </div>
+                    </div>
+                    <div class="step-item">
+                        <div class="step-num">4</div>
+                        <div class="step-body">
+                            <h4>Preview in browser</h4>
+                            <p>Double-click <code style="color:var(--accent3)">index.html</code> to see the full demo in
+                                your browser before editing.</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="folder-tree" style="margin-top:1rem">
+                    <span class="dir">TemplateName/</span><br>
+                    &nbsp;&nbsp;├── <span class="file">index.html</span><br>
+                    &nbsp;&nbsp;├── <span class="dir">css/</span><br>
+                    &nbsp;&nbsp;├── <span class="dir">js/</span><br>
+                    &nbsp;&nbsp;├── <span class="dir">images/</span><br>
+                    &nbsp;&nbsp;└── <span class="dir">assets/</span>
+                </div>
+            </div>
+
+            <!-- SECTION 3: Add Image -->
+            <div class="section">
+                <div class="section-header">
+                    <div class="section-num">3</div>
+                    <div>
+                        <div class="section-title">STEP 3 — Add Your Photo</div>
+                        <div class="section-sub">Replace the sample profile image with your own</div>
+                    </div>
+                </div>
+                <div class="step-list">
+                    <div class="step-item">
+                        <div class="step-num">1</div>
+                        <div class="step-body">
+                            <h4>Go to the images folder</h4>
+                            <p>Open the extracted template folder → Open the <code
+                                    style="color:var(--accent3)">images/</code> folder.</p>
+                        </div>
+                    </div>
+                    <div class="step-item">
+                        <div class="step-num">2</div>
+                        <div class="step-body">
+                            <h4>Delete the sample image</h4>
+                            <p>Remove the existing placeholder profile photo from the images folder.</p>
+                        </div>
+                    </div>
+                    <div class="step-item">
+                        <div class="step-num">3</div>
+                        <div class="step-body">
+                            <h4>Add your photo</h4>
+                            <p>Copy your photo (e.g. <code style="color:var(--accent3)">sukesh.jpg</code>) into the
+                                <code style="color:var(--accent3)">images/</code> folder.
+                            </p>
+                        </div>
+                    </div>
+                    <div class="step-item">
+                        <div class="step-num">4</div>
+                        <div class="step-body">
+                            <h4>Update HTML reference</h4>
+                            <p>Open <code style="color:var(--accent3)">index.html</code> and update the image tag to
+                                match your filename.</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="code-block" style="margin-top:.5rem">
+                    <div class="code-header"><span class="code-lang">html — Image tag update</span><button
+                            class="copy-btn" onclick="copyCode(this)">Copy</button></div>
+                    <pre><span class="cm">&lt;!-- Change this --&gt;</span>
+&lt;img src="images/profile.jpg" alt=""&gt;
+
+<span class="cm">&lt;!-- To this (use your actual filename) --&gt;</span>
+&lt;img src="images/sukesh.jpg" alt="Sukesh Periyasamy"&gt;</pre>
+                </div>
+            </div>
+
+            <!-- SECTION 4: Manual Editing -->
+            <div class="section">
+                <div class="section-header">
+                    <div class="section-num">4</div>
+                    <div>
+                        <div class="section-title">STEP 4 — Basic Manual Editing</div>
+                        <div class="section-sub">Replace placeholder text with your own content in VS Code</div>
+                    </div>
+                </div>
+                <div class="info-grid">
+                    <div class="info-card">
+                        <h4>✏️ Replace These</h4>
+                        <ul>
+                            <li>Your full name</li>
+                            <li>About Me paragraph</li>
+                            <li>Skills list</li>
+                            <li>Project names &amp; descriptions</li>
+                            <li>Education details</li>
+                            <li>Contact info &amp; social links</li>
+                        </ul>
+                    </div>
+                    <div class="info-card">
+                        <h4>💡 Tip: Use Find &amp; Replace</h4>
+                        <ul>
+                            <li>Press Ctrl + H in VS Code</li>
+                            <li>Find: "John Doe"</li>
+                            <li>Replace: "Your Name"</li>
+                            <li>Click Replace All</li>
+                            <li>Saves a lot of time!</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <!-- SECTION 5: AI Prompts for Sections -->
+            <div class="section">
+                <div class="section-header">
+                    <div class="section-num">5</div>
+                    <div>
+                        <div class="section-title">STEP 5 — Use AI to Upgrade Template Sections</div>
+                        <div class="section-sub">Improve specific sections using targeted AI prompts</div>
+                    </div>
+                </div>
+                <div class="prompt-box">
+                    <div class="prompt-label">Prompt 1 — Replace Skills Section</div>
+                    <div class="prompt-text">Modify the skills section in this HTML portfolio template.
+
+                        Replace the existing skills with:
+                        - Java
+                        - Python
+                        - React.js
+                        - Node.js
+                        - MongoDB
+                        - AWS
+
+                        Display them as animated progress bars with percentage values.
+                        Keep the existing CSS styling consistent.
+                        Make it responsive.</div>
+                </div>
+                <div class="prompt-box" style="margin-top:1rem">
+                    <div class="prompt-label">Prompt 2 — Replace Projects Section</div>
+                    <div class="prompt-text">Redesign the projects section to include the following projects:
+
+                        Project 1: House Rental Booking System
+                        Tech: HTML, CSS, JavaScript, Django
+
+                        Project 2: Sukesh Bank
+                        Tech: Java, JDBC, MySQL
+
+                        Project 3: Weather Dashboard
+                        Tech: React.js, API, Recharts
+
+                        Display each project in a card layout with hover animation.
+                        Include GitHub and Live Demo buttons.
+                        Keep the design modern and responsive.</div>
+                </div>
+                <div class="highlight-box tip" style="margin-top:1rem">
+                    <div class="hb-title">✅ How to use these prompts</div>
+                    <div class="hb-body">Copy the relevant HTML section from index.html → paste into Antigravity along
+                        with the prompt → copy back the improved HTML → replace that section in your file.</div>
+                </div>
+            </div>
+
+            <!-- SECTION 6: Resume Download -->
+            <div class="section">
+                <div class="section-header">
+                    <div class="section-num">6</div>
+                    <div>
+                        <div class="section-title">STEP 6 — Add Resume Download Button</div>
+                        <div class="section-sub">Two methods to let visitors download your resume</div>
+                    </div>
+                </div>
+                <div class="two-col">
+                    <div>
+                        <div class="highlight-box info" style="margin-bottom:1rem">
+                            <div class="hb-title">✅ Method 1 — Direct File (Recommended)</div>
+                            <div class="hb-body">Place your <strong>resume.pdf</strong> file directly in the root of
+                                your project folder.</div>
+                        </div>
+                        <div class="folder-tree">
+                            <span class="dir">portfolio/</span><br>
+                            &nbsp;&nbsp;├── <span class="file">index.html</span><br>
+                            &nbsp;&nbsp;└── <span class="file">resume.pdf</span>
+                        </div>
+                        <div class="code-block" style="margin-top:.8rem">
+                            <div class="code-header"><span class="code-lang">html</span><button class="copy-btn"
+                                    onclick="copyCode(this)">Copy</button></div>
+                            <pre>&lt;a href="resume.pdf" download class="btn"&gt;
+  Download Resume
+&lt;/a&gt;</pre>
+                        </div>
+                    </div>
+                    <div>
+                        <div class="highlight-box warn" style="margin-bottom:1rem">
+                            <div class="hb-title">📁 Method 2 — Google Drive Link</div>
+                            <div class="hb-body">Upload resume to Google Drive → Share as "Anyone with link" → Convert
+                                to direct download URL.</div>
+                        </div>
+                        <div class="code-block">
+                            <div class="code-header"><span class="code-lang">Drive URL Format</span><button
+                                    class="copy-btn" onclick="copyCode(this)">Copy</button></div>
+                            <pre><span class="cm"># Original share link:</span>
+https://drive.google.com/file/d/FILE_ID/view
+
+<span class="cm"># Convert to download link:</span>
+https://drive.google.com/uc?export=download&id=FILE_ID</pre>
+                        </div>
+                        <div class="code-block" style="margin-top:.5rem">
+                            <div class="code-header"><span class="code-lang">html</span><button class="copy-btn"
+                                    onclick="copyCode(this)">Copy</button></div>
+                            <pre>&lt;a href="https://drive.google.com/uc
+?export=download&id=FILE_ID" class="btn"&gt;
+  Download Resume
+&lt;/a&gt;</pre>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- SECTION 7: Premium Redesign -->
+            <div class="section">
+                <div class="section-header">
+                    <div class="section-num">7</div>
+                    <div>
+                        <div class="section-title">STEP 7 — AI Premium Redesign Prompt</div>
+                        <div class="section-sub">Upgrade the entire template's design with one powerful prompt</div>
+                    </div>
+                </div>
+                <div class="prompt-box">
+                    <div class="prompt-label">Premium Redesign Prompt</div>
+                    <div class="prompt-text">Upgrade this HTML portfolio template to a premium, modern, and visually
+                        stunning personal website.
+
+                        Requirements:
+                        - Gradient animated background
+                        - Smooth scroll navigation
+                        - Glassmorphism cards
+                        - Section fade-in animation on scroll
+                        - Modern typography
+                        - Responsive mobile-first design
+                        - Dark mode toggle
+                        - Hover effects on project cards
+                        - Clean spacing and layout
+                        - Minimal and elegant look
+
+                        Do not change structure drastically.
+                        Improve design and animation only.
+                        Keep HTML, CSS, and JS separate.</div>
+                </div>
+                <div class="highlight-box info" style="margin-top:1rem">
+                    <div class="hb-title">💡 How to apply</div>
+                    <div class="hb-body">Copy your full index.html + CSS → paste into Antigravity along with the prompt
+                        above → click Generate → copy back the improved code → replace your files.</div>
+                </div>
+            </div>
+
+            <!-- SECTION 8: Mobile Optimization -->
+            <div class="section">
+                <div class="section-header">
+                    <div class="section-num">8</div>
+                    <div>
+                        <div class="section-title">STEP 8 — Mobile Optimization</div>
+                        <div class="section-sub">Ensure your portfolio looks great on all screen sizes</div>
+                    </div>
+                </div>
+                <div class="info-grid">
+                    <div class="info-card">
+                        <h4>📱 Make Sure To…</h4>
+                        <ul>
+                            <li>Use media queries</li>
+                            <li>Buttons are large enough to tap</li>
+                            <li>Font sizes are readable</li>
+                            <li>Sections stack vertically</li>
+                            <li>Navbar collapses on mobile</li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="code-block">
+                    <div class="code-header"><span class="code-lang">css — Example Media Query</span><button
+                            class="copy-btn" onclick="copyCode(this)">Copy</button></div>
+                    <pre>@media (max-width: 768px) {
+  .project-card {
+    width: 100%;
+  }
+  .navbar {
+    flex-direction: column;
+  }
+  .hero h1 {
+    font-size: 2rem;
+  }
+}</pre>
+                </div>
+            </div>
+
+            <!-- SECTION 9: Push & Deploy -->
+            <div class="section">
+                <div class="section-header">
+                    <div class="section-num">9</div>
+                    <div>
+                        <div class="section-title">STEP 9 — Push to GitHub &amp; Deploy</div>
+                        <div class="section-sub">Version control and go live using GitHub Pages</div>
+                    </div>
+                </div>
+                <div class="code-block">
+                    <div class="code-header"><span class="code-lang">bash — Push Template Portfolio</span><button
+                            class="copy-btn" onclick="copyCode(this)">Copy</button></div>
+                    <pre>git init
+git add .
+git commit -m "Customized portfolio template"
+git branch -M main
+git remote add origin https://github.com/username/portfolio.git
+git push -u origin main</pre>
+                </div>
+                <div class="step-list" style="margin-top:1rem">
+                    <div class="step-item">
+                        <div class="step-num">1</div>
+                        <div class="step-body">
+                            <h4>Go to GitHub Repository</h4>
+                            <p>Open your repository on <strong>github.com</strong>.</p>
+                        </div>
+                    </div>
+                    <div class="step-item">
+                        <div class="step-num">2</div>
+                        <div class="step-body">
+                            <h4>Settings → Pages</h4>
+                            <p>Click <strong>Settings</strong> → scroll to <strong>Pages</strong> in the left sidebar.
+                            </p>
+                        </div>
+                    </div>
+                    <div class="step-item">
+                        <div class="step-num">3</div>
+                        <div class="step-body">
+                            <h4>Select Branch</h4>
+                            <p>Source → Deploy from branch → choose <strong>main</strong> → click Save.</p>
+                        </div>
+                    </div>
+                    <div class="step-item">
+                        <div class="step-num">4</div>
+                        <div class="step-body">
+                            <h4>🎉 Live URL Generated</h4>
+                            <p>Your site is live at: <code
+                                    style="color:var(--green)">https://username.github.io/portfolio/</code></p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- SECTION 10: Version 2 -->
+            <div class="section">
+                <div class="section-header">
+                    <div class="section-num">10</div>
+                    <div>
+                        <div class="section-title">STEP 10 — Upgrade to Version 2</div>
+                        <div class="section-sub">Push your portfolio to the next level with premium features</div>
+                    </div>
+                </div>
+                <div class="info-grid">
+                    <div class="info-card">
+                        <h4>✨ Add These Features</h4>
+                        <ul>
+                            <li>Dark mode toggle</li>
+                            <li>Typing animation (Typed.js)</li>
+                            <li>Scroll progress bar</li>
+                            <li>Project filter buttons</li>
+                            <li>Animated counters (skills %)</li>
+                        </ul>
+                    </div>
+                    <div class="info-card">
+                        <h4>🏆 Final Result</h4>
+                        <ul>
+                            <li>Professional portfolio live online</li>
+                            <li>Resume download feature</li>
+                            <li>Modern animations</li>
+                            <li>GitHub repository (portfolio)</li>
+                            <li>AI-assisted design experience</li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="code-block">
+                    <div class="code-header"><span class="code-lang">bash — Push Version 2</span><button
+                            class="copy-btn" onclick="copyCode(this)">Copy</button></div>
+                    <pre>git add .
+git commit -m "Premium animated portfolio v2"
+git push</pre>
+                </div>
+                <div class="highlight-box tip" style="margin-top:.5rem">
+                    <div class="hb-title">🚀 Auto-update</div>
+                    <div class="hb-body">After every <code>git push</code>, your live GitHub Pages site auto-updates
+                        within 1–2 minutes. No manual redeployment needed!</div>
+                </div>
+            </div>
+
+        </div><!-- /part2 -->
+
+    </div><!-- /content -->
+
+    <script>
+        function switchPart(partId, btn) {
+            document.querySelectorAll('.part-section').forEach(s => s.classList.remove('active'));
+            document.querySelectorAll('.part-btn, .nav-tab').forEach(b => b.classList.remove('active'));
+            document.getElementById(partId).classList.add('active');
+            btn.classList.add('active');
+            // Sync both nav tab and part button
+            if (partId === 'part1') {
+                document.getElementById('btn-part1').classList.add('active');
+            } else {
+                document.getElementById('btn-part2').classList.add('active');
+            }
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        function copyCode(btn) {
+            const pre = btn.closest('.code-block').querySelector('pre');
+            navigator.clipboard.writeText(pre.innerText).then(() => {
+                const orig = btn.textContent;
+                btn.textContent = '✓ Copied!';
+                btn.style.color = 'var(--green)';
+                setTimeout(() => { btn.textContent = orig; btn.style.color = ''; }, 2000);
+            });
+        }
+    </script>
+</body>
+
+</html>

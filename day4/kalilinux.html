@@ -1,0 +1,880 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Kali Linux – Complete Installation &amp; Commands Guide</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: #f5f7fa; color: #333; line-height: 1.75;
+    }
+
+    /* ═══════ HERO ═══════ */
+    .hero {
+      background: linear-gradient(135deg, #ede7f6, #d1c4e9, #e3f2fd);
+      text-align: center; padding: 70px 20px 50px;
+      position: relative; overflow: hidden;
+      border-bottom: 3px solid #512da8;
+    }
+    .hero::before {
+      content: ''; position: absolute; inset: 0;
+      background: radial-gradient(circle at 25% 60%, rgba(81,45,168,.06) 0%, transparent 55%),
+                  radial-gradient(circle at 75% 40%, rgba(25,118,210,.04) 0%, transparent 55%);
+      animation: heroPulse 10s ease-in-out infinite alternate;
+    }
+    @keyframes heroPulse { 0%{transform:scale(1)} 100%{transform:scale(1.04) rotate(1deg)} }
+    .hero h1 { font-size: 2.8rem; color: #311b92; position: relative; z-index: 1; }
+    .hero h1 i { color: #7c4dff; margin-right: 10px; }
+    .hero .sub { font-size: 1.15rem; color: #4527a0; margin-top: 8px; position: relative; z-index: 1; }
+    .hero .desc {
+      font-size: 1rem; color: #555; margin: 16px auto 0; max-width: 780px;
+      position: relative; z-index: 1;
+    }
+
+    /* ═══════ PAGE LINKS ═══════ */
+    .page-links {
+      display: flex; gap: 8px; justify-content: center; flex-wrap: wrap;
+      padding: 14px; background: #ffffff; border-bottom: 1px solid #e0e0e0;
+    }
+    .page-links a {
+      padding: 6px 18px; border-radius: 8px; text-decoration: none;
+      font-size: .9rem; color: #1976d2; border: 1px solid #90caf9; transition: .2s;
+    }
+    .page-links a:hover { background: #e3f2fd; color: #0d47a1; }
+    .page-links a.active { color: #fff; border-color: #512da8; background: #512da8; }
+
+    /* ═══════ NAV ═══════ */
+    .topnav {
+      background: #ffffff; border-bottom: 1px solid #e0e0e0;
+      padding: 10px 16px; display: flex; flex-wrap: wrap; gap: 6px;
+      justify-content: center; position: sticky; top: 0; z-index: 100;
+      box-shadow: 0 2px 8px rgba(0,0,0,.04);
+    }
+    .topnav a {
+      color: #666; text-decoration: none; padding: 6px 14px; border-radius: 8px;
+      font-size: .85rem; border: 1px solid transparent; transition: .2s;
+    }
+    .topnav a:hover, .topnav a.active { color: #512da8; border-color: #b39ddb; background: #ede7f6; }
+
+    /* ═══════ CONTAINER ═══════ */
+    .container { max-width: 1100px; margin: auto; padding: 30px 20px 60px; }
+
+    /* ═══════ PART HEADER ═══════ */
+    .part-header {
+      margin-top: 50px; padding: 18px 24px; border-radius: 14px;
+      background: linear-gradient(135deg, #ede7f6, #e8eaf6);
+      border-left: 5px solid #512da8; display: flex; align-items: center; gap: 14px;
+    }
+    .part-header .part-icon {
+      width: 48px; height: 48px; border-radius: 12px;
+      background: #512da8; color: #fff; display: flex;
+      align-items: center; justify-content: center; font-size: 1.3rem; flex-shrink: 0;
+    }
+    .part-header h2 { font-size: 1.5rem; color: #311b92; }
+
+    /* ═══════ STEP CARD ═══════ */
+    .timeline { position: relative; margin: 0; padding: 20px 0 0 0; }
+    .timeline::before {
+      content: ''; position: absolute; left: 30px; top: 0; bottom: 0;
+      width: 3px; background: linear-gradient(180deg, #b39ddb, #e0e0e0);
+      border-radius: 3px;
+    }
+    .step-card {
+      position: relative; margin-left: 66px; margin-bottom: 24px;
+      background: #ffffff; border: 1px solid #e0e0e0; border-radius: 14px;
+      padding: 24px; box-shadow: 0 2px 8px rgba(0,0,0,.04);
+    }
+    .step-card::before {
+      content: ''; position: absolute; left: -44px; top: 28px;
+      width: 22px; height: 2px; background: #b39ddb;
+    }
+    .step-badge {
+      position: absolute; left: -66px; top: 16px;
+      width: 42px; height: 42px; border-radius: 50%;
+      background: #512da8; color: #fff; display: flex;
+      align-items: center; justify-content: center;
+      font-weight: 800; font-size: .95rem; z-index: 2;
+      box-shadow: 0 2px 8px rgba(81,45,168,.3);
+    }
+    .step-card h3 { font-size: 1.15rem; color: #311b92; margin-bottom: 8px; }
+    .step-card h3 i { color: #7c4dff; margin-right: 8px; }
+    .step-card p  { margin: 4px 0; color: #555; }
+    .step-card ul { margin: 8px 0 8px 20px; color: #555; }
+    .step-card ul li { padding: 2px 0; }
+
+    /* ═══════ FIELD TABLE ═══════ */
+    table { width: 100%; border-collapse: collapse; margin: 12px 0 16px; }
+    th, td { padding: 10px 14px; text-align: left; border: 1px solid #e0e0e0; }
+    th { background: #ede7f6; color: #311b92; font-weight: 700; }
+    tr:nth-child(even) { background: #f5f7fa; }
+    tr:hover { background: #ede7f6; }
+
+    /* ═══════ INFO BOXES ═══════ */
+    .info { padding: 14px 18px; border-radius: 10px; margin: 14px 0; border-left: 4px solid; }
+    .info.warn  { background: #fff8e1; border-color: #ff9800; color: #e65100; }
+    .info.tip   { background: #e8f5e9; border-color: #4caf50; color: #2e7d32; }
+    .info.note  { background: #e3f2fd; border-color: #2196f3; color: #1565c0; }
+    .info.alert { background: #ffebee; border-color: #f44336; color: #c62828; }
+    .info.purple { background: #ede7f6; border-color: #7c4dff; color: #4527a0; }
+
+    /* ═══════ CODE BLOCK ═══════ */
+    .code {
+      background: #1e293b; border: 1px solid #334155; border-radius: 10px;
+      padding: 18px 20px; overflow-x: auto; font-family: 'Consolas','Courier New',monospace;
+      font-size: .9rem; line-height: 1.6; color: #a5d6a7; margin: 12px 0 16px;
+      position: relative;
+    }
+    .code .cp {
+      position: absolute; top: 10px; right: 10px; background: rgba(144,202,249,.15);
+      border: 1px solid #64b5f6; color: #90caf9; padding: 4px 14px;
+      border-radius: 6px; cursor: pointer; font-size: .78rem;
+    }
+    .code .cp:hover { background: rgba(144,202,249,.25); }
+    .code .label {
+      position: absolute; top: 10px; left: 14px;
+      font-size: .72rem; color: #94a3b8; text-transform: uppercase; letter-spacing: 1px;
+    }
+    .hl-k { color: #4fc3f7; } .hl-g { color: #81c784; } .hl-o { color: #ffb74d; }
+    .hl-s { color: #ce93d8; } .hl-c { color: #616161; font-style: italic; }
+
+    /* ═══════ CHECK / X MARKS ═══════ */
+    .check { color: #4caf50; margin-right: 6px; }
+    .xmark { color: #f44336; margin-right: 6px; }
+    .point { color: #7c4dff; margin-right: 6px; }
+
+    /* ═══════ COMMAND SECTION ═══════ */
+    .cmd-section {
+      margin-top: 50px; padding: 30px; background: #ffffff;
+      border: 1px solid #e0e0e0; border-radius: 16px;
+      box-shadow: 0 2px 8px rgba(0,0,0,.04); position: relative;
+    }
+    .cmd-section::before {
+      content: ''; position: absolute; top: 0; left: 0; width: 5px; height: 100%;
+      border-radius: 16px 0 0 16px;
+    }
+    .cmd-section.green::before  { background: linear-gradient(180deg, #2e7d32, #66bb6a); }
+    .cmd-section.blue::before   { background: linear-gradient(180deg, #1976d2, #64b5f6); }
+    .cmd-section.orange::before { background: linear-gradient(180deg, #ff9800, #ffb74d); }
+    .cmd-section.teal::before   { background: linear-gradient(180deg, #009688, #80cbc4); }
+    .cmd-section.purple::before { background: linear-gradient(180deg, #7b1fa2, #ce93d8); }
+    .cmd-section.red::before    { background: linear-gradient(180deg, #f44336, #ef9a9a); }
+    .cmd-section.indigo::before { background: linear-gradient(180deg, #303f9f, #7986cb); }
+    .cmd-section.pink::before   { background: linear-gradient(180deg, #e91e63, #f48fb1); }
+    .cmd-section.amber::before  { background: linear-gradient(180deg, #f57f17, #ffca28); }
+    .cmd-section.cyan::before   { background: linear-gradient(180deg, #00838f, #4dd0e1); }
+    .cmd-section h2 {
+      font-size: 1.5rem; color: #311b92; margin-bottom: 6px;
+      padding-bottom: 10px; border-bottom: 1px solid #e0e0e0;
+    }
+    .cmd-section h2 i { color: #7c4dff; margin-right: 8px; }
+    .cmd-section h3 { font-size: 1.05rem; color: #4527a0; margin: 18px 0 6px; }
+    .cmd-section h3 i { color: #b39ddb; margin-right: 6px; }
+    .cmd-section p  { margin: 4px 0; color: #555; }
+
+    /* ═══════ CMD ITEM ═══════ */
+    .cmd-item {
+      margin: 14px 0; padding: 16px; background: #fafafa;
+      border: 1px solid #e8e8e8; border-radius: 10px;
+    }
+    .cmd-item .cmd-label {
+      font-weight: 600; color: #333; margin-bottom: 6px;
+      display: flex; align-items: center; gap: 8px;
+    }
+    .cmd-item .cmd-label i { color: #7c4dff; font-size: .9rem; }
+    .cmd-item .cmd-desc { font-size: .88rem; color: #777; margin-top: 4px; }
+
+    /* ═══ PRACTICE BOX ═══ */
+    .practice-box {
+      margin-top: 50px; padding: 30px; border-radius: 16px;
+      background: linear-gradient(135deg, #ede7f6, #e3f2fd);
+      border: 2px solid #b39ddb;
+    }
+    .practice-box h2 { color: #311b92; margin-bottom: 12px; }
+    .practice-box h2 i { color: #7c4dff; margin-right: 8px; }
+
+    /* ═══════ SCROLL TOP ═══════ */
+    .scroll-top {
+      position: fixed; bottom: 30px; right: 30px; width: 48px; height: 48px;
+      background: #512da8; color: #fff; border: none; border-radius: 50%;
+      font-size: 1.5rem; cursor: pointer; display: none; z-index: 999;
+      box-shadow: 0 4px 16px rgba(81,45,168,.3); transition: transform .2s;
+    }
+    .scroll-top:hover { transform: scale(1.15); }
+
+    /* ═══════ FOOTER ═══════ */
+    footer { text-align: center; padding: 30px; color: #888; border-top: 1px solid #e0e0e0; }
+
+    /* ═══════ RESPONSIVE ═══════ */
+    @media (max-width: 640px) {
+      .hero h1 { font-size: 1.9rem; }
+      .topnav a { font-size: .76rem; padding: 5px 8px; }
+      .timeline::before { left: 20px; }
+      .step-badge { left: -56px; width: 36px; height: 36px; font-size: .82rem; }
+      .step-card { margin-left: 50px; padding: 18px; }
+      .step-card::before { left: -34px; width: 14px; }
+      .cmd-section { padding: 18px 14px; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- ═══════════ HERO ═══════════ -->
+<header class="hero">
+  <h1><i class="fa-solid fa-skull-crossbones"></i> Kali Linux – Complete Guide</h1>
+  <p class="sub">VirtualBox Installation + Essential Linux Commands</p>
+  <p class="desc">Step-by-step guide to install <strong>Kali Linux 2025</strong> in VirtualBox and master the essential terminal commands every beginner needs.</p>
+</header>
+
+<!-- ═══════════ PAGE LINKS ═══════════ -->
+<div class="page-links">
+  <a href="iot.html"><i class="fa-solid fa-globe"></i> IoT</a>
+  <a href="sensor.html"><i class="fa-solid fa-satellite-dish"></i> Sensors</a>
+  <a href="esp32.html"><i class="fa-solid fa-bolt"></i> ESP32</a>
+  <a href="arduino.html"><i class="fa-solid fa-microchip"></i> Arduino</a>
+  <a href="project.html"><i class="fa-solid fa-screwdriver-wrench"></i> Projects</a>
+  <a href="raspproject.html"><i class="fa-solid fa-microchip"></i> Pi Project</a>
+  <a href="Raspberrypi.html"><i class="fa-brands fa-raspberry-pi"></i> Raspberry Pi</a>
+  <a href="kalilinux.html" class="active"><i class="fa-solid fa-skull-crossbones"></i> Kali Linux</a>
+</div>
+
+<!-- ═══════════ NAV ═══════════ -->
+<nav class="topnav">
+  <a href="#part1">Part 1: VM Setup</a>
+  <a href="#part2">Part 2: Boot</a>
+  <a href="#part3">Part 3: Installer</a>
+  <a href="#part4">Part 4: Partition</a>
+  <a href="#part5">Part 5: Software</a>
+  <a href="#part6">Part 6: Bootloader</a>
+  <a href="#part7">Part 7: Final</a>
+  <a href="#part8">Part 8: Login</a>
+  <a href="#after">After Install</a>
+  <a href="#commands">Commands</a>
+  <a href="#practice">Practice</a>
+</nav>
+
+<div class="container">
+
+<!-- ══════════════════════════════════════════════════════════════ -->
+<!--  PART 1 — CREATE VIRTUAL MACHINE IN VIRTUALBOX              -->
+<!-- ══════════════════════════════════════════════════════════════ -->
+<div class="part-header" id="part1">
+  <div class="part-icon"><i class="fa-solid fa-desktop"></i></div>
+  <h2>Part 1 — Create Virtual Machine in VirtualBox</h2>
+</div>
+
+<div class="timeline">
+
+  <!-- STEP 1 -->
+  <div class="step-card">
+    <div class="step-badge">1</div>
+    <h3><i class="fa-solid fa-folder-open"></i> Open VirtualBox</h3>
+    <p><i class="fa-solid fa-check check"></i> Launch VirtualBox application</p>
+    <p><i class="fa-solid fa-arrow-pointer point"></i> Click <strong>New</strong></p>
+  </div>
+
+  <!-- STEP 2 -->
+  <div class="step-card">
+    <div class="step-badge">2</div>
+    <h3><i class="fa-solid fa-pen-to-square"></i> Basic Details</h3>
+    <p>Fill in the following:</p>
+    <table>
+      <tr><th>Field</th><th>Value</th></tr>
+      <tr><td><strong>Name</strong></td><td>Kali Linux 2025</td></tr>
+      <tr><td><strong>Type</strong></td><td>Linux</td></tr>
+      <tr><td><strong>Version</strong></td><td>Debian (64-bit)</td></tr>
+      <tr><td><strong>ISO Image</strong></td><td>Select <code>kali-linux-2025.4-installer-amd64.iso</code></td></tr>
+    </table>
+    <div class="info alert">
+      <i class="fa-solid fa-circle-xmark xmark"></i>
+      <strong>Uncheck:</strong> Proceed with Unattended Installation
+    </div>
+    <p><i class="fa-solid fa-arrow-pointer point"></i> Click <strong>Next</strong></p>
+  </div>
+
+  <!-- STEP 3 -->
+  <div class="step-card">
+    <div class="step-badge">3</div>
+    <h3><i class="fa-solid fa-memory"></i> Allocate RAM &amp; CPU</h3>
+    <table>
+      <tr><th>Setting</th><th>Value</th></tr>
+      <tr><td><strong>RAM</strong></td><td>4096 MB (minimum)<br><small style="color:#888;">If you have 16GB RAM → give 6–8 GB</small></td></tr>
+      <tr><td><strong>Processors</strong></td><td>2 cores (or 3 if available)</td></tr>
+    </table>
+    <p><i class="fa-solid fa-arrow-pointer point"></i> Click <strong>Next</strong></p>
+  </div>
+
+  <!-- STEP 4 -->
+  <div class="step-card">
+    <div class="step-badge">4</div>
+    <h3><i class="fa-solid fa-hard-drive"></i> Create Virtual Hard Disk</h3>
+    <p><i class="fa-solid fa-square-check check"></i> Select: <strong>Create a virtual hard disk</strong></p>
+    <table>
+      <tr><th>Setting</th><th>Value</th></tr>
+      <tr><td><strong>Disk size</strong></td><td>50 GB</td></tr>
+      <tr><td><strong>File type</strong></td><td>VDI</td></tr>
+      <tr><td><strong>Storage</strong></td><td>Dynamically allocated</td></tr>
+    </table>
+    <p><i class="fa-solid fa-arrow-pointer point"></i> Click <strong>Finish</strong></p>
+  </div>
+
+</div><!-- end timeline -->
+
+
+<!-- ══════════════════════════════════════════════════════════════ -->
+<!--  PART 2 — START KALI INSTALLATION                           -->
+<!-- ══════════════════════════════════════════════════════════════ -->
+<div class="part-header" id="part2">
+  <div class="part-icon"><i class="fa-solid fa-play"></i></div>
+  <h2>Part 2 — Start Kali Installation</h2>
+</div>
+
+<div class="timeline">
+
+  <!-- STEP 5 -->
+  <div class="step-card">
+    <div class="step-badge">5</div>
+    <h3><i class="fa-solid fa-power-off"></i> Start VM</h3>
+    <p><i class="fa-solid fa-check check"></i> Select your <strong>Kali VM</strong> → Click <strong>Start</strong></p>
+    <p>You'll see the Kali boot menu. Choose:</p>
+    <div class="info purple">
+      <i class="fa-solid fa-hand-pointer point"></i>
+      <strong>Graphical Install</strong> — Press <strong>Enter</strong>
+    </div>
+  </div>
+
+</div>
+
+
+<!-- ══════════════════════════════════════════════════════════════ -->
+<!--  PART 3 — KALI INSTALLER STEPS                              -->
+<!-- ══════════════════════════════════════════════════════════════ -->
+<div class="part-header" id="part3">
+  <div class="part-icon"><i class="fa-solid fa-list-check"></i></div>
+  <h2>Part 3 — Kali Installer Steps</h2>
+</div>
+
+<div class="timeline">
+
+  <!-- STEP 6 -->
+  <div class="step-card">
+    <div class="step-badge">6</div>
+    <h3><i class="fa-solid fa-language"></i> Language</h3>
+    <p>Select: <i class="fa-solid fa-hand-pointer point"></i> <strong>English</strong></p>
+    <p><i class="fa-solid fa-arrow-pointer point"></i> Click <strong>Continue</strong></p>
+  </div>
+
+  <!-- STEP 7 -->
+  <div class="step-card">
+    <div class="step-badge">7</div>
+    <h3><i class="fa-solid fa-location-dot"></i> Location</h3>
+    <p>Select: <i class="fa-solid fa-hand-pointer point"></i> <strong>India</strong></p>
+    <p><i class="fa-solid fa-arrow-pointer point"></i> Click <strong>Continue</strong></p>
+  </div>
+
+  <!-- STEP 8 -->
+  <div class="step-card">
+    <div class="step-badge">8</div>
+    <h3><i class="fa-solid fa-keyboard"></i> Keyboard</h3>
+    <p>Select: <i class="fa-solid fa-hand-pointer point"></i> <strong>American English</strong></p>
+    <p><i class="fa-solid fa-arrow-pointer point"></i> Click <strong>Continue</strong></p>
+  </div>
+
+  <!-- STEP 9 -->
+  <div class="step-card">
+    <div class="step-badge">9</div>
+    <h3><i class="fa-solid fa-network-wired"></i> Network Setup</h3>
+    <p>It will auto-configure the network.</p>
+    <table>
+      <tr><th>Field</th><th>Value</th></tr>
+      <tr><td><strong>Hostname</strong></td><td><code>kali</code></td></tr>
+      <tr><td><strong>Domain name</strong></td><td><em>Leave blank</em></td></tr>
+    </table>
+    <p><i class="fa-solid fa-arrow-pointer point"></i> Click <strong>Continue</strong></p>
+  </div>
+
+  <!-- STEP 10 -->
+  <div class="step-card">
+    <div class="step-badge">10</div>
+    <h3><i class="fa-solid fa-user-plus"></i> Create User</h3>
+    <table>
+      <tr><th>Field</th><th>Value</th></tr>
+      <tr><td><strong>Full name</strong></td><td>Kali User</td></tr>
+      <tr><td><strong>Username</strong></td><td><code>kali</code></td></tr>
+      <tr><td><strong>Password</strong></td><td>Create a strong password <em>(Remember it!)</em></td></tr>
+    </table>
+    <div class="info warn">
+      <i class="fa-solid fa-triangle-exclamation"></i>
+      <strong>Important:</strong> Remember this password — you'll need it to log in after installation.
+    </div>
+    <p><i class="fa-solid fa-arrow-pointer point"></i> Click <strong>Continue</strong></p>
+  </div>
+
+</div>
+
+
+<!-- ══════════════════════════════════════════════════════════════ -->
+<!--  PART 4 — DISK PARTITION                                    -->
+<!-- ══════════════════════════════════════════════════════════════ -->
+<div class="part-header" id="part4">
+  <div class="part-icon"><i class="fa-solid fa-hard-drive"></i></div>
+  <h2>Part 4 — Disk Partition</h2>
+</div>
+
+<div class="timeline">
+
+  <!-- STEP 11 -->
+  <div class="step-card">
+    <div class="step-badge">11</div>
+    <h3><i class="fa-solid fa-sliders"></i> Partitioning Method</h3>
+    <p>Select: <i class="fa-solid fa-hand-pointer point"></i> <strong>Guided – use entire disk</strong></p>
+    <p><i class="fa-solid fa-arrow-pointer point"></i> Click <strong>Continue</strong></p>
+    <p>Select the <strong>50GB disk</strong> → Click <strong>Continue</strong></p>
+  </div>
+
+  <!-- STEP 12 -->
+  <div class="step-card">
+    <div class="step-badge">12</div>
+    <h3><i class="fa-solid fa-puzzle-piece"></i> Partition Scheme</h3>
+    <p>Select: <i class="fa-solid fa-hand-pointer point"></i> <strong>All files in one partition</strong> (recommended)</p>
+    <p><i class="fa-solid fa-arrow-pointer point"></i> Click <strong>Continue</strong></p>
+  </div>
+
+  <!-- STEP 13 -->
+  <div class="step-card">
+    <div class="step-badge">13</div>
+    <h3><i class="fa-solid fa-floppy-disk"></i> Finish Partition</h3>
+    <p>Select: <i class="fa-solid fa-hand-pointer point"></i> <strong>Finish partitioning and write changes to disk</strong></p>
+    <p><i class="fa-solid fa-arrow-pointer point"></i> Click <strong>Continue</strong></p>
+    <p>Select: <i class="fa-solid fa-hand-pointer point"></i> <strong>Yes</strong></p>
+    <p><i class="fa-solid fa-arrow-pointer point"></i> Click <strong>Continue</strong></p>
+    <div class="info note">
+      <i class="fa-solid fa-clock"></i>
+      <strong>Now installation will copy files</strong> — this takes approximately 10–20 minutes. Be patient.
+    </div>
+  </div>
+
+</div>
+
+
+<!-- ══════════════════════════════════════════════════════════════ -->
+<!--  PART 5 — SOFTWARE SELECTION                                -->
+<!-- ══════════════════════════════════════════════════════════════ -->
+<div class="part-header" id="part5">
+  <div class="part-icon"><i class="fa-solid fa-box-open"></i></div>
+  <h2>Part 5 — Software Selection</h2>
+</div>
+
+<div class="timeline">
+
+  <!-- STEP 14 -->
+  <div class="step-card">
+    <div class="step-badge">14</div>
+    <h3><i class="fa-solid fa-list-check"></i> Select Software</h3>
+    <p>Make sure these are selected:</p>
+    <p><i class="fa-solid fa-square-check check"></i> <strong>Kali Linux default desktop (Xfce)</strong></p>
+    <p><i class="fa-solid fa-square-check check"></i> <strong>Standard system utilities</strong></p>
+    <div class="info alert">
+      <i class="fa-solid fa-circle-xmark xmark"></i>
+      <strong>Do NOT select multiple desktops.</strong> Only Xfce is recommended for VirtualBox performance.
+    </div>
+    <p><i class="fa-solid fa-arrow-pointer point"></i> Click <strong>Continue</strong></p>
+    <div class="info note">
+      <i class="fa-solid fa-clock"></i>
+      It will install packages — <strong>wait patiently</strong>.
+    </div>
+  </div>
+
+</div>
+
+
+<!-- ══════════════════════════════════════════════════════════════ -->
+<!--  PART 6 — INSTALL BOOTLOADER                               -->
+<!-- ══════════════════════════════════════════════════════════════ -->
+<div class="part-header" id="part6">
+  <div class="part-icon"><i class="fa-solid fa-gears"></i></div>
+  <h2>Part 6 — Install Bootloader</h2>
+</div>
+
+<div class="timeline">
+
+  <!-- STEP 15 -->
+  <div class="step-card">
+    <div class="step-badge">15</div>
+    <h3><i class="fa-solid fa-download"></i> GRUB Boot Loader</h3>
+    <p>When asked: <em>Install GRUB boot loader?</em></p>
+    <p><i class="fa-solid fa-hand-pointer point"></i> Select <strong>Yes</strong></p>
+    <p><i class="fa-solid fa-arrow-pointer point"></i> Click <strong>Continue</strong></p>
+    <p>Select disk:</p>
+    <p><i class="fa-solid fa-hand-pointer point"></i> <strong>/dev/sda</strong></p>
+    <p><i class="fa-solid fa-arrow-pointer point"></i> Click <strong>Continue</strong></p>
+  </div>
+
+</div>
+
+
+<!-- ══════════════════════════════════════════════════════════════ -->
+<!--  PART 7 — FINAL STEP                                       -->
+<!-- ══════════════════════════════════════════════════════════════ -->
+<div class="part-header" id="part7">
+  <div class="part-icon"><i class="fa-solid fa-flag-checkered"></i></div>
+  <h2>Part 7 — Final Step</h2>
+</div>
+
+<div class="timeline">
+
+  <!-- STEP 16 -->
+  <div class="step-card">
+    <div class="step-badge">16</div>
+    <h3><i class="fa-solid fa-circle-check"></i> Installation Complete</h3>
+    <p><i class="fa-solid fa-arrow-pointer point"></i> Click <strong>Continue</strong></p>
+    <div class="info alert">
+      <i class="fa-solid fa-triangle-exclamation"></i>
+      <strong>VERY IMPORTANT — Before it reboots:</strong>
+      <br><br>
+      In VirtualBox menu:
+      <br>
+      <strong>Devices</strong> → <strong>Optical Drives</strong> → <strong>Remove disk from virtual drive</strong>
+      <br><br>
+      Then press <strong>Enter</strong>.
+    </div>
+  </div>
+
+</div>
+
+
+<!-- ══════════════════════════════════════════════════════════════ -->
+<!--  PART 8 — FIRST LOGIN                                      -->
+<!-- ══════════════════════════════════════════════════════════════ -->
+<div class="part-header" id="part8">
+  <div class="part-icon"><i class="fa-solid fa-right-to-bracket"></i></div>
+  <h2>Part 8 — First Login</h2>
+</div>
+
+<div class="timeline">
+
+  <div class="step-card">
+    <div class="step-badge"><i class="fa-solid fa-user"></i></div>
+    <h3><i class="fa-solid fa-right-to-bracket"></i> Login Screen</h3>
+    <p>After reboot, you'll see the Kali login screen.</p>
+    <table>
+      <tr><th>Field</th><th>Value</th></tr>
+      <tr><td><strong>Username</strong></td><td><code>kali</code></td></tr>
+      <tr><td><strong>Password</strong></td><td>(the one you created in Step 10)</td></tr>
+    </table>
+    <div class="info tip" style="font-size:1.1rem;text-align:center;">
+      <i class="fa-solid fa-circle-check" style="font-size:1.4rem;margin-right:8px;"></i>
+      <strong>DONE — Kali Linux Installed Successfully!</strong>
+    </div>
+  </div>
+
+</div>
+
+
+<!-- ══════════════════════════════════════════════════════════════ -->
+<!--  AFTER INSTALLATION                                         -->
+<!-- ══════════════════════════════════════════════════════════════ -->
+<div class="part-header" id="after">
+  <div class="part-icon"><i class="fa-solid fa-rocket"></i></div>
+  <h2>After Installation (Important)</h2>
+</div>
+
+<div class="timeline">
+
+  <!-- Enable Full Screen -->
+  <div class="step-card">
+    <div class="step-badge"><i class="fa-solid fa-expand"></i></div>
+    <h3><i class="fa-solid fa-expand"></i> Enable Full Screen</h3>
+    <p>VirtualBox → <strong>View</strong> → <strong>Full Screen Mode</strong></p>
+  </div>
+
+  <!-- Guest Additions -->
+  <div class="step-card">
+    <div class="step-badge"><i class="fa-solid fa-puzzle-piece"></i></div>
+    <h3><i class="fa-solid fa-download"></i> Install Guest Additions (Better Performance)</h3>
+    <p>Open terminal and run these commands:</p>
+    <div class="code"><button class="cp" onclick="copyCode(this)"><i class="fa-regular fa-clipboard"></i> Copy</button><span class="label">Terminal</span><pre>
+<span class="hl-g">sudo</span> apt update
+<span class="hl-g">sudo</span> apt install -y build-essential dkms linux-headers-$(<span class="hl-k">uname</span> -r)
+<span class="hl-g">sudo</span> mount /dev/cdrom /mnt
+<span class="hl-g">sudo</span> sh /mnt/VBoxLinuxAdditions.run
+<span class="hl-g">sudo</span> reboot</pre></div>
+  </div>
+
+</div>
+
+
+<!-- ══════════════════════════════════════════════════════════════ -->
+<!--  ESSENTIAL LINUX COMMANDS                                   -->
+<!-- ══════════════════════════════════════════════════════════════ -->
+<div id="commands"></div>
+
+<!-- 1. System Update -->
+<div class="cmd-section green">
+  <h2><i class="fa-solid fa-rotate"></i> 1. System Update (Very Important First Step)</h2>
+  <div class="code"><button class="cp" onclick="copyCode(this)"><i class="fa-regular fa-clipboard"></i> Copy</button><span class="label">Terminal</span><pre>
+<span class="hl-g">sudo</span> apt update
+<span class="hl-g">sudo</span> apt upgrade -y</pre></div>
+  <p><i class="fa-solid fa-square-check check"></i> Updates package list</p>
+  <p><i class="fa-solid fa-square-check check"></i> Upgrades installed software</p>
+</div>
+
+<!-- 2. Basic Navigation -->
+<div class="cmd-section blue">
+  <h2><i class="fa-solid fa-compass"></i> 2. Basic Navigation Commands</h2>
+
+  <div class="cmd-item">
+    <div class="cmd-label"><i class="fa-solid fa-folder"></i> Show current directory</div>
+    <div class="code"><span class="label">Terminal</span><pre>pwd</pre></div>
+  </div>
+
+  <div class="cmd-item">
+    <div class="cmd-label"><i class="fa-solid fa-list"></i> List files in current folder</div>
+    <div class="code"><span class="label">Terminal</span><pre>ls</pre></div>
+    <div class="cmd-desc">More detailed list:</div>
+    <div class="code"><span class="label">Terminal</span><pre>ls -l</pre></div>
+    <div class="cmd-desc">Show hidden files:</div>
+    <div class="code"><span class="label">Terminal</span><pre>ls -a</pre></div>
+  </div>
+
+  <div class="cmd-item">
+    <div class="cmd-label"><i class="fa-solid fa-folder-open"></i> Change directory</div>
+    <div class="code"><span class="label">Terminal</span><pre>cd foldername</pre></div>
+    <div class="cmd-desc">Go back one folder:</div>
+    <div class="code"><span class="label">Terminal</span><pre>cd ..</pre></div>
+    <div class="cmd-desc">Go to home directory:</div>
+    <div class="code"><span class="label">Terminal</span><pre>cd ~</pre></div>
+  </div>
+</div>
+
+<!-- 3. File & Folder Management -->
+<div class="cmd-section orange">
+  <h2><i class="fa-solid fa-folder-tree"></i> 3. File &amp; Folder Management</h2>
+
+  <div class="cmd-item">
+    <div class="cmd-label"><i class="fa-solid fa-folder-plus"></i> Create folder</div>
+    <div class="code"><span class="label">Terminal</span><pre>mkdir testfolder</pre></div>
+  </div>
+
+  <div class="cmd-item">
+    <div class="cmd-label"><i class="fa-solid fa-file-circle-plus"></i> Create file</div>
+    <div class="code"><span class="label">Terminal</span><pre>touch file.txt</pre></div>
+  </div>
+
+  <div class="cmd-item">
+    <div class="cmd-label"><i class="fa-solid fa-file-lines"></i> View file content</div>
+    <div class="code"><span class="label">Terminal</span><pre>cat file.txt</pre></div>
+  </div>
+
+  <div class="cmd-item">
+    <div class="cmd-label"><i class="fa-solid fa-pen-to-square"></i> Edit file</div>
+    <div class="code"><span class="label">Terminal</span><pre>nano file.txt</pre></div>
+    <div class="info tip">
+      <i class="fa-solid fa-lightbulb"></i>
+      <strong>Save in nano:</strong> <kbd>Ctrl</kbd> + <kbd>O</kbd> → <kbd>Enter</kbd><br>
+      <strong>Exit nano:</strong> <kbd>Ctrl</kbd> + <kbd>X</kbd>
+    </div>
+  </div>
+
+  <div class="cmd-item">
+    <div class="cmd-label"><i class="fa-solid fa-trash"></i> Delete file</div>
+    <div class="code"><span class="label">Terminal</span><pre>rm file.txt</pre></div>
+    <div class="cmd-desc">Delete folder:</div>
+    <div class="code"><span class="label">Terminal</span><pre>rm -r foldername</pre></div>
+  </div>
+</div>
+
+<!-- 4. Copy & Move -->
+<div class="cmd-section teal">
+  <h2><i class="fa-solid fa-copy"></i> 4. Copy &amp; Move</h2>
+
+  <div class="cmd-item">
+    <div class="cmd-label"><i class="fa-solid fa-clone"></i> Copy file</div>
+    <div class="code"><span class="label">Terminal</span><pre>cp file.txt /home/kali/</pre></div>
+  </div>
+
+  <div class="cmd-item">
+    <div class="cmd-label"><i class="fa-solid fa-arrow-right"></i> Move file</div>
+    <div class="code"><span class="label">Terminal</span><pre>mv file.txt Documents/</pre></div>
+  </div>
+</div>
+
+<!-- 5. System Info -->
+<div class="cmd-section purple">
+  <h2><i class="fa-solid fa-circle-info"></i> 5. Check System Info</h2>
+
+  <div class="cmd-item">
+    <div class="cmd-label"><i class="fa-solid fa-user"></i> Show current user</div>
+    <div class="code"><span class="label">Terminal</span><pre>whoami</pre></div>
+  </div>
+
+  <div class="cmd-item">
+    <div class="cmd-label"><i class="fa-brands fa-linux"></i> Show OS info</div>
+    <div class="code"><span class="label">Terminal</span><pre>uname -a</pre></div>
+  </div>
+
+  <div class="cmd-item">
+    <div class="cmd-label"><i class="fa-solid fa-hard-drive"></i> Disk usage</div>
+    <div class="code"><span class="label">Terminal</span><pre>df -h</pre></div>
+  </div>
+
+  <div class="cmd-item">
+    <div class="cmd-label"><i class="fa-solid fa-memory"></i> Memory usage</div>
+    <div class="code"><span class="label">Terminal</span><pre>free -h</pre></div>
+  </div>
+</div>
+
+<!-- 6. Networking -->
+<div class="cmd-section indigo">
+  <h2><i class="fa-solid fa-network-wired"></i> 6. Networking Commands</h2>
+
+  <div class="cmd-item">
+    <div class="cmd-label"><i class="fa-solid fa-ethernet"></i> Show IP address</div>
+    <div class="code"><span class="label">Terminal</span><pre>ip a</pre></div>
+  </div>
+
+  <div class="cmd-item">
+    <div class="cmd-label"><i class="fa-solid fa-wifi"></i> Check internet connection</div>
+    <div class="code"><span class="label">Terminal</span><pre>ping google.com</pre></div>
+    <div class="info tip">
+      <i class="fa-solid fa-lightbulb"></i>
+      <strong>Stop ping:</strong> Press <kbd>Ctrl</kbd> + <kbd>C</kbd>
+    </div>
+  </div>
+</div>
+
+<!-- 7. Install Software -->
+<div class="cmd-section pink">
+  <h2><i class="fa-solid fa-box-open"></i> 7. Install Software</h2>
+
+  <div class="cmd-item">
+    <div class="cmd-label"><i class="fa-solid fa-download"></i> Install a package (example: git)</div>
+    <div class="code"><span class="label">Terminal</span><pre><span class="hl-g">sudo</span> apt install git</pre></div>
+  </div>
+
+  <div class="cmd-item">
+    <div class="cmd-label"><i class="fa-solid fa-trash-can"></i> Remove software</div>
+    <div class="code"><span class="label">Terminal</span><pre><span class="hl-g">sudo</span> apt remove git</pre></div>
+  </div>
+</div>
+
+<!-- 8. Clear Terminal -->
+<div class="cmd-section cyan">
+  <h2><i class="fa-solid fa-broom"></i> 8. Clear Terminal</h2>
+  <div class="code"><span class="label">Terminal</span><pre>clear</pre></div>
+</div>
+
+<!-- 9. Kali Specific -->
+<div class="cmd-section red">
+  <h2><i class="fa-solid fa-skull-crossbones"></i> 9. Kali Specific – Check Tools</h2>
+
+  <div class="cmd-item">
+    <div class="cmd-label"><i class="fa-solid fa-toolbox"></i> List all Kali tools</div>
+    <div class="code"><span class="label">Terminal</span><pre>kali-tools</pre></div>
+  </div>
+
+  <div class="cmd-item">
+    <div class="cmd-label"><i class="fa-solid fa-magnifying-glass"></i> Example tool check</div>
+    <div class="code"><span class="label">Terminal</span><pre>nmap --version</pre></div>
+  </div>
+</div>
+
+<!-- 10. Power Commands -->
+<div class="cmd-section amber">
+  <h2><i class="fa-solid fa-power-off"></i> 10. Power Commands</h2>
+
+  <div class="cmd-item">
+    <div class="cmd-label"><i class="fa-solid fa-power-off"></i> Shutdown</div>
+    <div class="code"><span class="label">Terminal</span><pre><span class="hl-g">sudo</span> shutdown now</pre></div>
+  </div>
+
+  <div class="cmd-item">
+    <div class="cmd-label"><i class="fa-solid fa-rotate-right"></i> Restart</div>
+    <div class="code"><span class="label">Terminal</span><pre><span class="hl-g">sudo</span> reboot</pre></div>
+  </div>
+</div>
+
+
+<!-- ══════════════════════════════════════════════════════════════ -->
+<!--  BEGINNER PRACTICE TASK                                     -->
+<!-- ══════════════════════════════════════════════════════════════ -->
+<div class="practice-box" id="practice">
+  <h2><i class="fa-solid fa-flask"></i> Beginner Practice Task</h2>
+  <p>Try running these commands one by one in your terminal:</p>
+
+  <div class="code"><button class="cp" onclick="copyCode(this)"><i class="fa-regular fa-clipboard"></i> Copy</button><span class="label">Practice — Terminal</span><pre>
+<span class="hl-c"># Step 1: Create a folder</span>
+mkdir practice
+
+<span class="hl-c"># Step 2: Enter the folder</span>
+cd practice
+
+<span class="hl-c"># Step 3: Create a file</span>
+touch test1.txt
+
+<span class="hl-c"># Step 4: Open file in editor</span>
+nano test1.txt
+
+<span class="hl-c"># → Write something → Ctrl+O → Enter → Ctrl+X</span>
+
+<span class="hl-c"># Step 5: View the file content</span>
+cat test1.txt</pre></div>
+
+  <div class="info tip">
+    <i class="fa-solid fa-graduation-cap" style="margin-right:6px;"></i>
+    <strong>Congratulations!</strong> If you can do this, you've mastered the basics of Linux terminal. Keep practicing!
+  </div>
+</div>
+
+</div><!-- end container -->
+
+<!-- ═══════════ FOOTER ═══════════ -->
+<footer>
+  <p>Kali Linux Complete Guide — Installation &amp; Commands | Day 4</p>
+</footer>
+
+<!-- ═══════════ SCROLL TOP ═══════════ -->
+<button class="scroll-top" onclick="scrollTo({top:0,behavior:'smooth'})"><i class="fa-solid fa-arrow-up"></i></button>
+
+<script>
+/* ── Copy Code ── */
+function copyCode(btn) {
+  const pre = btn.parentElement.querySelector('pre');
+  navigator.clipboard.writeText(pre.innerText);
+  btn.innerHTML = '<i class="fa-solid fa-check"></i> Copied';
+  setTimeout(() => btn.innerHTML = '<i class="fa-regular fa-clipboard"></i> Copy', 1500);
+}
+
+/* ── Scroll-to-top button ── */
+window.addEventListener('scroll', () => {
+  document.querySelector('.scroll-top').style.display = scrollY > 400 ? 'flex' : 'none';
+});
+
+/* ── Scroll Spy ── */
+const navLinks = document.querySelectorAll('.topnav a');
+const targets = [];
+navLinks.forEach(a => {
+  const id = a.getAttribute('href').replace('#','');
+  const el = document.getElementById(id);
+  if (el) targets.push({ el, a });
+});
+window.addEventListener('scroll', () => {
+  let current = null;
+  targets.forEach(t => { if (scrollY >= t.el.offsetTop - 120) current = t; });
+  navLinks.forEach(a => {
+    a.style.color = '#666';
+    a.style.borderColor = 'transparent';
+    a.style.background = 'transparent';
+  });
+  if (current) {
+    current.a.style.color = '#512da8';
+    current.a.style.borderColor = '#b39ddb';
+    current.a.style.background = '#ede7f6';
+  }
+});
+</script>
+
+</body>
+</html>
